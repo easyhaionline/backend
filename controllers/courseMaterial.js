@@ -1,0 +1,193 @@
+const asyncHandler = require("express-async-handler");
+
+const CourseMaterial = require("../models/CourseMaterial");
+// const validateSubtopicInputs = require("../validators/Subtopic");
+// const validateMongoID = require("../validators/subject");
+// const validateTypeRequire = require("../validators/type-require.js");
+
+// to create a new CourseMaterial ********************************************************
+const courseMaterialCreate = asyncHandler(async (req, res) => {
+  const { name, subtopic, content } = req.body;
+
+  // const { isValid, message } = validateSubtopicInputs(req.body)
+  // if (!isValid) {
+  //     res.status(400)
+  //     throw new Error(message)
+  // }
+
+  const newCourseMaterial = await CourseMaterial.create({
+    name,
+    subtopic,
+
+    content,
+  });
+
+  if (newCourseMaterial) {
+    res.status(200).json({
+      message: "Course Material created successfully!",
+      data: newCourseMaterial,
+    });
+  } else {
+    res.status(500);
+    throw new Error(
+      "New Course Material can't be created at the moment! Try again later."
+    );
+  }
+});
+
+const courseMaterialUpdate = asyncHandler(async (req, res) => {
+  const { name, subtopic, content } = req.body;
+  const _id = req.params.id;
+  // const { isValid, message } = validateSubtopicInputs(req.body)
+  // if (!isValid) {
+  //     res.status(400)
+  //     throw new Error(message)
+  // }
+  const foundCourseMaterials = await CourseMaterial.findOne({ _id });
+  if (!foundCourseMaterials) {
+    res.status(404);
+    throw new Error("No such CourseMaterial exists!");
+  }
+  console.log(content,content[0].type)
+
+  if (name) foundCourseMaterials.name = name;
+  if (subtopic) foundCourseMaterials.subtopic = subtopic;
+  if (content[0].type!='') foundCourseMaterials.content = content;
+
+  foundCourseMaterials.save();
+
+  res.status(200).json({
+    message: "CourseMaterial  updated successfully!",
+    data: foundCourseMaterials,
+  });
+ 
+});
+
+// to fetch all CourseMaterial available *******************************************************
+const courseMaterialGetAll = asyncHandler(async (_, res) => {
+  const foundCourseMaterials = await CourseMaterial.find()
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "standard",
+      select: "title",
+    });
+
+  res.status(200).json(foundCourseMaterials);
+});
+
+const courseMaterialGetById = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  await CourseMaterial.findById(_id)  .populate({
+    path: "standard",
+    select: "title",
+  }).exec((err,data)=>{
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+    //  console.log(data)
+    res.status(200).json(data)
+   })
+
+});
+
+// to fetch all active CourseMaterial on the site *******************************************************
+const courseMaterialGetActive = asyncHandler(async (_, res) => {
+  const foundCourseMaterials = await Subtopic.find({ isActive: true })
+    .sort({ createdAt: -1 })
+    .populate({
+      path: "standard",
+      select: "title",
+    });
+
+  res.status(200).json(foundCourseMaterials);
+});
+
+// to toggle the state of Course Material **************************************************************
+const courseMaterialToggle = asyncHandler(async (req, res) => {
+  const { courseMaterialID } = req.params;
+
+  const { status } = req.body;
+
+  try {
+    const response = await CourseMaterial.findByIdAndUpdate(
+      courseMaterialID,
+      { isActive: status },
+      { new: true }
+    );
+    if (response) res.send(response);
+  } catch (error) {
+    res.status(422).send(error);
+  }
+});
+
+// to update the CourseMaterial **************************************************************
+
+const addingCourseContent = async (req, res) => {
+  const id = req.params.id;
+  const { content } = req.body;
+  await CourseMaterial.findByIdAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $push: {
+        content: content,
+      },
+    }
+  ).then((data, err) => {
+    if (err) {
+      res.json(err);
+    }
+    res.json(data);
+  });
+};
+
+const removingCourseContent = async (req, res) => {
+  const id = req.params.id;
+  const { contentid } = req.body;
+  await CourseMaterial.findByIdAndUpdate(
+    {
+      _id: id,
+    },
+    {
+      $pull: {
+        content: { _id: contentid }
+      },
+    }
+  ).then((data, err) => {
+    if (err) {
+      res.json(err);
+    }
+    res.json(data);
+  });
+};
+
+// to remove CourseMaterial ************************************************************
+const courseMaterialRemove = async (req, res) => {
+  const _id = req.params.id;
+  await CourseMaterial.findByIdAndDelete(_id).exec((err, data) => {
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+    res.json({
+      message: "Course Material  Deleted Successfully",
+      data: { _id },
+    });
+  });
+};
+
+module.exports = {
+  courseMaterialCreate,
+  courseMaterialGetAll,
+  courseMaterialGetActive,
+  courseMaterialToggle,
+  removingCourseContent,
+  courseMaterialGetById,
+  courseMaterialUpdate,
+  addingCourseContent,
+  courseMaterialRemove,
+};
