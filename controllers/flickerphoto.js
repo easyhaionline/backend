@@ -90,7 +90,6 @@ exports.update = (req, res) => {
                     folder: "image",
                     resource_type: "auto"
                 })
-                // console.log("Upload file data...", uploadedFile);
             }
             catch (err) {
                 console.log("Line 1 -> ", err.message);

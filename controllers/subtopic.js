@@ -1,19 +1,10 @@
 const asyncHandler = require("express-async-handler");
 
 const Subtopic = require("../models/subtopic");
-// const validateSubtopicInputs = require("../validators/Subtopic");
-// const validateMongoID = require("../validators/subject");
-// const validateTypeRequire = require("../validators/type-require.js");
 
 // to create a new Subject ********************************************************
 const subtopicCreate = asyncHandler(async (req, res) => {
   const { name, topic,courseMaterials } = req.body;
-
-  // const { isValid, message } = validateSubtopicInputs(req.body)
-  // if (!isValid) {
-  //     res.status(400)
-  //     throw new Error(message)
-  // }
 
   const newSubtopic = await Subtopic.create({
     name,
@@ -55,7 +46,6 @@ const subtopicGetById = asyncHandler(async (req, res) => {
         error: err,
       });
     }
-    //  console.log(data)
     res.status(200).json(data)
    })
 
@@ -93,17 +83,6 @@ const subtopicToggle = asyncHandler(async (req, res) => {
 const subtopicUpdate = asyncHandler(async (req, res) => {
   const { name, topic,courseMaterials } = req.body;
   const _id = req.params.id;
-
-  // const { isValid: isValidID, message: messageID } = validateMongoID(_id)
-  // if (!isValidID) {
-  //     res.status(400)
-  //     throw new Error(messageID)
-  // }
-  // const { isValid, message } = validateSubtopicInputs(req.body)
-  // if (!isValid) {
-  //     res.status(400)
-  //     throw new Error(message)
-  // }
 
   const foundSubtopic = await Subtopic.findOne({ _id });
   if (!foundSubtopic) {

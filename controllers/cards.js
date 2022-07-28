@@ -29,7 +29,6 @@ exports.create = async (req, res) => {
                 folder: "image",
                 resource_type: "auto"
             })
-            // console.log("Upload files", uploadedFile);
         }
         catch (err) {
             console.log("Line1", err.message);
@@ -94,7 +93,6 @@ exports.update = async (req, res) => {
                     folder: "image",
                     resource_type: "auto"
                 })
-                // console.log("Upload files", uploadedFile);
             }
             catch (err) {
                 console.log("Line1", err.message);

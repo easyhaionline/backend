@@ -20,7 +20,6 @@ const payload = {
 const token = jwt.sign(payload, config.APISecret);
 const zoomMeeting = (req, res) => {
   email = req.body.email;
-  // meeting_name = req.body.name;
   var options = {
     method: "POST",
     uri: "https://api.zoom.us/v2/users/" + email + "/meetings",
@@ -44,16 +43,12 @@ const zoomMeeting = (req, res) => {
 
   rp(options)
     .then(function (response) {
-      // console.log("response is: ", response.join_url);
-      // res.status(200).json(response);
       let dataRes = {
-        // join_url: response.join_url + `role=1?name=${meeting_name}`,
         join_url: response,
         zoom_response: response
       };
       res.status(200).json(dataRes);
 
-      // res.send("create meeting result: " + JSON.stringify(response));
     })
     .catch(function (err) {
       // API call failed...

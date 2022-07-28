@@ -53,7 +53,6 @@ const subjectGetById = asyncHandler(async (req, res) => {
         error: err,
       });
     }
-    //  console.log(data)
     res.status(200).json(data)
    })
 

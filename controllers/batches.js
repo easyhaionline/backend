@@ -9,15 +9,8 @@ const asyncHandler = require('express-async-handler')
 exports.create =asyncHandler(async (req, res) => {
 
     const { title,   duration, timing,  subjects,selling_price,  listed_price} = req.body
-  console.log(req.body)
-    // const { isValid, message } = validatebatchesInput(req.body)
-    // if (!isValid) {
-    //     res.status(400)
-    //     throw new Error(message)
-    // }
-    
-    console.log(title,   duration, timing,  subjects,selling_price,  listed_price);
-    
+    console.log(req.body)  
+    console.log(title,   duration, timing,  subjects,selling_price,  listed_price);    
     const newBatch = await Batches.create({
         title,   duration, timing,  subjects,selling_price,  listed_price
         
@@ -40,12 +33,6 @@ exports.update = (req, res) => {
     Batches.findById(id).exec(async (err, oldBatches) => {
 
         const { title,   duration, timing,  subjects,selling_price,  listed_price } = req.body
-
-        // const { isValid, message } = validatebatchesInput(req.body)
-        // if (!isValid) {
-        //     res.status(400)
-        //     throw new Error(message)
-        // }
         oldBatches.title=  title;
         oldBatches.duration=  duration;
 

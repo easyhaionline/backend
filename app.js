@@ -97,8 +97,6 @@ app.use(cookieParser());
 app.get('/', (_, res) => res.send('<h1>EasyHaiOnline Server Running...</h1>'))
 // Routes
 // we are use cloudinary storage direct and this route create localstorage so comment at some time 
-// app.use('/api/upload', uploadRoute)
-
 
 app.use('/api/admin', adminRoutes)
 app.use('/api/image', imageRoutes)
@@ -123,7 +121,6 @@ app.use('/api/coursedetails', courseDetails)
 app.use('/api/zoom', zoomRoutes)
 app.use('/api/answer', answerRoute)
 app.use('/api/analytics', analyitcalRoute)
-// app.use('/api/payment', paymentRoutes)
 app.use('/api', bannerRoutes);
 app.use('/api', footerRoutes);
 app.use('/api', batchesRoutes);
@@ -153,12 +150,7 @@ app.post("/images", upload.single("image"), async (req, res) => {
 app.use(notFoundHandler)
 app.use(errorHandler)
 
-const PORT = process.env.PORT || 5000
-
-// let razorPayInstance = new RazorPay({
-//     key_id: process.env.KEY_ID || 'YOUR_KEY_ID',
-//     key_secret: process.env.KEY_SECRET || 'YOUR_KEY_SECRET',
-// })
+const PORT = process.env.PORT || 5000;
 
 // starting the server
 app.listen(PORT, () => console.log(chalk.blue(`Server running on port ${PORT}`)))

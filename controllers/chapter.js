@@ -1,7 +1,6 @@
 const asyncHandler = require('express-async-handler')
 
 const Chapter = require('../models/Chapter')
-// const Chapter = require('../models/Chapter')
 const validateChapterInputs = require('../validators/chapter')
 const validateMongoID = require('../validators/subject')
 const validateTypeRequire = require('../validators/type-require.js')
@@ -9,19 +8,10 @@ const validateTypeRequire = require('../validators/type-require.js')
 // to create a new chapter ********************************************************
 const chapterCreate = asyncHandler(async (req, res) => {
     const { name, subject,  chapterNumber ,topics } = req.body;
-
-    // const { isValid, message } = validateChapterInputs(req.body)
-    // if (!isValid) {
-    //     res.status(400)
-    //     throw new Error(message)
-    // }
-    // console.log("topics -", chapterNumber);
-
     
     const newChapter = await Chapter.create({
       name,
-      subject,
-     
+      subject,   
       topics
     });
 
@@ -57,7 +47,6 @@ const chapterGetById = asyncHandler(async (req, res) => {
         error: err,
       });
     }
-    //  console.log(data)
     res.status(200).json(data)
    })
 
@@ -97,18 +86,6 @@ const chapterToggle = asyncHandler(async (req, res) => {
 const chapterUpdate = asyncHandler(async (req, res) => {
     const {  name, subject, chapterNumber,topics } = req.body
     const _id = req.params.id;
-
-    // const { isValid: isValidID, message: messageID } = validateMongoID(_id)
-    // if (!isValidID) {
-    //     res.status(400)
-    //     throw new Error(messageID)
-    // }
-    // const { isValid, message } = validateChapterInputs(req.body)
-    // if (!isValid) {
-    //     res.status(400)
-    //     throw new Error(message)
-    // }
-
     const foundChapter = await Chapter.findOne({ _id })
     if (!foundChapter) {
         res.status(404)
@@ -119,9 +96,6 @@ const chapterUpdate = asyncHandler(async (req, res) => {
     if (subject) foundChapter.subject = subject
     if (chapterNumber) foundChapter.chapterNumber = chapterNumber;
     if (topics) foundChapter.topics = topics;
-    
-
-
 
     foundChapter.save()
 

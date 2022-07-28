@@ -10,10 +10,10 @@ cloudinary.config({
   
 
 const storage = new CloudinaryStorage({
-cloudinary: cloudinary,
-params: {
+  cloudinary: cloudinary,
+  params: {
   folder: 'website'
-},
+  },
 });
 
 

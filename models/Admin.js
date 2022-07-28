@@ -5,21 +5,18 @@ const adminSchema = new Schema(
     {
         username: {
             type: String,
-            // required: true,
             unique: true,
         },
         email: {
             type: String,
-            // required: true,
-            // unique: true,
         },
         image: {
             type: String,
            
         },
         role:{
-type:Number,
-default:0
+            type:Number,
+            default:0
         },
         number:{
             type:Number,
@@ -27,7 +24,6 @@ default:0
         },
         password: {
             type: String,
-            // required: true,
         },
         resetPasswordLink: {
             data: String,
@@ -77,4 +73,4 @@ adminSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt)
 })
 
-module.exports = new model('Admin', adminSchema)
+module.exports = new model('Admin', adminSchema);

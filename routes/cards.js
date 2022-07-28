@@ -12,7 +12,4 @@ router.get('/cardlist/:id', runValidation, read)
 router.put('/updatecard/:id', runValidation, upload.single('myFile'), update);
 router.delete('/deletecard/:id', runValidation, remove);
 
-// router.put('/footerupdate/:id', runValidation, update)
-// router.get('/footerlist/:id', runValidation, read)
-
 module.exports = router

@@ -14,14 +14,12 @@ exports.createImages = asyncHandler(async (req, res) => {
             return res.status(400).json({ message: "Select your file" })
 
         let uploadedFile = UploadApiResponse
-        // console.log("Let File", uploadedFile);
         // Image Uploading
         try {
             uploadedFile = await cloudinary.uploader.upload(req.file.path, {
                 folder: "image",
                 resource_type: "auto"
             })
-            // console.log("Upload files", uploadedFile);
         }
         catch (err) {
             console.log("Line1", err.message);
@@ -102,7 +100,6 @@ exports.update = asyncHandler((req, res) => {
                     folder: "image",
                     resource_type: "auto"
                 })
-                // console.log("Upload file data...", uploadedFile);
             }
             catch (err) {
                 console.log("Line 1 -> ", err.message);

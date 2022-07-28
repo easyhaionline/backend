@@ -5,7 +5,6 @@ const ExamType = require('../models/Exam-Type')
 
 const validateExamInputs = require('../validators/exam-type')
 
-const validateMongoID = require('../validators/subject')
 
 
 // to create a new Exams ********************************************************
@@ -71,13 +70,7 @@ const ExamTypeById= asyncHandler(async (req, res) => {
 
 // to toggle the state of exam **************************************************************
 const ExamToggle = asyncHandler(async (req, res) => {
-    const { examID } = req.params
-
-    // const { isValid, message } = validateMongoID(examID)
-    // if (!isValid) {
-    //     res.status(400)
-    //     throw new Error(message)
-    // }
+    const { examID } = req.params;
 
     const foundExamToToggle = await ExamType.findOne({ _id: examID })
 
@@ -114,12 +107,6 @@ const Examremove =asyncHandler(async  (req, res) => {
 // to update the Exam **************************************************************
 const ExamUpdate = asyncHandler(async (req, res) => {
     const { _id, name ,standard} = req.body
-
-    // const { isValid: isValidID, message: messageID } = validateMongoID(_id)
-    // if (!isValidID) {
-    //     res.status(404)
-    //     throw new Error(messageID)
-    // }
     const { isValid, message } = validateExamInputs(req.body)
     if (!isValid) {
         res.status(400)

@@ -12,25 +12,24 @@ const expressJwt = require('express-jwt');
 const _ = require('lodash');
 const request = require('request');
 const axios = require('axios')
-// const fetch = require('node-fetch');
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
-    const { username, email, image, password } = req.body
+    const { username, email, image, password } = req.body;
 
     // validating inputs
-    const { isValid, message } = validateAdminInputs(req.body)
+    const { isValid, message } = validateAdminInputs(req.body);
     if (!isValid) {
         res.status(400)
         throw new Error(message)
     }
 
     //  checking for the uniqueness of email address
-    const isUniqueEmail = (await Admin.countDocuments({ email })) > 0 ? false : true
+    const isUniqueEmail = (await Admin.countDocuments({ email })) > 0 ? false : true;
     if (!isUniqueEmail) {
         res.status(400)
         throw new Error('Email is already registered! Try Logging in.')
     }
-const role=1
+    const role=1;
     const newAdmin = await Admin.create({
         username,
         email,
@@ -38,31 +37,30 @@ const role=1
         password,
         isSuper: true,
         role
-    })
+    });
 
     if (newAdmin) {
         // removing password before sending to client
-        newAdmin.password = null
-
+        newAdmin.password = null;
         res.status(200).json({
             message: 'New SUPER admin created!',
             data: newAdmin,
-        })
-    } else {
-        res.status(500)
-        throw new Error("New admin can't be registered at the moment! Try again.")
-    }
+        });
+        } else {
+            res.status(500)
+            throw new Error("New admin can't be registered at the moment! Try again.")
+        }
 })
 
 
 
 const sendotp = asyncHandler(async (req, res) => {
-    const {number,otp ,name } = req.body
+    const {number,otp ,name } = req.body;
     // Dear {#var#},
     // Your OTP for registration is {#var#} and is valid up to 15 minutes at easyhaionline.com1005164250533612950
     // http://digimate.airtel.in:15181/BULK_API/SendMessage?loginID=harshlyg_hsi&password=harshlyg@123&mobile=${number}&text=Dear ${name} Your OTP for registration is  ${otp}  and is valid up to 15 minutes at easyhaionline.com&senderid=DGMATE&DLT_TM_ID=1001096933494158&DLT_CT_ID=&DLT_PE_ID=1001751517438613463&route_id=DLT_SERVICE_IMPLICT&Unicode=0&camp_name=harshlyg_u
     // Dear {#var#},
-// Your OTP for registration is {#var#} and is valid up to 15 minutes at easyhaionline.com
+    // Your OTP for registration is {#var#} and is valid up to 15 minutes at easyhaionline.com
     axios
     .get(`http://digimate.airtel.in:15181/BULK_API/SendMessage?loginID=harshlyg_hsi&password=harshlyg@123&mobile=${number}&text=Dear  ${name}, Your OTP for registration is ${otp}  and is valid up to 15 minutes at easyhaionline.com&senderid=EASHAI&DLT_TM_ID=1001096933494158&DLT_CT_ID=1007164283234091360&DLT_PE_ID=1001628200000063616&route_id=DLT_SERVICE_IMPLICT&Unicode=0&camp_name=harshlyg_u`)
     .then(response => {
@@ -72,20 +70,13 @@ const sendotp = asyncHandler(async (req, res) => {
     })
     .catch(error => {
       console.error(error)
-    })
-
-   
-    // validating inputs
-    // const response = await fetch(`http://digimate.airtel.in:15181/BULK_API/SendMessage?loginID=harshlyg_hsi&password=harshlyg@123&mobile=${number}&text=(EASY Latest HAI ONLINE EDUCATIONAL SERVICES) ${otp} is your OTP and it is valid for the next 10 minutes. Please do not share this OTP with anyone. Thank You, EASY HAI ONLINE EDUCATIONAL SERVICES&senderid=DGMATE&DLT_TM_ID=1001096933494158&DLT_CT_ID=&DLT_PE_ID=1001751517438613463&route_id=DLT_SERVICE_IMPLICT&Unicode=0&camp_name=harshlyg_u`, {method: 'GET'});
-    // const data = await response.json();
-    
-    // console.log(data);
+    });
    
 })
 
 // to register a teacher ************************************************************************
 const adminRegisterTeacher = asyncHandler(async (req, res) => {
-    const { username, email, password, image, phone, standard, subject } = req.body
+    const { username, email, password, image, phone, standard, subject } = req.body;
 
     // validate inputs
 
@@ -94,7 +85,7 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
     if (!isUniqueEmail) {
         res.status(400)
         throw new Error('Email is already registered! Try Logging in.')
-    }
+    };
 
     //  checking for the uniqueness of phone
     const isUniquePhone = (await Teacher.countDocuments({ phone })) > 0 ? false : true
@@ -102,7 +93,7 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Phone is already registered! Try Logging in.')
     }
-    const role=1
+    const role=1;
 
     const newTeacher = await Teacher.create({
         username,
@@ -113,7 +104,7 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
         standard,
         subject,
         role
-    })
+    });
 
     if (newTeacher) {
         // removing password before sending to client
@@ -123,7 +114,8 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
             message: 'New teacher created!',
             data: newTeacher,
         })
-    } else {
+    } 
+    else {
         res.status(500)
         throw new Error("Teacher can't be registered at the moment! Try again.")
     }
@@ -131,125 +123,77 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
 
 // to register a new admin *******************************************************************************
 const adminRegister = asyncHandler(async (req, res) => {
-    const { username, email, image, password } = req.body
+    const { username, email, image, password } = req.body;
 
-    // validating inputs
-    // const { isValid, message } = validateAdminInputs(req.body)
-    // if (!isValid) {
-    //     res.status(400)
-    //     throw new Error(message)
-    // }
+    //  checking for the uniqueness of email address
+    const isUniqueEmail = (await Admin.countDocuments({ email })) > 0 ? false : true;
+    if (!isUniqueEmail) {
+        res.status(400)
+        throw new Error('Email is already registered! Try Logging in.')
+    }
 
-    // getting the logged in admin
-    // const foundAdmin = req.authAdmin
+    const role =1;
+    const newAdmin = await Admin.create({
+        username,
+        email,
+        image,
+        password,
+        role
+    });
 
-    // if (foundAdmin) {
-        
-        // checking if the logged admin is a SUPER ADMIN (only super admin can create new admins)
-        // const isSuperAdmin = foundAdmin.isSuper
-        // if (!isSuperAdmin) {
-        //     res.status(403)
-        //     throw new Error('Only super admin has the permission to create new admins!')
-        // }
-
-        //  checking for the uniqueness of email address
-        const isUniqueEmail = (await Admin.countDocuments({ email })) > 0 ? false : true
-        if (!isUniqueEmail) {
-            res.status(400)
-            throw new Error('Email is already registered! Try Logging in.')
-        }
-
-        const role =1
-        const newAdmin = await Admin.create({
-            username,
-            email,
-            image,
-            password,
-           role
-        })
-
-        if (newAdmin) {
-            // removing password before sending to client
-            newAdmin.password = null
-
-            res.status(200).json(newAdmin)
-        } else {
-            res.status(500)
-            throw new Error(
-                "New admin can't be registered at the moment! Try again later."
+    if (newAdmin) {
+         // removing password before sending to client
+        newAdmin.password = null
+        res.status(200).json(newAdmin)
+    } 
+    else {
+        res.status(500)
+        throw new Error(
+            "New admin can't be registered at the moment! Try again later."
             )
-        }
-    // } else {
-    //     res.status(500)
-    //     throw new Error('Something went wrong! Try again.')
-    // }
+    }
 })
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
     const { username, email, image, password } = req.body
 
-    
-    // validating inputs
-    // const { isValid, message } = validateAdminInputs(req.body)
-    // if (!isValid) {
-    //     res.status(400)
-    //     throw new Error(message)
-    // }
+    //  checking for the uniqueness of email address
+    const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
+    if (!isUniqueEmail) {
+        res.status(400)
+        throw new Error('Email is already registered! Try Logging in.')
+    }        
+    const newAdmin = await Student.create({
+        username,
+        email,
+        image,
+        password,    
+        });
 
-    // getting the logged in admin
-    // const foundAdmin = req.authAdmin
+    if (newAdmin) {
+        // removing password before sending to client
+        newAdmin.password = null
+        res.status(200).json(newAdmin)
+    } else {
+                res.status(500)
+                throw new Error(
+                    "New admin can't be registered at the moment! Try again later."
+                )
+            }
 
-    // if (foundAdmin) {
-        
-        // checking if the logged admin is a SUPER ADMIN (only super admin can create new admins)
-        // const isSuperAdmin = foundAdmin.isSuper
-        // if (!isSuperAdmin) {
-        //     res.status(403)
-        //     throw new Error('Only super admin has the permission to create new admins!')
-        // }
-
-        //  checking for the uniqueness of email address
-        const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
-        if (!isUniqueEmail) {
-            res.status(400)
-            throw new Error('Email is already registered! Try Logging in.')
-        }        
-        const newAdmin = await Student.create({
-            username,
-            email,
-            image,
-            password,
-           
-        })
-
-        if (newAdmin) {
-            // removing password before sending to client
-            newAdmin.password = null
-
-            res.status(200).json(newAdmin)
-        } else {
-            res.status(500)
-            throw new Error(
-                "New admin can't be registered at the moment! Try again later."
-            )
-        }
-    // } else {
-    //     res.status(500)
-    //     throw new Error('Something went wrong! Try again.')
-    // }
-})
+});
 
 // to register a new parent *******************************************************************************
 const parentRegister = asyncHandler(async (req, res) => {
-    const { username, email, password, student } = req.body
-    console.log(req.body)
-    const isUniqueEmail = (await Parent.countDocuments({ email })) > 0 ? false : true
-        if (!isUniqueEmail) {
-            res.status(400)
-            throw new Error('Email is already registered! Try Logging in.')
-        }
-    const role=3
+    const { username, email, password, student } = req.body;
+    console.log(req.body);
+    const isUniqueEmail = (await Parent.countDocuments({ email })) > 0 ? false : true;
+    if (!isUniqueEmail) {
+        res.status(400)
+        throw new Error('Email is already registered! Try Logging in.')
+    }
+    const role=3;
    
     const newAdmin = await Parent.create({
         username,
@@ -257,62 +201,53 @@ const parentRegister = asyncHandler(async (req, res) => {
         password,
         role,
        student
-    })
-    console.log(req.body)
-        if (newAdmin) {
-            // removing password before sending to client
-            newAdmin.password = null
-            res.status(200).json(newAdmin)
-        } else {
-            res.status(500)
+    });
+    console.log(req.body);
+    if (newAdmin) {
+        // removing password before sending to client
+        newAdmin.password = null
+        res.status(200).json(newAdmin)
+    } else {
+            res.status(500);
             throw new Error(
                 "New parent can't be registered at the moment! Try again later."
-            )
+                );
         }
 })
 
 const parentLogin = asyncHandler(async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body;
     // finding the parent
     const foundParent = await Parent.findOne({
         email,
         isActive: true,
-    })
-     if(foundParent && (await foundParent.matchPassword(password))&&foundParent.role==3) {
-     const token= generateToken(foundParent._id)
-     const dbhalf= token.substr(0,100)
-     const htoken= token.substr(100)
-     const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
-     const encryptedString = cryptr.encrypt(dbhalf);
-     foundParent.encryption= encryptedString;
-     foundParent.save();
-     const decryptedString = cryptr.decrypt(encryptedString);
-     var _id = foundParent.student;
-    //  console.log("these are different values",foundParent,_id)
-    //  var studentName = await Admin.findById(_id, function (err, student) {
-    //     if(err)
-    //        {console.log("No student found.")}
-    //     else{
-    //         console.log("Student : ", student);
-    //     }
-    // })
-     res.send({
-        fulltoken:token,
-        _id,
-      
-        email: foundParent.email,
-        username: foundParent.username,
-        image: foundParent.image,
-        isSuper: foundParent.isSuper,
-        token: htoken,
-        dbtoken:foundParent.encryption,
-        decrypted:decryptedString,
-        foundParent:foundParent
-    })
-    } else {
-        res.status(401)
-        throw new Error('Either your credentials are wrong or your account is deactivated! Try again.')
-    }
+    });
+    if(foundParent && (await foundParent.matchPassword(password))&& foundParent.role==3 ) {
+            const token= generateToken(foundParent._id)
+            const dbhalf= token.substr(0,100)
+            const htoken= token.substr(100)
+            const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
+            const encryptedString = cryptr.encrypt(dbhalf);
+            foundParent.encryption= encryptedString;
+            foundParent.save();
+            const decryptedString = cryptr.decrypt(encryptedString);
+            var _id = foundParent.student;
+            res.send({
+                fulltoken:token,
+                _id,    
+                email: foundParent.email,
+                username: foundParent.username,
+                image: foundParent.image,
+                isSuper: foundParent.isSuper,
+                token: htoken,
+                dbtoken:foundParent.encryption,
+                decrypted:decryptedString,
+                foundParent:foundParent
+            });
+        } else {
+                res.status(401);
+                throw new Error('Either your credentials are wrong or your account is deactivated! Try again.')
+            }
 })
 
 const adminRegisterbynumber = asyncHandler(async (req, res) => {
@@ -342,7 +277,6 @@ const adminRegisterbynumber = asyncHandler(async (req, res) => {
                    token: htoken,
                    dbtoken:newAdmin.encryption,
                    data:newAdmin
-                //    decrypted:decryptedString
                })
         }
 
@@ -378,12 +312,6 @@ const adminRegisterbynumber = asyncHandler(async (req, res) => {
                    decrypted:decryptedString
                })     
         }
-
-        
-    // } else {
-    //     res.status(500)
-    //     throw new Error('Something went wrong! Try again.')
-    // }
 })
 
 // to login an existing admin *************************************************************************
@@ -396,39 +324,36 @@ const adminLogin = asyncHandler(async (req, res) => {
         isActive: true,
     })
 
-console.log(email,foundAdmin)
+    console.log(email,foundAdmin)
 
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==1) {
-     const token=   generateToken(foundAdmin._id)
-
-     const dbhalf=token.substr(0,100)
-     const htoken=token.substr(100)
-     const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
-     const encryptedString = cryptr.encrypt(dbhalf);
-     foundAdmin.encryption=encryptedString;
-     foundAdmin.save();         
-     console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
-   const decryptedString = cryptr.decrypt(encryptedString);
-   
-        res.send({
-      fulltoken:token,
-            _id:foundAdmin._id,
-            email: foundAdmin.email,
-            username: foundAdmin.username,
-            image: foundAdmin.image,
-            isSuper: foundAdmin.isSuper,
-            token: htoken,
-            dbtoken:foundAdmin.encryption,
-            decrypted:decryptedString,
-            foundAdmin:foundAdmin
-        })
-    } else {
-        
-        res.status(401)
-        throw new Error(
-            'Either your credentials are wrong or your account is deactivated! Try again.'
-        )
-    }
+                const token=   generateToken(foundAdmin._id)
+                const dbhalf=token.substr(0,100)
+                const htoken=token.substr(100)
+                const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
+                const encryptedString = cryptr.encrypt(dbhalf);
+                foundAdmin.encryption=encryptedString;
+                foundAdmin.save();         
+                console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
+                const decryptedString = cryptr.decrypt(encryptedString);       
+                res.send({
+                        fulltoken:token,
+                        _id:foundAdmin._id,
+                        email: foundAdmin.email,
+                        username: foundAdmin.username,
+                        image: foundAdmin.image,
+                        isSuper: foundAdmin.isSuper,
+                        token: htoken,
+                        dbtoken:foundAdmin.encryption,
+                        decrypted:decryptedString,
+                        foundAdmin:foundAdmin
+                    })
+        } else {
+            res.status(401)
+            throw new Error(
+                'Either your credentials are wrong or your account is deactivated! Try again.'
+            )
+        }
 })
 
 
@@ -443,7 +368,7 @@ const studentLogin = asyncHandler(async (req, res) => {
     console.log(foundAdmin)
 
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==0) {
-     const token=   generateToken(foundAdmin._id)
+     const token= generateToken(foundAdmin._id)
 
      const dbhalf=token.substr(0,100)
      const htoken=token.substr(100)
@@ -666,14 +591,12 @@ const studentsBySearchFilter = asyncHandler(async (req, res) => {
     const {data}=req.body
    
    
-    // console.log(req.params.course);
     let foundstudent;
  {
         foundstudent = await Student.find().where({email:data}).sort({ createdAt: -1 });
         if(foundstudent.length==0){
             foundstudent = await Student.find().where({username:data}).sort({ createdAt: -1 });
         }
-    //    console.log( foundstudent.legnth)
     }
 
     res.status(200).json(foundstudent)
@@ -716,11 +639,7 @@ const adminUpdate = asyncHandler(async (req, res) => {
         if (username) foundAdmin.username = username
         if (image) foundAdmin.image = image
         if (password) foundAdmin.password = password
-        foundAdmin.save()
-
-        // // removing password before returning
-        // foundAdmin.password = null
-
+        foundAdmin.save();
         res.status(200).json({
             message: 'Admin updated successfully!',
             data: { ...foundAdmin._doc, password: null },
@@ -755,11 +674,7 @@ const Updatingcourse = asyncHandler(async (req, res) => {
 
          foundAdmin.courses = courseId
         
-        foundAdmin.save()
-
-        // // removing password before returning
-        // foundAdmin.password = null
-
+        foundAdmin.save();
         res.status(200).json({
             message: 'Admin updated successfully!',
             data: { ...foundAdmin._doc, password: null },
@@ -795,11 +710,7 @@ const profileUpdate = asyncHandler(async (req, res) => {
         if (username) foundAdmin.username = username
         if (image) foundAdmin.image = image
         if (number) foundAdmin.number = number
-      foundAdmin.save()
-
-        // // removing password before returning
-        // foundAdmin.password = null
-
+      foundAdmin.save();
         res.status(200).json({
             message: 'User updated successfully!',
             data: { ...foundAdmin._doc, password: null },
@@ -837,13 +748,11 @@ const forgotPassword =asyncHandler(async (req, res)=> {
             <p>https://easyhaionline.com</p>
         `
         };
-        // console.log("this is email data",emailData)
         // populating the db > user > resetPasswordLink
         return user.updateOne({ resetPasswordLink: token }, (err, success) => {
             if (err) {
                 return res.json({ error: err });
             } else {
-                // console.log(success,"dgasdgsa")
                 sendEmailWithNodemailer(req, res, emailData);
                 return res.json({ message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.` });
             }
@@ -918,13 +827,11 @@ const forgotPasswordStudent =asyncHandler(async (req, res)=> {
             <p>https://easyhaionline.com</p>
         `
         };
-        // console.log("this is email data",emailData)
         // populating the db > user > resetPasswordLink
         return user.updateOne({ resetPasswordLink: token }, (err, success) => {
             if (err) {
                 return res.json({ error: err });
             } else {
-                // console.log(success,"dgasdgsa")
                 sendEmailWithNodemailer(req, res, emailData);
                 return res.json({ message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.` });
             }

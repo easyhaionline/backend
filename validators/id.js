@@ -1,4 +1,4 @@
-const { ObjectID } = require('mongodb')
+const { ObjectID } = require('mongodb'); //ObjectID is deprecated 
 
 const validateMongoID = (inputID, inputType = '') => {
     if (inputID) {

@@ -1,5 +1,4 @@
 const express = require('express')
-// const { protectAdmin } = require('../middleware/protect')
 const multer = require("multer");
 const storage = multer.diskStorage({});
 const upload = multer({ storage })

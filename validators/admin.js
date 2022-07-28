@@ -3,10 +3,10 @@ const {
     EMAIL_REGEX,
     USERNAME_REGEX,
     PASSWORD_REGEX,
-} = require('../utils/constants')
+} = require('../utils/constants');
 
 const validateAdminInputs = (inputData, isEdit = false) => {
-    const { username, email, password, image } = inputData
+    const { username, email, password, image } = inputData;
 
     // validating email
     if (email) {
@@ -99,4 +99,4 @@ const validateAdminInputs = (inputData, isEdit = false) => {
     }
 }
 
-module.exports = validateAdminInputs
+module.exports = validateAdminInputs;

@@ -37,7 +37,6 @@ const ResponseGetAll = asyncHandler(async (req, res) => {
     console.log(req.params.type);
     let foundResponse;
     if(req.params.type == 'All'){
-        // foundComplaints = await Response.find().sort({ createdAt: -1 }).populate("student","_id name")
                 foundResponse = await Response.find().populate({
                   path: 'response',
                   select: '_id answer image',
@@ -60,7 +59,6 @@ const complaintByStudent = asyncHandler(async (req, res) => {
   console.log(req.params.id, id);
   let foundComplaints;
   if (req.params.type == "All") {
-    // foundComplaints = await Complaint.find().sort({ createdAt: -1 }).populate("student","_id name")
     foundComplaints = await Complaint.find().populate({
       path: 'response',
       select: '_id answer image',
@@ -82,7 +80,6 @@ const feedbacksByStudent = asyncHandler(async (req, res) => {
   console.log(req.params.id, id);
   let foundComplaints;
   if (req.params.type == "All") {
-    // foundComplaints = await Complaint.find().sort({ createdAt: -1 }).populate("student","_id name")
     foundComplaints = await Complaint.find().populate({
       path: 'response',
       select: '_id answer image',

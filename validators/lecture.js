@@ -4,8 +4,7 @@ const validateTypeRequire = require('./type-require')
 const validType = ['LIVE', 'RECORDED', 'CAPSULE']
 
 const validateLectureInputs = (inputData) => {
-    const {title,description, link, standard, subject, chapter,date,startingtime,duration, topic, practiceTests, type, zoomLink } =
-        inputData
+    const {title,description, link, standard, subject, chapter,date,startingtime,duration, topic, practiceTests, type, zoomLink } =inputData
 
     // validating lecture name
     const { isValid: isValidName, message: messageName } = validateTypeRequire(
@@ -33,8 +32,7 @@ const validateLectureInputs = (inputData) => {
         }
     }}
 
-    const { isValid: isValidStandard, message: messageStandard } =
-        validateMongoID(standard)
+    const { isValid: isValidStandard, message: messageStandard } = validateMongoID(standard)
     if (!isValidStandard) {
         return {
             isValid: isValidStandard,

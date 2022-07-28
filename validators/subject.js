@@ -2,9 +2,7 @@ const validateMongoID = require('./id')
 const validateTypeRequire = require('./type-require')
 
 const validateSubjectInputs = (ok) => {
-    const { name, teachers, standard } = ok
-    // console.log(name);
-    // console.log(teachers, standard);
+    const { name, teachers, standard } = ok;
     console.log(ok,"dfgdfg");
     const { isValid: isValidName, message: messageName } = validateTypeRequire(
         'string',
@@ -51,7 +49,7 @@ const validateSubjectInputs = (ok) => {
     }
     {
 
-        return {
+        return {   
             isValid: true,
         }
     }

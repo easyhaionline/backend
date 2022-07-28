@@ -112,8 +112,6 @@ standard,
       code = regenerateCode(latestCode);
     }
 
-//     const standard="626a1aec1ae55b0e5ef2894b";
-//  const subject="626a1d341ae55b0e5ef28a10";
 let   arrayOfsubjects = subject && subject.split(",");
     const createdByEmail = req.authAdmin.email;
     let course = new Course();

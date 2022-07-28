@@ -1,19 +1,10 @@
 const asyncHandler = require("express-async-handler");
 
 const Topic = require("../models/topic");
-// const validateTopicInputs = require("../validators/topic");
-// const validateMongoID = require("../validators/subject");
-// const validateTypeRequire = require("../validators/type-require.js");
 
 // to create a new Subject ********************************************************
 const topicCreate = asyncHandler(async (req, res) => {
   const { name, chapter,subtopics } = req.body;
-
-  // const { isValid, message } = validateTopicInputs(req.body)
-  // if (!isValid) {
-  //     res.status(400)
-  //     throw new Error(message)
-  // }
 
   const newTopic = await Topic.create({
     name,
@@ -90,17 +81,6 @@ const topicToggle = asyncHandler(async (req, res) => {
 const topicUpdate = asyncHandler(async (req, res) => {
   const { name, chapter,subtopics } = req.body;
   const _id = req.params.id;
-
-  // const { isValid: isValidID, message: messageID } = validateMongoID(_id)
-  // if (!isValidID) {
-  //     res.status(400)
-  //     throw new Error(messageID)
-  // }
-  // const { isValid, message } = validateTopicInputs(req.body)
-  // if (!isValid) {
-  //     res.status(400)
-  //     throw new Error(message)
-  // }
 
   const foundTopic = await Topic.findOne({ _id });
   if (!foundTopic) {
