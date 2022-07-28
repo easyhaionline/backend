@@ -78,7 +78,6 @@ const testStart = asyncHandler(async (req, res) => {
         }
     }
     else {
-        // const startTime = new Date(startTimeStamp);
         const scoreCardObj = {
             testId,
             studentId,

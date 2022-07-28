@@ -36,7 +36,6 @@ const getCouseDetailsByEmail = asyncHandler(async (req, res) => {
           error: err,
         });
       }
-      //  console.log(data)
       res.status(200).json(data)
      })
   
@@ -49,7 +48,6 @@ const getCouseDetailsBymobile = asyncHandler(async (req, res) => {
           error: err,
         });
       }
-      //  console.log(data)
       res.status(200).json(data)
      })
   
@@ -64,7 +62,6 @@ const courseDetailUpdate = asyncHandler(async (req, res) => {
           error: err,
         });
       }
-      //  console.log(data)
       res.status(200).json(data)
      })
   

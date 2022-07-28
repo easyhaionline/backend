@@ -75,38 +75,6 @@ console.log(uploadedFile);
 const { secure_url } = uploadedFile;
 const desktopImage=secure_url;
 const mobileImage=secure_url;
-// const standard="626a1aec1ae55b0e5ef2894b";
-//  const subject="626a1d341ae55b0e5ef28a10";
-// const { isValid: isValidStream, message: messageStream } = validateMongoID(
-    //     stream,
-    //     'Stream'
-    // )
-    // if (!isValidStream) {
-    //     res.status(400)
-    //     throw new Error(messageStream)
-    // }
-    // const { isValid: isValidProgram, message: messageProgram } = validateMongoID(
-    //     program,
-    //     'Program'
-    // )
-    // if (!isValidProgram) {
-    //     res.status(400)
-    //     throw new Error(messageProgram)
-    // }
-    // const { isValid: isValidHighlight, message: messageHighlight } =
-    //     validateHighlightsInput(highlights, 4)
-    // if (!isValidHighlight) {
-    //     res.status(400)
-    //     throw new Error(messageHighlight)
-    // }
-    // const { isValid: isValidDetail, message: messageDetail } = validateHighlightsInput(
-    //     details,
-    //     3
-    // )
-    // if (!isValidDetail) {
-    //     res.status(400)
-    //     throw new Error(messageDetail)
-    // }
 
     // generating a UNIQUE code for the program
     let code = generateCode('COURSE', name)

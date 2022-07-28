@@ -1,17 +1,3 @@
-// const { Schema, model, Types } = require('mongoose')
-
-// const topicSchema = new Schema({
-//     name: {
-//         type: String,
-//         required: true,
-//     },
-//     subject: {
-//         type: Types.ObjectId,
-//         ref: 'Subject',
-//     },
-// })
-
-// module.exports = new model('topic', topicSchema)
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
 

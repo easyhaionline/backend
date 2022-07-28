@@ -21,23 +21,18 @@ const complaintSchema = new Schema(
         },
         teacher: {
             type: Types.ObjectId,
-            ref: 'Teacher',
-            
+            ref: 'Teacher',            
         },
         seprater: {
             type: String,
-            default:"C"
-            
+            default:"C"            
         }
-        
-        
         ,image:{
             type:String
         },
         feedback:{
             type: String
         },
-
         response:{
             type: Types.ObjectId,
             ref: 'Response'

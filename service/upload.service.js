@@ -3,7 +3,7 @@ const {Storage} = require('@google-cloud/storage');
 
 const s3= new AWS.S3({
     accessKeyId:process.env.AWS_BUCKET_ACCESS_KEY_COURSE_MATERIAL,
-secretAccessKey:process.env.AWS_BUCKET_SECRET_ACCESS_KEY_COURSE_MATERIAL
+    secretAccessKey:process.env.AWS_BUCKET_SECRET_ACCESS_KEY_COURSE_MATERIAL
 })
 
  
@@ -14,9 +14,7 @@ async function uploadFileToAws(file){
         Bucket:process.env.AWS_BUCKET_NAME_COURSE_MATERIAL,
         Key:fileName,
         Body:file.data,
-        ContentType:mimetype,
- 
-    
+        ContentType:mimetype,    
     };
     console.log(params,s3)
     const res = await new Promise((resolve,reject)=>{

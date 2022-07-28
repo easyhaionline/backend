@@ -62,24 +62,4 @@ const testSchema = new Schema(
     }
 )
 
-
-// totalQuesrions:0,
-// easyquestions:0,
-// hardquestions:0,
-// mediumquestions:0,
-
-// difficulty: "",
-// chapter:"",
-// type: "",
-// standard: "",
-// subject: "",
-// chapter: "",
-// topic: "",
-// time: 0,
-// examtype: "",
-// marks: 0,
-// negativeMarks: -7,
-// previousYear: 0,
-// prreviousMonth: 0,
-
 module.exports = new model('tests', testSchema)

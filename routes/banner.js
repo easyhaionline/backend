@@ -1,6 +1,5 @@
 const express = require('express');
 const { photo, create, createImages, update, remove,read,imagesUpload} = require('../controllers/banner');
-// const { runValidation } = require('../validators/index');
 const multer = require("multer");
 const storage = multer.diskStorage({});
 const upload = multer({ storage })

@@ -40,29 +40,6 @@ const validateCourseInputs = (inputData) => {
             message: 'End date is needed!',
         }
     }
-
-    // validating course standard
-    // if (standard || String(standard) === 0) {
-    //     if (typeof standard === 'string') {
-    //         if (standard < STANDARD_MIN) {
-    //             return {
-    //                 isValid: false,
-    //                 message: `Please provide a valid class!`,
-    //             }
-    //         }
-    //     } else {
-    //         return {
-    //             isValid: false,
-    //             message: 'Course class must be a number!',
-    //         }
-    //     }
-    // } else {
-    //     return {
-    //         isValid: false,
-    //         message: 'Course class is needed!',
-    //     }
-    // }
-
     // validating actual price
     if (actualPrice || String(actualPrice) === 0) {
         if (typeof actualPrice === 'string') {

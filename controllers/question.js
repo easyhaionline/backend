@@ -1,6 +1,5 @@
 const asyncHandler = require('express-async-handler')
 const { ObjectId } = require('mongodb')
-
 const Question = require('../models/Question')
 const Test = require('../models/Test')
 const validateMongoID = require('../validators/id')
@@ -60,7 +59,8 @@ const questionCreate = asyncHandler(async (req, res) => {
             message: 'Question created successfully!',
             data: newQuestion,
         })
-    } else {
+    } 
+    else {
         res.status(500)
         throw new Error("New Question can't be created at the moment! Try again later.")
     }
@@ -70,14 +70,11 @@ const questionCreate = asyncHandler(async (req, res) => {
 const questionGetAllByType = asyncHandler(async (req, res) => {
     const type = req.params.type.toUpperCase()
     const foundQuestions = await Question.find({ type }).populate("subject", "_id name ").populate("chapter", "_id title ").sort({ createdAt: -1 })
-
     res.status(200).json(foundQuestions)
 })
 // to fetch all questions available *******************************************************
 const questionGetAll = asyncHandler(async (req, res) => {
-
     const foundQuestions = await Question.find().populate("subject", "_id name ").populate("chapter", "_id title ").sort({ createdAt: -1 })
-
     res.status(200).json(foundQuestions)
 })
 // to fetch all  sorting questions available *******************************************************
@@ -110,7 +107,8 @@ const questionToggle = asyncHandler(async (req, res) => {
                 ? 'Question Activated!'
                 : 'Question Deactivated!',
         })
-    } else {
+    } 
+    else {
         res.status(404)
         throw new Error('Question not found!')
     }
@@ -119,21 +117,18 @@ const questionToggle = asyncHandler(async (req, res) => {
 // delete the question **************************************************************
 const deleteQuestion = asyncHandler(async (req, res) => {
     const { questionID } = req.params
-
     const { isValid, message } = validateMongoID(questionID)
     if (!isValid) {
         res.status(400)
         throw new Error(message)
     }
-
     const foundQuestionToToggle = await Question.findByIdAndDelete({ _id: questionID })
-
     if (foundQuestionToToggle) {
-
         res.status(200).json({
             message: 'question is deleted '
         })
-    } else {
+    } 
+    else {
 
         res.status(404)
         throw new Error('Question not found!')
@@ -155,7 +150,6 @@ const questionReview = asyncHandler(async (req, res) => {
     if (foundQuestionToReview) {
         foundQuestionToReview.status = 'APPROVED'
         foundQuestionToReview.save()
-
         res.status(200).json({
             message: 'Question Approved!',
         })

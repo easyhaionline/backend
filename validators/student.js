@@ -94,17 +94,6 @@ const validateStudentInputs = (inputData) => {
         }
     }
 
-    // const { isValid: isValidCourse, message: messageCourse } = validateMongoID(
-    //     course,
-    //     'Course'
-    // )
-    // if (!isValidCourse) {
-    //     return {
-    //         isValid: isValidCourse,
-    //         message: messageCourse,
-    //     }
-    // }
-
     const { isValid: isValidFreeTrial, message: messageFreeTrial } = validateTypeRequire(
         'boolean',
         'Free Trial',

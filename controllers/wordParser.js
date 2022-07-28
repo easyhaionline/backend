@@ -32,7 +32,6 @@ module.exports = {
                     {standard: req.params.standard,
                     subject: req.params.subject,
                     chapter: req.params.chapter});
-            // console.log('quesdata: ', quesData);
             
             var arrSubQuesId;
 
@@ -43,13 +42,11 @@ module.exports = {
 
                 for(var j=0; j<arrSubQuesId.length; j++)
                 {
-                    // console.log('quesData[i]: ', quesData[i]);
                     const subQuesData = await SubQuestions.findById(arrSubQuesId[j]);
 
                     quesData[i].subQuestions.push(subQuesData);
                 }
             }
-            // console.log('quesdata: ', quesData);
             res.status(200).json(quesData);
         }
         catch(e) {
@@ -97,13 +94,11 @@ module.exports = {
 
                 for(var j=0; j<arrSubQuesId.length; j++)
                 {
-                    // console.log('quesData[i]: ', quesData[i]);
                     const subQuesData = await SubQuestions.findById(arrSubQuesId[j]);
 
                     quesData[i].subQuestions.push(subQuesData);
                 }
             }
-            // console.log('quesdata: ', quesData);
             res.status(200).json(quesData);
         }
         catch(e) {
@@ -115,28 +110,11 @@ module.exports = {
 
 createQuest: async(req, res) => {
     const quesId = req.body._id;
-    // req.params.quesId = quesId;
 console.log("hy",req.body)
 
 var subQuesData=req.body.subQuesData
 var subQuestions=[]
 var subQuestionid=[]
-    // const updatedQuestion = await QuestionDetail.create( {
-             
-    //                 standard: req.body.standard,
-    //                 examType: req.body.examType,
-    //                 subject: req.body.subject,
-    //                 chapter: req.body.chapter,
-    //                 topic: req.body.topic,
-    //                 subTopic: req.body.subTopic,
-    //                 question: req.body.question,
-    //                 quesType: req.body.quesType
-            
-    //     }); 
-
-    // if(updatedQuestion) {
-        // var arrSubQuesId = updatedQuestion.subQuestions;
-        // updatedQuestion.subQuestions = [];
 
         for(var i=0; i<subQuesData.length; i++) {
             const updatedSubQuestions = await SubQuestions.create( {
@@ -150,7 +128,6 @@ var subQuestionid=[]
                             negativeMarks: req.body.subQuesData[i].negativeMarks
                         
                 });
-            // console.log('sub data: ', updatedSubQuestions);
             subQuestions.push(updatedSubQuestions);
             subQuestionid.push(updatedSubQuestions._id)
 
@@ -215,8 +192,6 @@ console.log("hy",req.body)
                                 negativeMarks: req.body.subQuestions[i].negativeMarks
                             }
                     });
-                // console.log('sub data: ', updatedSubQuestions);
-                // updatedQuestion.subQuestions.push(updatedSubQuestions);
             }
             
             // get updated ques data
@@ -234,7 +209,6 @@ console.log("hy",req.body)
             // remove question
             const deletedQues = await QuestionDetail.findByIdAndDelete(quesId); 
 
-            // console.log('deletedQues: ', deletedQues);
 
             if(deletedQues) {
                 const {standard, subject, chapter} = deletedQues;
@@ -248,7 +222,6 @@ console.log("hy",req.body)
                 // remove subquestion(s)
                 for(var i=0; i<arrSubQuesId.length; i++) {    
                     const deletedSubQues = await SubQuestions.findByIdAndDelete(arrSubQuesId[i]);
-                    // console.log('deletedSubQues: ', deletedSubQues);
                 }
 
                 var deleteSingleRecord = true;
@@ -378,7 +351,6 @@ console.log("detecting file path:",filePath,req.file.path)
                               content += data[0];
                           }
                           k = k+1;
-                          // console.log('content: ', content);
 
                           subQuesObj.question.quesDesc = content;
                           questionDetail.question = content;
@@ -461,7 +433,6 @@ console.log("detecting file path:",filePath,req.file.path)
                       var column = row[j].split(new RegExp(separators.join('|'), 'g'));
 
                       for(var k=2; k<column.length; k++) {
-                          // console.log('marks col: ', column[k]);
                           var data = column[k].split('</td>');
 
                           if(data[0].includes('colspan')) {
@@ -520,7 +491,6 @@ console.log("detecting file path:",filePath,req.file.path)
                                       return err;
                                   }
                                   arrOfSubQuesId.push(result._id);
-                                  // console.log('arr: ', arrOfSubQuesId);
                               });
                               // array of sub question data
                               arrOfSubQuesData.push(subQuesObj);
@@ -616,7 +586,6 @@ console.log("detecting file path:",filePath,req.file.path)
                       }
                       else if(row[j].includes('Marks')) {
                           for(var k=2; k<column.length; k++) {
-                              // console.log('marks col: ', column[k]);
                               var data = column[k].split('</td>');
 
                               if(data[0].includes('colspan')) {
@@ -654,7 +623,6 @@ console.log("detecting file path:",filePath,req.file.path)
                   if(err) {
                       return err;
                   }
-                  // console.log('r: ', result);
 
                   arrOfSubQuesId.push(result._id);
 

@@ -1,19 +1,10 @@
 const asyncHandler = require("express-async-handler");
 
 const CourseMaterial = require("../models/CourseMaterial");
-// const validateSubtopicInputs = require("../validators/Subtopic");
-// const validateMongoID = require("../validators/subject");
-// const validateTypeRequire = require("../validators/type-require.js");
 
 // to create a new CourseMaterial ********************************************************
 const courseMaterialCreate = asyncHandler(async (req, res) => {
   const { name, subtopic, content } = req.body;
-
-  // const { isValid, message } = validateSubtopicInputs(req.body)
-  // if (!isValid) {
-  //     res.status(400)
-  //     throw new Error(message)
-  // }
 
   const newCourseMaterial = await CourseMaterial.create({
     name,
@@ -38,11 +29,7 @@ const courseMaterialCreate = asyncHandler(async (req, res) => {
 const courseMaterialUpdate = asyncHandler(async (req, res) => {
   const { name, subtopic, content } = req.body;
   const _id = req.params.id;
-  // const { isValid, message } = validateSubtopicInputs(req.body)
-  // if (!isValid) {
-  //     res.status(400)
-  //     throw new Error(message)
-  // }
+  
   const foundCourseMaterials = await CourseMaterial.findOne({ _id });
   if (!foundCourseMaterials) {
     res.status(404);
@@ -86,7 +73,6 @@ const courseMaterialGetById = asyncHandler(async (req, res) => {
         error: err,
       });
     }
-    //  console.log(data)
     res.status(200).json(data)
    })
 

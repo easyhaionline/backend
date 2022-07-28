@@ -1,18 +1,3 @@
-// const { Schema, model, Types } = require('mongoose')
-
-// const subtopicSchema = new Schema({
-//     name: {
-//         type: String,
-//         required: true,
-//     },
-//     subject: {
-//         type: Types.ObjectId,
-//         ref: 'Subject',
-//     },
-// })
-
-// module.exports = new model('subtopic', subtopicSchema)
-
 const { Schema, model, Types } = require("mongoose");
 
 const subtopicSchema = new Schema(

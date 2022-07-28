@@ -39,7 +39,6 @@ const complaintGetAll = asyncHandler(async (req, res) => {
     console.log(req.params.type);
     let foundComplaints;
     if(req.params.type == 'All'){
-        // foundComplaints = await Complaint.find().sort({ createdAt: -1 }).populate("student","_id name")
                 foundComplaints = await Complaint.find().where({feedback: "" }).sort({
                   createdAt: -1,
                 }).populate({
@@ -69,7 +68,6 @@ const complaintByStudent = asyncHandler(async (req, res) => {
   if (req.params.id == "All") {
     console.log(req.params.id, id);
 
-    // foundComplaints = await Complaint.find().sort({ createdAt: -1 }).populate("student","_id name")
     foundComplaints = await Complaint.find() .where({feedback:""}).sort({
       createdAt: -1,
     }).populate({
@@ -98,7 +96,6 @@ const complaintByAllStudents = asyncHandler(async (req, res) => {
   if (req.params.id == "All") {
     console.log(req.params.id, id,"dasdasdasdas");
 
-    // foundComplaints = await Complaint.find().sort({ createdAt: -1 }).populate("student","_id name")
     foundComplaints = await Complaint.find().where({feedback:"",seprater:"C"}).sort({
       createdAt: -1,
     }).populate({
@@ -127,7 +124,6 @@ const complaintByAllTeachers = asyncHandler(async (req, res) => {
   if (req.params.id == "All") {
     console.log(req.params.id, id);
 
-    // foundComplaints = await Complaint.find().sort({ createdAt: -1 }).populate("student","_id name")
     foundComplaints = await Complaint.find() .where({feedback:"",seprater:"T"}).sort({
       createdAt: -1,
     }).populate({
@@ -155,7 +151,6 @@ const feedbacksByStudent = asyncHandler(async (req, res) => {
   console.log(req.params.id, id);
   let foundComplaints;
   if (req.params.id == "All") {
-    // foundComplaints = await Complaint.find().sort({ createdAt: -1 }).populate("student","_id name")
     foundComplaints = await Complaint.find() .where({ query: "" }).sort({
       createdAt: -1,
     }).populate({
