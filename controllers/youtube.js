@@ -81,7 +81,7 @@ const googleaccess2 = asyncHandler(async (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
         '596027896349-ukttu6l8fc9s5soaekbef9n8vr11blq9.apps.googleusercontent.com',
         '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',
-        'http://localhost:8088/teacher/addLiveLecture'
+        'https://api.easyhaionline.com/teacher/addLiveLecture'
         
     );
  
@@ -105,7 +105,7 @@ const generatetokenaccess2 = asyncHandler(async (req, res) => {
     const oauth2Client = new google.auth.OAuth2(
         '596027896349-ukttu6l8fc9s5soaekbef9n8vr11blq9.apps.googleusercontent.com',
         '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',
-        'http://localhost:8088/teacher/addLiveLecture'
+        'https://api.easyhaionline.com/teacher/addLiveLecture'
         );
 
     const {tokens} = await oauth2Client.getToken(code)

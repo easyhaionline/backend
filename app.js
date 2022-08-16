@@ -94,7 +94,7 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.get('/', (_, res) => res.send('<h1>EasyHaiOnline Server Running...</h1>'))
+app.get('/', (_, res) => res.send('<h1>EasyHaiOnline Server Running (8th Aug)...</h1>'))
 // Routes
 // we are use cloudinary storage direct and this route create localstorage so comment at some time 
 
