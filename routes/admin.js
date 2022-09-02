@@ -27,7 +27,8 @@ const {
     teacherToggle,
     removeTeacher,
     studentToggle,
-removeStudent
+    removeStudent,
+    allCoursesAdmin
  
 } = require('../controllers/admin');
 
@@ -120,6 +121,7 @@ router.get('/gettoken/:id',encryprttoken);
 
 router.post('/get-students', studentsBySearchFilter);
 router.get('/get-course/:id', adminGetcourse);
+router.get('/get-course-admin/:id', allCoursesAdmin); // route for admin all courses access
 
 router.get('/get-student/:course',studentsByCourseFilter);
 
