@@ -6,7 +6,7 @@ const fileUpload = require('express-fileupload')
 const uploadCtrl =require('../controllers/uploader.controller')
 
 route.use(fileUpload({
-    limits:{fileSize:5*1024*1024}
+    limits:{fileSize:1024*1024*1024}
     
 }))
 

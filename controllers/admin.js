@@ -572,6 +572,14 @@ const adminGetcourse = asyncHandler(async (req, res) => {
       return  res.status(200).json(data)
     })
 })
+const allCoursesAdmin = asyncHandler(async (req, res) => { // controller for admin courses access 
+    _id=req.params.id
+    console.log(_id)
+    await Admin.findById(_id).select('courses').sort({ createdAt: -1 }).exec((err,data)=>{
+
+      return  res.status(200).json(data)
+    })
+})
 
 const studentsByCourseFilter = asyncHandler(async (req, res) => {
     const {course}  = req.params;
@@ -938,5 +946,7 @@ module.exports = {
 teacherToggle,
 removeTeacher,
 studentToggle,
-removeStudent
+removeStudent,
+allCoursesAdmin
 }
+// allCoursesAdmin is the controller created for Admin Panel
