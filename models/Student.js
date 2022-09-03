@@ -4,23 +4,20 @@ const studentSchema = new Schema(
     {
         username: {
             type: String,
-            required: true,
+            required: true
         },
         number:{
-            type:Number,
-            unique:true
+            type:Number
         },
         image: {
-            type: String,
-           
+            type: String 
         },
         encryption:{
             type: String,
              default: ''
          },
         email: {
-            type: String,
-            // required: true,
+            type: String
         },
         isPhoneVerified: {
             type: Boolean,
@@ -31,8 +28,7 @@ const studentSchema = new Schema(
             default: false,
         },
         password: {
-            type: String,
-            // required: true,
+            type: String
         },
         resetPasswordLink: {
             data: String,
