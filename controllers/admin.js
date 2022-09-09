@@ -55,7 +55,7 @@ const adminRegisterSuper = asyncHandler(async (req, res) => {
 
 
 const sendotp = asyncHandler(async (req, res) => {
-    const {number,otp ,name } = req.body;
+    const {number, otp ,name } = req.body;
     // Dear {#var#},
     // Your OTP for registration is {#var#} and is valid up to 15 minutes at easyhaionline.com1005164250533612950
     // http://digimate.airtel.in:15181/BULK_API/SendMessage?loginID=harshlyg_hsi&password=harshlyg@123&mobile=${number}&text=Dear ${name} Your OTP for registration is  ${otp}  and is valid up to 15 minutes at easyhaionline.com&senderid=DGMATE&DLT_TM_ID=1001096933494158&DLT_CT_ID=&DLT_PE_ID=1001751517438613463&route_id=DLT_SERVICE_IMPLICT&Unicode=0&camp_name=harshlyg_u
