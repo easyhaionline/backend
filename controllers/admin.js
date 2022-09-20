@@ -156,7 +156,7 @@ const adminRegister = asyncHandler(async (req, res) => {
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-    const { username, email, image, password } = req.body;
+    const { username, email, mobile, image, password } = req.body;
     //  checking for the uniqueness of email address
     const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
     if (!isUniqueEmail) {
@@ -167,15 +167,14 @@ const studentRegister = asyncHandler(async (req, res) => {
         username,
         email,
         image,
-        password,    
+        password,
+        mobile   
         });
     if (newAdmin) {
-        console.log("I am at line 175");
         // removing password before sending to client
         newAdmin.password = null
         res.status(200).json(newAdmin)
     } else {
-                console.log("I am at line 180");
                 res.status(500)
                 throw new Error(
                     "New admin can't be registered at the moment! Try again later."

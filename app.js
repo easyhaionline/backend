@@ -58,6 +58,7 @@ const awsRoute =  require('./routes/aws')
 const paymentRoutes =  require('./routes/payment')
 const courseDetails =  require('./routes/coursedetails');
 const wordParser = require('./routes/wordParser')
+const pdfMaker = require('./routes/pdfMaker');
 
 // connecting to database
 connectDB()
@@ -97,7 +98,6 @@ app.use(cookieParser());
 app.get('/', (_, res) => res.send('<h1>EasyHaiOnline Server Running (8th Aug)...</h1>'))
 // Routes
 // we are use cloudinary storage direct and this route create localstorage so comment at some time 
-
 app.use('/api/admin', adminRoutes)
 app.use('/api/image', imageRoutes)
 app.use('/api/teacher', teacherRoutes)
@@ -130,6 +130,7 @@ app.use('/api', flickerphotoRoute);
 app.use('/api/order', orderRoutes);
 app.use("/api/imageupload", uploadRoute);
 app.use("/api/wordParser", wordParser);
+app.use("/api/pdf", pdfMaker);
 
 app.get('/images/:key', (req, res) => {
   const key = req.params.key
@@ -138,10 +139,8 @@ app.get('/images/:key', (req, res) => {
 })
 app.post("/images", upload.single("image"), async (req, res) => {
   const file = req.file
-  console.log(file);
   const result = await uploadFile(file)
   await unlinkFile(file.path)
-  console.log(result);
   const description = req.body.description;
   res.send({ pdfPath: `/images/${result.Key}` });
 });
