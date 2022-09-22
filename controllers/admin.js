@@ -315,24 +315,19 @@ const adminRegisterbynumber = asyncHandler(async (req, res) => {
 // to login an existing admin *************************************************************************
 const adminLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-
     // finding the admin
     const foundAdmin = await Admin.findOne({
         email,
         isActive: true,
     })
-
-    console.log(email,foundAdmin)
-
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==1) {
-                const token=   generateToken(foundAdmin._id)
-                const dbhalf=token.substr(0,100)
-                const htoken=token.substr(100)
+                const token = generateToken(foundAdmin._id)
+                const dbhalf = token.substr(0,100)
+                const htoken = token.substr(100)
                 const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
                 const encryptedString = cryptr.encrypt(dbhalf);
-                foundAdmin.encryption=encryptedString;
+                foundAdmin.encryption = encryptedString;
                 foundAdmin.save();         
-                console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
                 const decryptedString = cryptr.decrypt(encryptedString);       
                 res.send({
                         fulltoken:token,
@@ -354,29 +349,22 @@ const adminLogin = asyncHandler(async (req, res) => {
         }
 })
 
-
 const studentLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-
     // finding the admin
     const foundAdmin = await Student.findOne({
         email,
         isActive: true,
     })
-    console.log(foundAdmin)
-
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==0) {
      const token= generateToken(foundAdmin._id)
-
      const dbhalf=token.substr(0,100)
      const htoken=token.substr(100)
      const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
      const encryptedString = cryptr.encrypt(dbhalf);
      foundAdmin.encryption=encryptedString;
      foundAdmin.save();         
-     console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
-   const decryptedString = cryptr.decrypt(encryptedString);
-   
+     const decryptedString = cryptr.decrypt(encryptedString);
         res.send({
             fulltoken:token,
             _id:foundAdmin._id,
@@ -400,27 +388,22 @@ const studentLogin = asyncHandler(async (req, res) => {
 
 const teacherLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-
     // finding the admin
     const foundAdmin = await Teacher.findOne({
         email,
         isActive: true,
     })
-
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==1) {
      const token=   generateToken(foundAdmin._id)
-
      const dbhalf=token.substr(0,100)
      const htoken=token.substr(100)
      const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
      const encryptedString = cryptr.encrypt(dbhalf);
      foundAdmin.encryption=encryptedString;
-     foundAdmin.save();         
-     console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
-   const decryptedString = cryptr.decrypt(encryptedString);
-   
+     foundAdmin.save();
+     const decryptedString = cryptr.decrypt(encryptedString);
         res.send({
-      fulltoken:token,
+            fulltoken:token,
             _id:foundAdmin._id,
             email: foundAdmin.email,
             username: foundAdmin.username,
