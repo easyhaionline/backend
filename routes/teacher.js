@@ -1,7 +1,7 @@
 const express = require('express')
 
 const { protectAdmin } = require('../middleware/protect')
-const { teacherLogin, teacherGetAll } = require('../controllers/teacher')
+const { teacherLogin, teacherGetAll ,teacherById} = require('../controllers/teacher')
 
 const router = express.Router()
 
@@ -15,5 +15,5 @@ router.post('/login', teacherLogin)
 // @access: Private
 // router.get('/', protectAdmin, teacherGetAll)
 router.get('/', teacherGetAll)
-
+router.get("/get-by-id/:id",teacherById);
 module.exports = router

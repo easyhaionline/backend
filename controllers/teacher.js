@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler')
 
 const Teacher = require('../models/Teacher')
+const Subject = require('../models/Subject')
+
 const generateToken = require('../utils/generateToken')
 
 // to login an existing teacher *************************************************************************
@@ -43,7 +45,34 @@ const teacherGetAll = asyncHandler(async (_, res) => {
     res.status(200).json(foundTeachers)
 })
 
+const teacherById = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    console.log("This is my ID",_id)
+     await Teacher.findById(_id).exec((err,data)=>{
+      if (err) {
+        return res.json({
+          error: err,
+        });
+      }
+      else{
+    //    Subject.find().filter()
+    //         const foundSubjects = Subject.find().populate("standard","_id name").populate("chapters","_id name").populate("teachers","_id username email").sort({ createdAt: -1 }).populate(
+    //         "chapters",
+    //         "_id name"
+    //         )
+    // res.status(200).json(foundSubjects)
+
+
+      res.status(200).json(data)
+        }
+     })
+})
+
 module.exports = {
     teacherLogin,
+    teacherById,
     teacherGetAll,
 }
+
+
+// get Teacher by id 
