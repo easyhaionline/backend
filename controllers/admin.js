@@ -55,7 +55,7 @@ const adminRegisterSuper = asyncHandler(async (req, res) => {
 
 
 const sendotp = asyncHandler(async (req, res) => {
-    const {number,otp ,name } = req.body;
+    const {number, otp ,name } = req.body;
     // Dear {#var#},
     // Your OTP for registration is {#var#} and is valid up to 15 minutes at easyhaionline.com1005164250533612950
     // http://digimate.airtel.in:15181/BULK_API/SendMessage?loginID=harshlyg_hsi&password=harshlyg@123&mobile=${number}&text=Dear ${name} Your OTP for registration is  ${otp}  and is valid up to 15 minutes at easyhaionline.com&senderid=DGMATE&DLT_TM_ID=1001096933494158&DLT_CT_ID=&DLT_PE_ID=1001751517438613463&route_id=DLT_SERVICE_IMPLICT&Unicode=0&camp_name=harshlyg_u
@@ -156,7 +156,7 @@ const adminRegister = asyncHandler(async (req, res) => {
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-    const { username, email, image, password } = req.body;
+    const { username, email, mobile, image, password } = req.body;
     //  checking for the uniqueness of email address
     const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
     if (!isUniqueEmail) {
@@ -167,15 +167,14 @@ const studentRegister = asyncHandler(async (req, res) => {
         username,
         email,
         image,
-        password,    
+        password,
+        mobile   
         });
     if (newAdmin) {
-        console.log("I am at line 175");
         // removing password before sending to client
         newAdmin.password = null
         res.status(200).json(newAdmin)
     } else {
-                console.log("I am at line 180");
                 res.status(500)
                 throw new Error(
                     "New admin can't be registered at the moment! Try again later."
@@ -316,24 +315,19 @@ const adminRegisterbynumber = asyncHandler(async (req, res) => {
 // to login an existing admin *************************************************************************
 const adminLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-
     // finding the admin
     const foundAdmin = await Admin.findOne({
         email,
         isActive: true,
     })
-
-    console.log(email,foundAdmin)
-
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==1) {
-                const token=   generateToken(foundAdmin._id)
-                const dbhalf=token.substr(0,100)
-                const htoken=token.substr(100)
+                const token = generateToken(foundAdmin._id)
+                const dbhalf = token.substr(0,100)
+                const htoken = token.substr(100)
                 const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
                 const encryptedString = cryptr.encrypt(dbhalf);
-                foundAdmin.encryption=encryptedString;
+                foundAdmin.encryption = encryptedString;
                 foundAdmin.save();         
-                console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
                 const decryptedString = cryptr.decrypt(encryptedString);       
                 res.send({
                         fulltoken:token,
@@ -355,29 +349,22 @@ const adminLogin = asyncHandler(async (req, res) => {
         }
 })
 
-
 const studentLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-
     // finding the admin
     const foundAdmin = await Student.findOne({
         email,
         isActive: true,
     })
-    console.log(foundAdmin)
-
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==0) {
      const token= generateToken(foundAdmin._id)
-
      const dbhalf=token.substr(0,100)
      const htoken=token.substr(100)
      const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
      const encryptedString = cryptr.encrypt(dbhalf);
      foundAdmin.encryption=encryptedString;
      foundAdmin.save();         
-     console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
-   const decryptedString = cryptr.decrypt(encryptedString);
-   
+     const decryptedString = cryptr.decrypt(encryptedString);
         res.send({
             fulltoken:token,
             _id:foundAdmin._id,
@@ -401,27 +388,22 @@ const studentLogin = asyncHandler(async (req, res) => {
 
 const teacherLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
-
     // finding the admin
     const foundAdmin = await Teacher.findOne({
         email,
         isActive: true,
     })
-
     if (foundAdmin && (await foundAdmin.matchPassword(password))&&foundAdmin.role==1) {
      const token=   generateToken(foundAdmin._id)
-
      const dbhalf=token.substr(0,100)
      const htoken=token.substr(100)
      const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
      const encryptedString = cryptr.encrypt(dbhalf);
      foundAdmin.encryption=encryptedString;
-     foundAdmin.save();         
-     console.log(dbhalf,foundAdmin._id,foundAdmin,encryptedString)
-   const decryptedString = cryptr.decrypt(encryptedString);
-   
+     foundAdmin.save();
+     const decryptedString = cryptr.decrypt(encryptedString);
         res.send({
-      fulltoken:token,
+            fulltoken:token,
             _id:foundAdmin._id,
             email: foundAdmin.email,
             username: foundAdmin.username,

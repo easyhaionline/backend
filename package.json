@@ -1,5 +1,5 @@
 {
-    "name": "Easyhaionline",
+    "name": "easyhaionline",
     "version": "2.0.0",
     "description": "Backend API for Easyhaionline",
     "main": "index.js",
@@ -31,6 +31,7 @@
         "gn": "^3.0.0",
         "googleapi": "^1.0.2",
         "googleapis": "^96.0.0",
+        "html-to-pdf": "^0.1.11",
         "http": "^0.0.1-security",
         "jsonwebtoken": "^8.5.1",
         "jsrsasign": "^10.5.17",
@@ -52,19 +53,10 @@
         "request": "^2.88.2",
         "slugify": "^1.6.5"
     },
-    
     "scripts": {
         "start": "node app.js",
         "dev": "nodemon app.js"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/AnuragYdv/algod-Easyhaionline-backend.git"
-    },
-    "author": "Shubham & Ifa",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/AnuragYdv/algod-Easyhaionline-backend/issues"
-    },
-    "homepage": "https://github.com/AnuragYdv/algod-Easyhaionline-backend#readme"
+    "author": "Shubham",
+    "license": "ISC"
 }
