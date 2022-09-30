@@ -1,8 +1,5 @@
-
 const mongoose = require("mongoose");
 const { ObjectId } = mongoose.Schema;
-
-
 
 const chapterSchema = new mongoose.Schema(
   {

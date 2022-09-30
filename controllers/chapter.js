@@ -31,6 +31,7 @@ const chapterGetAll = asyncHandler(async (_, res) => {
     const foundChapters = await Chapter.find()
       .sort({ createdAt: -1 })
       .populate("topics", "_id name")
+      .populate("subject","_id name")
     
 
     res.status(200).json(foundChapters)
