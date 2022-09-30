@@ -57,7 +57,9 @@ const courseMaterialGetAll = asyncHandler(async (_, res) => {
     .populate({
       path: "standard",
       select: "title",
-    });
+    })
+    .populate("subtopic","_id name")
+    ;
 
   res.status(200).json(foundCourseMaterials);
 });
