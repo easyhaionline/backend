@@ -1,7 +1,7 @@
 const express = require('express')
 const {
   doubtCreate,
-} = require("../controllers/complaint");
+} = require("../controllers/doubtExpert");
 
 const router = express.Router()
 
