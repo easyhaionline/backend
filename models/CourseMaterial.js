@@ -8,7 +8,7 @@ const CourseMaterialSchema = new Schema(
     },
     subtopic: {
       type: Types.ObjectId,
-      ref: "Subject",
+      ref: "Subtopic",
     },
     isActive: {
       type: Boolean,

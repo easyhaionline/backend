@@ -27,8 +27,7 @@ const topicCreate = asyncHandler(async (req, res) => {
 
 // to fetch all Topics available *******************************************************
 const topicGetAll = asyncHandler(async (_, res) => {
-  const foundTopics = await Topic.find().sort({ createdAt: -1 }).populate("subtopics", "_id name")
-
+  const foundTopics = await Topic.find().sort({ createdAt: -1 }).populate("subtopics", "_id name").populate("chapter","_id name")
   res.status(200).json(foundTopics);
 });
 

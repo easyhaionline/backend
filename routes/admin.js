@@ -57,27 +57,19 @@ router.post('/student/login', studentLogin);
 // @desc: To login parent
 // @access: Private
 router.post('/parent/login', parentLogin);
-
-
 // @route: POST /api/admin/parent
 // @desc: To signup parent
 // @access: Private
 router.post('/parent/signup', parentRegister);
 
-
-
-
-
 // @route: GET /api/admin/student
 // @desc: To Get student
 // @access: Private
-
 router.get('/students',protectAdmin, adminGetAllStudents);
 
 // @route: GET /api/admin/teachers
 // @desc: To Get teachers
 // @access: Private
-
 router.get('/teachers',protectAdmin, adminGetAllTeachers);
 
 // @route: POST /api/admin/teacher
@@ -110,34 +102,16 @@ router.delete('/remove-teacher/:id',removeTeacher);
 // @access: Private
 // router.post('/student/signup', protectAdmin, studentRegister)
 router.post('/student/signup', studentRegister);
-
-
-+
 router.post('/withmobile/', adminRegisterbynumber);
-
-
 router.get('/gettoken/:id',encryprttoken);
-
-
 router.post('/get-students', studentsBySearchFilter);
 router.get('/get-course/:id', adminGetcourse);
 router.get('/get-course-admin/:id', allCoursesAdmin); // route for admin all courses access
-
 router.get('/get-student/:course',studentsByCourseFilter);
-
 router.put('/forgot-password', forgotPasswordValidator, forgotPassword);
-
-
 router.put('/reset-password', resetPasswordValidator,  resetPassword);
-
-
 router.put('/student/forgot-password', forgotPasswordValidator, forgotPasswordStudent);
-
-
 router.put('/student/reset-password', resetPasswordValidator,  resetPasswordStudent);
-
-
-
 
 // @route: POST /api/admin/login
 // @desc: To login an existing admin
