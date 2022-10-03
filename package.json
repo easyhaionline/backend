@@ -50,9 +50,9 @@
         "querystring": "^0.2.1",
         "razorpay": "^2.0.6",
         "request": "^2.88.2",
-        "slugify": "^1.6.5"
+        "slugify": "^1.6.5",
+        "socket.io": "^4.5.2"
     },
-    
     "scripts": {
         "start": "node app.js",
         "dev": "nodemon app.js"
