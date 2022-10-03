@@ -62,6 +62,7 @@ const authRoutes = require("./routes/auth");
 const messageRoutes = require("./routes/messages");
 const socket = require("socket.io");
 const pdfMaker = require('./routes/pdfMaker');
+const doubtExpert = require('./routes/doubtExpert');
 
 // connecting to database
 connectDB()
@@ -124,6 +125,7 @@ app.use('/api/coursedetails', courseDetails)
 app.use('/api/zoom', zoomRoutes)
 app.use('/api/answer', answerRoute)
 app.use('/api/analytics', analyitcalRoute)
+app.use('/api/doubtExpert', doubtExpert)
 app.use('/api', bannerRoutes);
 app.use('/api', footerRoutes);
 app.use('/api', batchesRoutes);

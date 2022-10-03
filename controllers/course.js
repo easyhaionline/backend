@@ -18,13 +18,12 @@ const courseCreate =  (req, res) => {
     form.parse(req, (err, fields, file) => { 
     const {
         name,
-
         stream,
         details,
         program,
         startDate,
         endDate,
-       standard,
+        standard,
         actualPrice,
         discountPrice,
         description,
@@ -37,7 +36,7 @@ const courseCreate =  (req, res) => {
         examtype,
         subject
     } = fields
-    console.log( fields);
+    console.log("I am standards",standard);
     // validating inputs
     const { isValid: isValidCommon, message: messageCommon } = validateCommonInputs(
         fields,
@@ -58,7 +57,7 @@ const courseCreate =  (req, res) => {
     return res.status(401).json({ message: "Select your file" })
     
     let uploadedFile = UploadApiResponse
-    console.log("Let File", uploadedFile);
+    // console.log("Let File", uploadedFile);
     // Image Uploading
     try {
         uploadedFile =cloudinary.uploader.upload(file.path, {
@@ -67,11 +66,11 @@ const courseCreate =  (req, res) => {
         })
     }
     catch (err) {
-        console.log("Line1", err.message);
+        // console.log("Line1", err.message);
     res.status(400).json({ message: "Server Error:(" })
 }
 
-console.log(uploadedFile);
+// console.log(uploadedFile);
 const { secure_url } = uploadedFile;
 const desktopImage=secure_url;
 const mobileImage=secure_url;
