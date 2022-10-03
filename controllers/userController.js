@@ -1,4 +1,4 @@
-const User = require("../models/Student");
+const User = require("../models/chatModel");
 const bcrypt = require("bcrypt");
 
 module.exports.login = async (req, res, next) => {
