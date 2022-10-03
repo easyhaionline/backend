@@ -58,6 +58,9 @@ const awsRoute =  require('./routes/aws')
 const paymentRoutes =  require('./routes/payment')
 const courseDetails =  require('./routes/coursedetails');
 const wordParser = require('./routes/wordParser')
+const authRoutes = require("./routes/auth");
+const messageRoutes = require("./routes/messages");
+const socket = require("socket.io");
 const pdfMaker = require('./routes/pdfMaker');
 const doubtExpert = require('./routes/doubtExpert');
 
@@ -134,6 +137,11 @@ app.use("/api/imageupload", uploadRoute);
 app.use("/api/wordParser", wordParser);
 app.use("/api/pdf", pdfMaker);
 
+
+app.use("/api/auth", authRoutes);
+app.use("/api/messages", messageRoutes);
+
+
 app.get('/images/:key', (req, res) => {
   const key = req.params.key
   const readStream = getFileStream(key)
@@ -154,4 +162,26 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 5000;
 
 // starting the server
-app.listen(PORT, () => console.log(chalk.blue(`Server running on port ${PORT}`)))
+ const server=app.listen(PORT, () => console.log(chalk.blue(`Server running on port ${PORT}`)))
+const io = socket(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    credentials: true,
+  },
+});
+
+global.onlineUsers = new Map();//nodejs global object
+io.on("connection", (socket) => {
+  global.chatSocket = socket;
+  socket.on("add-user", (userId) => {
+    onlineUsers.set(userId, socket.id);//set the userid and socket id of current user
+  });
+
+  socket.on("send-msg", (data) => {
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("msg-recieve", data.msg);
+      //socket.to(sendUserSocket).emit("msg-recieve", data.message);
+    }
+  });
+});

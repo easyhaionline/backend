@@ -29,7 +29,9 @@ const subtopicCreate = asyncHandler(async (req, res) => {
 const subtopicGetAll = asyncHandler(async (_, res) => {
   const foundSubtopics = await Subtopic.find()
     .sort({ createdAt: -1 })
-    .populate("courseMaterials", "_id name");
+    .populate("courseMaterials", "_id name")
+    .populate("topic","_id name");
+    
 
   res.status(200).json(foundSubtopics);
 });

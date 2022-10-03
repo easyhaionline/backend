@@ -8,7 +8,7 @@ const subtopicSchema = new Schema(
     },
     topic: {
       type: Types.ObjectId,
-      ref: "Subject",
+      ref: "topic",
     },
     courseMaterials: [
       {
@@ -25,7 +25,6 @@ const subtopicSchema = new Schema(
     },
     createdAt: {
       type: Date,
-
       default: Date.Now,
     },
   },

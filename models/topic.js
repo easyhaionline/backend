@@ -9,7 +9,7 @@ const topicSchema = new mongoose.Schema(
     },
     chapter: {
       type: ObjectId,
-      ref: "Subject",
+      ref: "chapters",
     },
     isActive: {
       type: Boolean,
