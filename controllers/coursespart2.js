@@ -1,6 +1,6 @@
-const fs = require("fs");
-const formidable = require("formidable");
-const Pricing = require("../models/Ourpricing");
+// const fs = require("fs");
+// const formidable = require("formidable");
+// const Pricing = require("../models/Ourpricing");
 const Course = require("../models/Course");
 const { errorHandler } = require("../helpers/errorHandler");
 const cloudinary = require("cloudinary").v2;
@@ -12,25 +12,27 @@ exports.displaycoursecreate = async (req, res) => {
   try {
     const {
       name,
-
-      stream,
-      details,
-      program,
+      // stream,
+      // details,
+      // program,
       startDate,
-subject,
-standard,
+      subject,
+      standard,
       endDate,
-
       actualPrice,
       discountPrice,
       description,
-      highlights,
-      location,
+      // highlights,
+      // location,
       classes,
       courses,
       time,
-      priority,
+      // priority,
     } = req.body;
+    console.log("request body ",req.body);
+    console.log("i am subject", subject);
+    console.log("I am standard", standard)
+    
     if (!name || !name.length) {
       return res.status(400).json({
         error: "name is required",
@@ -61,12 +63,12 @@ standard,
       });
     }
 
-
     if (!actualPrice || !actualPrice.length) {
       return res.status(400).json({
         error: "actualPrice is required",
       });
     }
+
     if (!discountPrice || !discountPrice.length) {
       return res.status(400).json({
         error: "discountPrice is required",
@@ -88,7 +90,7 @@ standard,
     if (!req.file) return res.status(400).json({ message: "Select your file" });
 
     let uploadedFile = UploadApiResponse;
-    console.log("Let File", uploadedFile);
+    // console.log("Let File", uploadedFile);
     // Image Uploading
     try {
       uploadedFile = await cloudinary.uploader.upload(req.file.path, {
@@ -96,12 +98,12 @@ standard,
         resource_type: "auto",
       });
     } catch (err) {
-      console.log("Line1", err.message);
+      // console.log("Line1", err.message);
       res.status(400).json({ message: "Server Error:(" });
     }
 
     const { secure_url } = uploadedFile;
-    console.log(secure_url);
+    // console.log(secure_url);
     let code = generateCode("COURSE", name);
     const codeBase = code.split("__")[0];
     const foundCoursesWithSimilarCode = Course.find({
@@ -112,11 +114,12 @@ standard,
       code = regenerateCode(latestCode);
     }
 
-let   arrayOfsubjects = subject && subject.split(",");
+    let arrayOfsubjects = subject && subject.split(",");
+    let arrayOfstandards = standard && standard.split(",");
     const createdByEmail = req.authAdmin.email;
     let course = new Course();
  
-    (course.desktopImage = secure_url),
+      (course.desktopImage = secure_url),
       (course.mobileImage = secure_url),
       (course.name = name),
       (course.description = description),
@@ -126,23 +129,24 @@ let   arrayOfsubjects = subject && subject.split(",");
       (course.time = time),
       (course.classes = classes),
       (course.courses = courses);
-    course.actualPrice = actualPrice;
-    course.discountPrice = discountPrice;
-    course.standard = standard;
-    course.subject = arrayOfsubjects;
-    course.startDate = startDate;
-    course.endDate = endDate;
-    course.code = code;
-    console.log(course, "end");
-    course.save((err, result) => {
+      course.actualPrice = actualPrice;
+      course.discountPrice = discountPrice;
+      course.standard = arrayOfstandards;
+      course.subject = arrayOfsubjects;
+      course.startDate = startDate;
+      course.endDate = endDate;
+      course.code = code;
+      // console.log(course, "end");
+      course.save((err, result) => {
       if (err) {
-        return res.status(401).json({
+          return res.status(401).json({
           error: err,
         });
       }
       res.json(result);
-    });
-  } catch (err) {
+      });
+
+    } catch (err) {
     console.log(err.message);
     res.status(400).json({ message: "Line 3 Server Error:(" });
   }
@@ -273,7 +277,6 @@ exports.update = async (req, res) => {
    (oldcourse.mobileImage = secure_url2),
    (oldcourse.name = name),
    (oldcourse.description = description),
-   
    (oldcourse.mindescription = smartTrim(description, 200, " ", " ...")),
    (oldcourse.description = description),
    (oldcourse.time = time),

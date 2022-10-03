@@ -15,10 +15,11 @@ const courseSchema = new Schema(
       type: String,
       // required: true,
     },
-    standard: {
+    standard:
+      [{
         type: Types.ObjectId,
-        ref: "Standard",
-      },
+        ref: "Standard"
+      }],
     examtype: {
         type: Types.ObjectId,
         ref: "ExamType",
