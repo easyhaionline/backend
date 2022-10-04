@@ -38,12 +38,8 @@ const examtypeRoutes = require('./routes/examtype');
 const testRoutes = require('./routes/test');
 const youtubeRoutes = require('./routes/youtube');
 const zoomRoutes = require('./routes/zoom');
-// const bannerRoutes = require('./routes/banner');
-// const footerRoutes = require('./routes/footer');
 const batchesRoutes = require('./routes/batches');
-// const pricingRoutes = require('./routes/coursespart2');
-// const cardsRoutes = require('./routes/cards');
-const flickerphotoRoute = require('./routes/flickerphoto');
+const pricingRoutes = require('./routes/coursespart2');
 const orderRoutes = require('./routes/order');
 const topicRoutes = require("./routes/topic");
 const subtopicRoutes = require("./routes/subtopic");
@@ -93,9 +89,8 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.get('/', (_, res) => res.send('<h1>EasyHaiOnline Server Running (8th Aug)...</h1>'))
+app.get('/', (_, res) => res.send('<p>Easyhaionline server is running: 4th Oct</p>'));
 // Routes
-// we are use cloudinary storage direct and this route create localstorage so comment at some time 
 app.use('/api/admin', adminRoutes)
 app.use('/api/image', imageRoutes)
 app.use('/api/teacher', teacherRoutes)
@@ -120,12 +115,8 @@ app.use('/api/zoom', zoomRoutes)
 app.use('/api/answer', answerRoute)
 app.use('/api/analytics', analyitcalRoute)
 app.use('/api/doubtExpert', doubtExpert)
-// app.use('/api', bannerRoutes);
-// app.use('/api', footerRoutes);
 app.use('/api', batchesRoutes);
-// app.use('/api', pricingRoutes);
-// app.use('/api', cardsRoutes);
-app.use('/api', flickerphotoRoute);
+app.use('/api', pricingRoutes);
 app.use('/api/order', orderRoutes);
 app.use("/api/imageupload", uploadRoute);
 app.use("/api/wordParser", wordParser);
