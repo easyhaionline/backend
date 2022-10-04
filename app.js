@@ -1,61 +1,57 @@
 require('dotenv').config();
-
 const express = require('express')
 const app = express();
 
-var http = require('http'),
-    crypto = require('crypto'),
-    qs = require('querystring');
-const chalk = require('chalk')
+// var http = require('http'),
+//     crypto = require('crypto'),
+//     qs = require('querystring');
+const connectDB = require('./config/db');
+const chalk = require('chalk');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const cors = require('cors')
-const compression = require('compression')
-const path = require('path')
+const cors = require('cors');
+const compression = require('compression');
+const path = require('path');
 const multer = require("multer");
-const fs = require("fs")
-const util = require("util")
-const unlinkFile = util.promisify(fs.unlink)
-
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
 const upload = multer({ dest: "upload/" });
-const { uploadFile, getFileStream } = require('./utils/uploads/coursematerials3')
+const { uploadFile, getFileStream } = require('./utils/uploads/coursematerials3');
 const cloudinary = require("cloudinary");
 const ccavReqHandler = require('./controllers/ccavRequestHandler.js');
 const ccavResHandler = require('./controllers/ccavResponseHandler.js');
-// const RazorPay = require('razorpay')
-const connectDB = require('./config/db')
-const { notFoundHandler, errorHandler } = require('./middleware/error')
-const uploadRoute = require('./routes/upload')
-const imageRoutes = require('./routes/image')
-const adminRoutes = require('./routes/admin')
-const teacherRoutes = require('./routes/teacher')
-const courseRoutes = require('./routes/course')
-const complaintRoutes = require('./routes/complaint')
-const studentRoutes = require('./routes/student')
-const standardRoutes = require('./routes/standard')
+const { notFoundHandler, errorHandler } = require('./middleware/error');
+const uploadRoute = require('./routes/upload');
+const imageRoutes = require('./routes/image');
+const adminRoutes = require('./routes/admin');
+const teacherRoutes = require('./routes/teacher');
+const courseRoutes = require('./routes/course');
+const complaintRoutes = require('./routes/complaint');
+const studentRoutes = require('./routes/student');
+const standardRoutes = require('./routes/standard');
 const chapterRoutes = require('./routes/chapter');
-const subjectRoutes = require('./routes/subject')
-const questionRoutes = require('./routes/question')
-const lectureRoutes = require('./routes/lecture')
-const examtypeRoutes = require('./routes/examtype')
-const testRoutes = require('./routes/test')
-const youtubeRoutes = require('./routes/youtube')
-const zoomRoutes = require('./routes/zoom')
-const bannerRoutes = require('./routes/banner');
-const footerRoutes = require('./routes/footer');
+const subjectRoutes = require('./routes/subject');
+const questionRoutes = require('./routes/question');
+const lectureRoutes = require('./routes/lecture');
+const examtypeRoutes = require('./routes/examtype');
+const testRoutes = require('./routes/test');
+const youtubeRoutes = require('./routes/youtube');
+const zoomRoutes = require('./routes/zoom');
+// const bannerRoutes = require('./routes/banner');
+// const footerRoutes = require('./routes/footer');
 const batchesRoutes = require('./routes/batches');
-const pricingRoutes = require('./routes/coursespart2');
-const cardsRoutes = require('./routes/cards');
+// const pricingRoutes = require('./routes/coursespart2');
+// const cardsRoutes = require('./routes/cards');
 const flickerphotoRoute = require('./routes/flickerphoto');
 const orderRoutes = require('./routes/order');
 const topicRoutes = require("./routes/topic");
 const subtopicRoutes = require("./routes/subtopic");
 const courseMaterialRoutes = require("./routes/courseMaterial");
-const answerRoute = require('./routes/answers')
-const analyitcalRoute = require('./routes/analytics')
-const emailRoute =  require('./routes/email')
-const awsRoute =  require('./routes/aws')
-const paymentRoutes =  require('./routes/payment')
+const answerRoute = require('./routes/answers');
+const analyitcalRoute = require('./routes/analytics');
+const emailRoute =  require('./routes/email');
+const awsRoute =  require('./routes/aws');
 const courseDetails =  require('./routes/coursedetails');
 const wordParser = require('./routes/wordParser')
 const authRoutes = require("./routes/auth");
@@ -71,7 +67,6 @@ app.post('/ccavRequestHandler', function (request, response){
 	ccavReqHandler.postReq(request, response);
 });
 
-
 app.post('/ccavResponseHandler', function (request, response){
         ccavResHandler.postRes(request, response);
 });
@@ -81,7 +76,6 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECERET
 })
-
 
 // adding morgan as middleware to log http requests in the console
 if (process.env.NODE_ENV === 'development') {
@@ -126,27 +120,24 @@ app.use('/api/zoom', zoomRoutes)
 app.use('/api/answer', answerRoute)
 app.use('/api/analytics', analyitcalRoute)
 app.use('/api/doubtExpert', doubtExpert)
-app.use('/api', bannerRoutes);
-app.use('/api', footerRoutes);
+// app.use('/api', bannerRoutes);
+// app.use('/api', footerRoutes);
 app.use('/api', batchesRoutes);
-app.use('/api', pricingRoutes);
-app.use('/api', cardsRoutes);
+// app.use('/api', pricingRoutes);
+// app.use('/api', cardsRoutes);
 app.use('/api', flickerphotoRoute);
 app.use('/api/order', orderRoutes);
 app.use("/api/imageupload", uploadRoute);
 app.use("/api/wordParser", wordParser);
 app.use("/api/pdf", pdfMaker);
-
-
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
-
-
 app.get('/images/:key', (req, res) => {
   const key = req.params.key
   const readStream = getFileStream(key)
   readStream.pipe(res);
 })
+
 app.post("/images", upload.single("image"), async (req, res) => {
   const file = req.file
   const result = await uploadFile(file)
@@ -162,7 +153,7 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 5000;
 
 // starting the server
- const server=app.listen(PORT, () => console.log(chalk.blue(`Server running on port ${PORT}`)))
+const server=app.listen(PORT, () => console.log(chalk.blue(`Server running on port ${PORT}`)))
 const io = socket(server, {
   cors: {
     origin: "http://localhost:3000",
