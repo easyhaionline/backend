@@ -6,7 +6,6 @@ const s3= new AWS.S3({
     secretAccessKey:process.env.AWS_BUCKET_SECRET_ACCESS_KEY_COURSE_MATERIAL
 })
 
- 
 async function uploadFileToAws(file){
     const fileName = `${new Date().getTime()}_${file.name}`;
     const mimetype= file.mimetype;
@@ -21,9 +20,7 @@ async function uploadFileToAws(file){
         s3.upload(params,(err,data)=>err==null?resolve(data):reject(err));
     })
     return {fileUrl:res.Location};
-
 }
-
 
 module.exports={
     uploadFileToAws
