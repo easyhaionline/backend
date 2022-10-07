@@ -108,7 +108,7 @@ router.post('/get-students', studentsBySearchFilter);
 router.get('/get-course/:id', adminGetcourse);
 router.get('/get-course-admin/:id', allCoursesAdmin); // route for admin all courses access
 router.get('/get-student/:course',studentsByCourseFilter);
-router.put('/forgot-password', forgotPasswordValidator, forgotPassword);
+router.put('/forgot-password', forgotPasswordValidator, forgotPassword); // this forgot password for teacher
 router.put('/reset-password', resetPasswordValidator,  resetPassword);
 router.put('/student/forgot-password', forgotPasswordValidator, forgotPasswordStudent);
 router.put('/student/reset-password', resetPasswordValidator,  resetPasswordStudent);

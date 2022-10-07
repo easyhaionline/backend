@@ -711,11 +711,11 @@ const profileUpdate = asyncHandler(async (req, res) => {
 })
 
 
-
+ // teacher forgot password
 const forgotPassword =asyncHandler(async (req, res)=> {
     const { email } = req.body;
 
-    await Admin.findOne({ email }, (err, user) => {
+    await Teacher.findOne({ email }, (err, user) => {
         if (err || !user) {
             return res.status(401).json({
                 error: 'User with that email does not exist'
@@ -743,6 +743,7 @@ const forgotPassword =asyncHandler(async (req, res)=> {
                 return res.json({ error: err });
             } else {
                 sendEmailWithNodemailer(req, res, emailData);
+                console.log("sendEmailWithNodemailer function : ",sendEmailWithNodemailer(req, res, emailData))
                 return res.json({ message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.` });
             }
         });
@@ -759,7 +760,7 @@ const forgotPassword =asyncHandler(async (req, res)=> {
                     error: 'Expired link. Try again'
                 });
             }
-            Admin.findOne({ resetPasswordLink }, (err, user) => {
+            Teacher.findOne({ resetPasswordLink }, (err, user) => {
                 if (err || !user) {
                     return res.status(401).json({
                         error: 'Something went wrong. Try later'
