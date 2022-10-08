@@ -11,6 +11,10 @@ const doubtSchema = new Schema(
             type: String,
             required: true
         },
+        examType: {
+            type: String,
+            required: true
+        },
         link: {
             type: Array,
         },

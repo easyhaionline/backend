@@ -1,11 +1,16 @@
+const { Route53RecoveryControlConfig } = require('aws-sdk');
 const express = require('express')
 const {
   doubtCreate,
+  getNewDoubt,
+  takeThisDoubt
 } = require("../controllers/doubtExpert");
 
 const router = express.Router()
 
 router.post('/', doubtCreate);
+router.post('/newDoubt', getNewDoubt);
+router.put('/takethisdoubt/:id', takeThisDoubt);
 // router.delete('/:complaintID', deleteComplaint);
 // router.get('/:type', complaintGetAll);
 // router.get('/get/:complaintID', idGet);

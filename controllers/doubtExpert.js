@@ -4,32 +4,70 @@ const Doubt = require('../models/DoubtExpert')
 // to create a new doubt
 const doubtCreate = asyncHandler(async (req, res) => {
     const {
-        query,
-        mobile,
         student,
-        image,
-        feedback,
-        teacher,seprater
-    } = req.body
+        question,
+        examType,
+        link
+    } = req.body;
 
-    const newComplaint = await Complaint.create({
-      query,
-      mobile,
-      student,
-      image,
-      feedback,
-      teacher,seprater
+    const teacher = null;
+    const isResolved = false;
+
+    const newDoubt = await Doubt.create({
+        student,
+        question,
+        examType,
+        link,
+        teacher,
+        isResolved
     });
 
-    if (newComplaint) {
+    if (newDoubt) {
         res.status(200).json({
-            message: 'Your Complaint has been launched!',
-            data: newComplaint,
+            message: 'Your Doubt has been created!',
+            data: newDoubt,
         })
     } else {
         res.status(500)
-        throw new Error("New Complaint can't be created at the moment! Try again later.")
+        throw new Error("New Doubt can't be created at the moment! Try again later.")
     }
+})
+
+// to fetch all new doubts available *******************************************************
+const getNewDoubt = asyncHandler(async (req, res) => {
+    const {
+        skip,
+        limit
+    } = req.body
+
+    Doubt.find()
+        .where({teacher: null})
+        .sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'student',
+          select: '_id username image',
+        })
+        .exec((error, data)=>{
+            if(data){
+                return res.status(200).json({data: data})
+            } else return res.status(400).json({error: err})
+        })
+});
+
+const takeThisDoubt = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    try{
+        const doubt = await Doubt.findByIdAndUpdate({_id})
+        const { teacher } = req.body;       
+        doubt.teacher = teacher;
+        await doubt.save();
+    } catch (err){
+    console.error(err);
+}
 })
 
 // to fetch all complaints available *******************************************************
@@ -234,6 +272,8 @@ const doubtCreate = asyncHandler(async (req, res) => {
 
 module.exports = {
   doubtCreate,
+  getNewDoubt,
+  takeThisDoubt
   // complaintGetAll,
   // deleteComplaint,
   // updateStatus,
