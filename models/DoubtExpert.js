@@ -20,7 +20,7 @@ const doubtSchema = new Schema(
         },
         teacher: {
             type: Types.ObjectId,
-            ref: 'DoubtTeacher',
+            ref: 'Teacher',
         },
         isResolved: {
             type: Boolean

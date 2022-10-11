@@ -54,7 +54,7 @@ const getNewDoubt = asyncHandler(async (req, res) => {
         .exec((error, data)=>{
             if(data){
                 return res.status(200).json({data: data})
-            } else return res.status(400).json({error: err})
+            } else return res.status(400).json({error: error})
         })
 });
 
@@ -69,6 +69,74 @@ const takeThisDoubt = asyncHandler(async (req, res) => {
     console.error(err);
 }
 })
+
+const getStudentDoubt = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    const {
+        skip,
+        limit
+    } = req.body
+
+    console.log("I am id", _id);
+    console.log("I am body", skip, limit);
+
+    Doubt.find()
+        .where({student: _id})
+        .sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'student',
+          select: '_id username image',
+        })
+        .populate({
+            path: 'teacher',
+            select: '_id username image',
+          })
+        .exec((error, data)=>{
+            if(data){
+                return res.status(200).json({data: data})
+            } else{
+                return console.log("I am error: ",error);
+            } 
+        })
+});
+
+const getTeacherDoubt = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    const {
+        skip,
+        limit
+    } = req.body
+
+    console.log("I am id", _id);
+    console.log("I am body", skip, limit);
+
+    Doubt.find()
+        .where({teacher: _id})
+        .sort({
+          createdAt: -1,
+        })
+        .skip(skip)
+        .limit(limit)
+        .populate({
+          path: 'student',
+          select: '_id username image',
+        })
+        .populate({
+            path: 'teacher',
+            select: '_id username image',
+          })
+        .exec((error, data)=>{
+            if(data){
+                return res.status(200).json({data: data})
+            } else{
+                return console.log("I am error: ",error);
+            } 
+        })
+});
 
 // to fetch all complaints available *******************************************************
 // const complaintGetAll = asyncHandler(async (req, res) => {
@@ -273,7 +341,9 @@ const takeThisDoubt = asyncHandler(async (req, res) => {
 module.exports = {
   doubtCreate,
   getNewDoubt,
-  takeThisDoubt
+  takeThisDoubt,
+  getStudentDoubt,
+  getTeacherDoubt
   // complaintGetAll,
   // deleteComplaint,
   // updateStatus,
