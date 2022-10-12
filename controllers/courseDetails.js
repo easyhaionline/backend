@@ -11,7 +11,6 @@ const validateMongoID = require('../validators/subject')
 // to create a new Course Detials ********************************************************
 const courseDetailsAdd = asyncHandler(async (req, res) => {
     const { email, mobile, courseid } = req.body
-
     const courseDetails = await CourseDetails.create({
         email, mobile, courseid
     })
