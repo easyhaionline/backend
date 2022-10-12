@@ -5,7 +5,9 @@ const {
   getNewDoubt,
   takeThisDoubt,
   getStudentDoubt,
-  getTeacherDoubt
+  getTeacherDoubt,
+  getAllDoubts,
+  getSingleDoubt
 } = require("../controllers/doubtExpert");
 
 const router = express.Router()
@@ -13,15 +15,9 @@ const router = express.Router()
 router.post('/', doubtCreate);
 router.post('/newDoubt', getNewDoubt);
 router.put('/takethisdoubt/:id', takeThisDoubt);
-router.post('/getdoubtbystudentid/:id', getStudentDoubt)
-router.post('/getdoubtbyteacherid/:id', getTeacherDoubt)
-// router.delete('/:complaintID', deleteComplaint);
-// router.get('/:type', complaintGetAll);
-// router.get('/get/:complaintID', idGet);
-// router.put('/:complaintID', updateStatus);
-// router.get("/getById/:id", complaintByStudent);
-// router.get("/teacher/:id", complaintByAllTeachers);
-// router.get("/student/:id", complaintByAllStudents);
-// router.get("/feedbacks/getById/:id", feedbacksByStudent);
+router.post('/getdoubtbystudentid/:id', getStudentDoubt);
+router.post('/getdoubtbyteacherid/:id', getTeacherDoubt);
+router.post('/getAllDoubts', getAllDoubts);
+router.get('/getSingleDoubt/:id', getSingleDoubt)
 
 module.exports = router;

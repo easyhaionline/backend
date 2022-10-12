@@ -27,7 +27,11 @@ const doubtSchema = new Schema(
         },
         isStudentSatisfied: {
             type: Boolean
-        }
+        },
+        doubtReply: {
+            type: Types.ObjectId,
+            ref: 'DoubtReply'
+        },
     },
     {
         timestamps: true,
