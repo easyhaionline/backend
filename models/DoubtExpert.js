@@ -20,14 +20,18 @@ const doubtSchema = new Schema(
         },
         teacher: {
             type: Types.ObjectId,
-            ref: 'DoubtTeacher',
+            ref: 'Teacher',
         },
         isResolved: {
             type: Boolean
         },
         isStudentSatisfied: {
             type: Boolean
-        }
+        },
+        doubtReply: {
+            type: Types.ObjectId,
+            ref: 'DoubtReply'
+        },
     },
     {
         timestamps: true,
