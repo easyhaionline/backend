@@ -1,5 +1,7 @@
 const express = require('express')
 
+// var easyinvoice = require('easyinvoice');
+
 const { protectAdmin } = require('../middleware/protect')
 const {
     courseDetailsAdd,
