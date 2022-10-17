@@ -28,6 +28,10 @@ const doubtSchema = new Schema(
         isStudentSatisfied: {
             type: Boolean
         },
+        isChance: {
+            type: Boolean,
+            default: false
+        },
         doubtReply: {
             type: Types.ObjectId,
             ref: 'DoubtReply'

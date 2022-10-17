@@ -1,32 +1,28 @@
 const asyncHandler = require('express-async-handler')
 const CourseDetails = require('../models/courseDetails')
-
-
-
 const validateExamInputs = require('../validators/exam-type')
-
 const validateMongoID = require('../validators/subject')
-
 
 // to create a new Course Detials ********************************************************
 const courseDetailsAdd = asyncHandler(async (req, res) => {
   const { email, mobile, courseid } = req.body
 
-  const isAlreadyAvail = await CourseDetails.findOne({ email: email })
+  const isAlreadyAvail = await CourseDetails.findOne({ email: email });
 
-  if (!isAlreadyAvail) {
-    const courseDetails = await CourseDetails.create({
-      email, mobile, courseid
-    })
-  } else {
-    const courseDetails = await CourseDetails.findOneAndUpdate({email:email}, 
-      { email, mobile, courseid }, {new:true, runValidators:true})
+  const courseDetails = async() => {
+    if (isAlreadyAvail == null) {
+      return await CourseDetails.create({
+        email, mobile, courseid
+      })
+    } else {
+      return await CourseDetails.findOneAndUpdate({email:email}, 
+        { email, mobile, courseid }, {new:true, runValidators:true})
+    }
   }
 
-
-  if (courseDetails) {
+  if (courseDetails()) {
     res.status(200).json({
-      message: 'Course Details is add successfully!',
+      message: 'Course Details is added successfully!',
       data: courseDetails,
     })
   } else {
@@ -34,7 +30,6 @@ const courseDetailsAdd = asyncHandler(async (req, res) => {
     throw new Error("New Course Details can't be created at the moment! Try again later.")
   }
 })
-
 
 const getCouseDetailsByEmail = asyncHandler(async (req, res) => {
   const email = req.params.email;
