@@ -9,7 +9,10 @@ const FormData = require('form-data')
 const uploadMedia = async (data) => {
     let link = await fetch(`https://api.easyhaionline.com/api/awsroute/aws`, {
         method: "POST",
-        headers: { },
+        headers: { 
+            "Accept":"file/pdf", 
+            "Content-Type":"application/pdf" 
+        },
         body: (data),
     })
 

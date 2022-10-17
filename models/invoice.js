@@ -5,12 +5,16 @@ const invoiceSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "Student"
     },
-    invoice: [
-        {
-            date: Date,
-            link: String 
-        }
-    ]
+    courseId:{
+        type: mongoose.Types.ObjectId,
+        ref: "CourseDetails"
+    },
+    transactionId:{
+        type:String
+    },
+    date: {
+        type:Date
+    }
 })
 
 
