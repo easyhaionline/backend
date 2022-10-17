@@ -7,7 +7,8 @@ const {
   getStudentDoubt,
   getTeacherDoubt,
   getAllDoubts,
-  getSingleDoubt
+  getSingleDoubt,
+  doubtReply
 } = require("../controllers/doubtExpert");
 
 const router = express.Router()
@@ -19,5 +20,6 @@ router.post('/getdoubtbystudentid/:id', getStudentDoubt);
 router.post('/getdoubtbyteacherid/:id', getTeacherDoubt);
 router.post('/getAllDoubts', getAllDoubts);
 router.get('/getSingleDoubt/:id', getSingleDoubt)
+router.post('/reply', doubtReply);
 
 module.exports = router;

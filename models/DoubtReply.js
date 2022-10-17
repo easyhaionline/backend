@@ -1,26 +1,20 @@
 const { Schema, model, Types } = require('mongoose')
 
 const doubtReplySchema = new Schema(
-    {   
-        teacher: {
-            type: Types.ObjectId,
-            ref: 'Teacher',
-            required: true
-        },
-        isChance: {
-            type: Boolean,
-            default: false
-        },
-        reply: [{
-            attempt:{
-                type: Number,
+    {
+        doubtReply: [{
+            teacher: {
+                type: Types.ObjectId,
+                ref: 'Teacher',
                 required: true
             },
-            answer: {
-                type: String,
-                required: true
-            },
-            link: []
+            reply: [{
+                answer: {
+                    type: String,
+                    required: true
+                },
+                link: []
+            }],
         }],
     },
     {

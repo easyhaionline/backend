@@ -548,10 +548,8 @@ const adminGetAllTeachers = asyncHandler(async (_, res) => {
 
 const adminGetcourse = asyncHandler(async (req, res) => {
     _id=req.params.id
-    console.log(_id)
     await Student.findById(_id).select('courses').sort({ createdAt: -1 }).exec((err,data)=>{
-
-      return  res.status(200).json(data)
+      return res.status(200).json(data)
     })
 })
 const allCoursesAdmin = asyncHandler(async (req, res) => { // controller for admin courses access 
