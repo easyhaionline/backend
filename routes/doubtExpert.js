@@ -10,7 +10,8 @@ const {
   getSingleDoubt,
   doubtReply,
   satisfied,
-  dissatisfied
+  dissatisfied,
+  doubtCredits
 } = require("../controllers/doubtExpert");
 
 const router = express.Router()
@@ -25,5 +26,6 @@ router.post('/getdoubtbyteacherid/:id', getTeacherDoubt);
 router.post('/getAllDoubts', getAllDoubts);
 router.get('/getSingleDoubt/:id', getSingleDoubt)
 router.post('/reply', doubtReply);
+router.get('/getCredits/:id', doubtCredits);
 
 module.exports = router;

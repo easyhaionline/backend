@@ -53,6 +53,10 @@ const teacherSchema = new Schema(
             required: true,
             default: true,
         },
+        doubtCredits: {
+            type:Number,
+            default:0
+        }
     },
     { timestamps: true }
 )
