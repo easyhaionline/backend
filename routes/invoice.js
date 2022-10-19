@@ -1,7 +1,6 @@
 const router = require('express').Router()
-const {createInvoice, getInvoice} = require('../controllers/invoice')
-const { create } = require('../models/invoice')
+const {createInvoice, getInvoice, getOrderDetails } = require('../controllers/invoice')
 
-router.route('/:id').post(createInvoice).post(getInvoice)
+router.route('/:id').post(createInvoice).get(getOrderDetails)
 
 module.exports = router;

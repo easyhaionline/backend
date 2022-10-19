@@ -75,10 +75,10 @@ exports.postRes = function(request,response){
 
 			}
 
-
 			await CourseDetails.updateMany({ email : foundAdmin.email, status : "new"}, {status: 'old'});
 			await CourseDetails.updateMany({ mobile: foundAdmin.number, status : "new"}, {status: 'old'});
 
+			res.status(200).json(orderDetails._id)
 			response.redirect("https://student.easyhaionline.com/myorder");
 			
 		} else {

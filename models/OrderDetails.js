@@ -26,7 +26,7 @@ const orderDetailschema = new Schema(
         },
         studentid: {
             type: Types.ObjectId,
-            ref: 'Subject',
+            ref: 'Student',
         },
         courseid: {
             type: Types.ObjectId,

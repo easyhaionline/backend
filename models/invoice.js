@@ -5,6 +5,6 @@ const invoiceSchema = new mongoose.Schema({
         type:mongoose.Types.ObjectId,
         ref:'OrderDetails'
     }
-})
+}, {timestamps:true})
 
 module.exports = mongoose.model('Invoice', invoiceSchema)
