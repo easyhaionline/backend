@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Doubt = require('../models/DoubtExpert');
-const Reply = require('../models/DoubtReply');
+// const Reply = require('../models/DoubtReply');
 
 const doubtCreate = asyncHandler(async (req, res) => {
     const {
@@ -181,6 +181,10 @@ const getSingleDoubt = asyncHandler(async (req, res) => {
         path: 'teacher',
         select: '_id username image',
       })
+    .populate({
+        path: 'doubtReply.teacher',
+        select: '_id username image',
+    })
     .exec((error, data)=>{
         if(data){
             return res.status(200).json({data: data})
@@ -192,48 +196,50 @@ const getSingleDoubt = asyncHandler(async (req, res) => {
 
 const doubtReply = asyncHandler(async (req, res) => {
     const {
+        doubtId,
         teacher,
         reply,
         link,
-        doubtReply
     } = req.body;
 
-    console.log(`I am teacher: ${teacher}, reply: ${reply}, link: ${link}, doubtReply: ${doubtReply}`);
+    const data = {
+        teacher, reply, link
+    }
 
     try{
-        const doubt = await Doubt.find().where({doubtReply: doubtReply});
-        if(doubt){
-            const doubtReply = Reply.findByIdAndUpdate({doubtReply});
-            doubtReply.reply.push({answer: reply, link: link});
-            await doubtReply.save();
-            // res.status(200).json({
-            //     message: 'Your Reply has been updated!',
-            //     data: newReply,
-            // })
-        }
+        const doubt = await Doubt.findByIdAndUpdate(doubtId);
+        doubt.doubtReply.push(data);
+        doubt.attempt = doubt.attempt+1;
+        await doubt.save();
     } catch (err){
-        // res.status(400).json({
-        //     message: "New Reply can't be created at the moment! Try again later.",
-        //     error: err
-        // })
-        console.log("I am error", err);
-    }
+    console.error(err);
+}})
 
-    const newReply = await Reply.create({
-        teacher,
-        "reply.answer" : reply,
-        "reply.link" : link,
-    });
+const satisfied = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    try{
+        const doubt = await Doubt.findByIdAndUpdate({_id})     
+        doubt.isStudentSatisfied = true;
+        doubt.isResolved = true;
+        await doubt.save();
+        res.status(200);
+    } catch (err){
+    console.error(err);
+}
+})
 
-    if (newReply) {
-        res.status(200).json({
-            message: 'Your Reply has been created!',
-            data: newReply,
-        })
-    } else {
-        res.status(400)
-        throw new Error("New Reply can't be created at the moment! Try again later.")
-    }
+const dissatisfied = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    try{
+        const doubt = await Doubt.findByIdAndUpdate({_id})     
+        doubt.isStudentSatisfied = false;
+        doubt.isResolved = false;
+        doubt.teacher = null;
+        await doubt.save();
+        res.status(200);
+    } catch (err){
+    console.error(err);
+} 
 })
 
 module.exports = {
@@ -244,5 +250,7 @@ module.exports = {
   getTeacherDoubt,
   getAllDoubts,
   getSingleDoubt,
-  doubtReply
+  doubtReply,
+  satisfied,
+  dissatisfied
 };
