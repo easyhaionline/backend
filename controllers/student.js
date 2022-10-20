@@ -1,11 +1,12 @@
 const asyncHandler = require('express-async-handler')
 
 const Student = require('../models/Student')
+const ChatUser = require('../models/chatUser')
 const validateStudentInputs = require('../validators/student')
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-    const { name, email, phone, standard, course, freeTrial } = req.body
+    const { name, username, email, phone, standard, course, freeTrial } = req.body
 
     // validating inputs
     const { isValid, message } = validateStudentInputs(req.body)
@@ -30,12 +31,15 @@ const studentRegister = asyncHandler(async (req, res) => {
 
     const newStudent = await Student.create({
         name,
+        username,
         email,
         phone,
         standard,
         course,
         freeTrial,
     })
+
+    await ChatUser.create({_id:newStudent._id, username: newStudent.username})
 
     if (newStudent) {
         res.status(200).json(newStudent)

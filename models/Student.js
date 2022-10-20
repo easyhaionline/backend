@@ -1,4 +1,5 @@
 const { Schema, model, Types } = require('mongoose')
+const ChatUser = require('./chatUser')
 const bcrypt = require('bcryptjs')
 const studentSchema = new Schema(
     {
