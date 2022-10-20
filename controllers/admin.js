@@ -167,12 +167,14 @@ const studentRegister = asyncHandler(async (req, res) => {
         throw new Error('Email is already registered! Try Logging in.')
     }
 
+    console.log(req.body)
+
     const newAdmin = await Student.create({
         username,
         email,
         password,
         mobile,
-        courseId
+        courses:courseId
     });
 
     await ChatUser.create({_id:newAdmin._id, username:newAdmin.username})

@@ -71,6 +71,7 @@ exports.postRes = function(request,response){
 			if (foundAdmin) {
 
 				foundAdmin.courses.push(ccavenuedata.merchant_param1);
+				foundAdmin.doubtCredits += 100
 				foundAdmin.save()
 
 			}
