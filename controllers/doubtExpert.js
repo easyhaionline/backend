@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Doubt = require('../models/DoubtExpert');
-// const Reply = require('../models/DoubtReply');
+const Student = require('../models/Student');
+const Teacher = require('../models/Teacher');
 
 const doubtCreate = asyncHandler(async (req, res) => {
     const {
@@ -23,6 +24,9 @@ const doubtCreate = asyncHandler(async (req, res) => {
     });
 
     if (newDoubt) {
+        const studentModel = await Student.findByIdAndUpdate(student);
+        studentModel.doubtCredits = studentModel.doubtCredits-1;
+        await studentModel.save();
         res.status(200).json({
             message: 'Your Doubt has been created!',
             data: newDoubt,
@@ -211,6 +215,11 @@ const doubtReply = asyncHandler(async (req, res) => {
         doubt.doubtReply.push(data);
         doubt.attempt = doubt.attempt+1;
         await doubt.save();
+        if(doubt.attempt>2){
+            doubt.teacher = null;
+            await doubt.save();
+            console.log("I am updated doubt", doubt);
+        }
     } catch (err){
     console.error(err);
 }})
@@ -221,6 +230,11 @@ const satisfied = asyncHandler(async (req, res) => {
         const doubt = await Doubt.findByIdAndUpdate({_id})     
         doubt.isStudentSatisfied = true;
         doubt.isResolved = true;
+        console.log("I am doubt", doubt);
+            const teacherCreditsUpdate = await Teacher.findByIdAndUpdate(doubt.teacher);
+            teacherCreditsUpdate.doubtCredits = teacherCreditsUpdate.doubtCredits + 1;
+            await teacherCreditsUpdate.save();
+            console.log("I am teacher", teacherCreditsUpdate);
         await doubt.save();
         res.status(200);
     } catch (err){
@@ -242,6 +256,31 @@ const dissatisfied = asyncHandler(async (req, res) => {
 } 
 })
 
+const doubtCredits = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    var credits;
+
+    console.log("I am id", _id);
+
+    const studentCredits = Student.findById({_id}).select('doubtCredits').exec((error, data)=>{
+        if(data){
+            credits = data.doubtCredits;
+            res.status(200).json({data: credits})
+        } else{
+            return console.log("I am error in Student Credits: ",error);
+        } 
+    })
+    const teacherCredits = Teacher.findById({_id}).select('doubtCredits').exec((error, data)=>{
+        if(data){
+            credits = data.doubtCredits;
+            console.log("I am credits in teacher", credits);
+            res.status(200).json({data: credits})
+        } else{
+            return console.log("I am error in Teacher Credits: ",error);
+        } 
+    })
+});
+
 module.exports = {
   doubtCreate,
   getNewDoubt,
@@ -252,5 +291,6 @@ module.exports = {
   getSingleDoubt,
   doubtReply,
   satisfied,
-  dissatisfied
+  dissatisfied,
+  doubtCredits
 };

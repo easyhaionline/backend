@@ -56,6 +56,10 @@ const studentSchema = new Schema(
             type: Boolean,
             default: true,
         },
+        doubtCredits: {
+            type:Number,
+            default:0
+        }
     },
     {
         timestamps: true,
