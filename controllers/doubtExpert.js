@@ -260,8 +260,6 @@ const doubtCredits = asyncHandler(async (req, res) => {
     const _id = req.params.id;
     var credits;
 
-    console.log("I am id", _id);
-
     const studentCredits = Student.findById({_id}).select('doubtCredits').exec((error, data)=>{
         if(data){
             credits = data.doubtCredits;
@@ -281,6 +279,32 @@ const doubtCredits = asyncHandler(async (req, res) => {
     })
 });
 
+const getTeacherList = asyncHandler(async (req, res) => {
+    Teacher.find()
+        .sort({
+          createdAt: -1,
+        })
+        .select('username email image phone doubtCredits')
+        .exec((error, data)=>{
+            if(data){
+                return res.status(200).json({data})
+            } else{
+                return console.log("I am error: ",error);
+            } 
+        }) 
+});
+
+const clearBalance = asyncHandler(async (req, res) => {
+    const _id = req.params.id;
+    try{
+        const teacher = await Teacher.findByIdAndUpdate({_id})      
+        teacher.doubtCredits = 0;
+        await teacher.save();
+    } catch (err){
+    console.error(err);
+}
+})
+
 module.exports = {
   doubtCreate,
   getNewDoubt,
@@ -292,5 +316,7 @@ module.exports = {
   doubtReply,
   satisfied,
   dissatisfied,
-  doubtCredits
+  doubtCredits,
+  getTeacherList,
+  clearBalance
 };
