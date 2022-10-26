@@ -50,7 +50,7 @@ const courseSchema = new Schema(
     subject: 
       [{
           type: Types.ObjectId,
-          ref: "Subject", 
+          ref: "Subject",
       }]
     ,
     classes: {

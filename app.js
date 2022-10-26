@@ -56,6 +56,7 @@ const socket = require("socket.io");
 const pdfMaker = require('./routes/pdfMaker');
 const doubtExpert = require('./routes/doubtExpert');
 const invoiceRoutes = require('./routes/invoice');
+const chatUser = require('./routes/chatUser')
 
 // connecting to database
 connectDB()
@@ -125,6 +126,8 @@ app.use("/api/pdf", pdfMaker);
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/invoice", invoiceRoutes);
+app.use('/api/chatuser', chatUser)
+
 app.get('/images/:key', (req, res) => {
   const key = req.params.key
   const readStream = getFileStream(key)

@@ -8,6 +8,7 @@ const OrderDetails = require('../models/OrderDetails');
 const CourseDetails = require('../models/courseDetails');
 const {Updatingcourse} = require('./admin');
 const Student = require("../models/Student");
+const Invoice = require("../models/invoice");
 
 
 exports.postRes = function(request,response){
@@ -57,6 +58,7 @@ exports.postRes = function(request,response){
 		}
 
 		const orderDetails = await OrderDetails.create(orderData);
+		const invoice = await Invoice.create(orderDetails._id)
 	
 		if (orderDetails) {
 			const email = ccavenuedata.billing_email;
@@ -68,6 +70,7 @@ exports.postRes = function(request,response){
 				ccavenuedata.merchant_param2
 			)
 
+    const data = await axios.post(`https://api.easyhaionline.com/invoice/${orderDetails.data._id}`)
 			if (foundAdmin) {
 
 				foundAdmin.courses.push(ccavenuedata.merchant_param1);
