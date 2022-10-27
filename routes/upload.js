@@ -13,8 +13,8 @@ router.post("/", upload.array("image"), async (req, res) => {
 
   const urls = [];
   const files = req.files;
-  for (const file of files) {
-    const { path } = file;
+  for (var file of files) {
+    const { path } = files;
     console.log(path);
     const newPath = await uploader(path);
     urls.push(newPath);
