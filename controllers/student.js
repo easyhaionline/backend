@@ -100,9 +100,48 @@ const studentGetAll = asyncHandler(async (_, res) => {
     res.status(200).json(foundStudents)
 })
 
+// edit profile
+const profileUpdate = asyncHandler(async (req, res) => {
+    const { username, image, email, number } = req.body
+
+    console.log(image)
+
+    // validating inputs
+    // const { isValid, message } = validateStudentInputs(req.body, true)
+    // if (!isValid) {
+    //     res.status(400)
+    //     throw new Error(message)
+    // }
+
+    // finding the admin whose details are need to be updated
+    const foundStudent = await Student.findOne({
+        email,
+    })
+
+
+    if (foundStudent) {
+        // checking if the logged in user is updating his own details or else he is a super admin
+        // (super admin can update any admin's details)
+
+
+        if (username) foundStudent.username = username
+        if (image) foundStudent.image = image[1]
+        if (number) foundStudent.number = number
+        foundStudent.save();
+        res.status(200).json({
+            message: 'User updated successfully!',  
+            data: { ...foundStudent._doc, password: null },
+        })
+    } else {
+        res.status(404)
+        throw new Error('No user exists with this email!')
+    }
+})
+
 module.exports = {
     studentRegister,
     studentLogin,
     studentVerifyOtp,
     studentGetAll,
+    profileUpdate
 }
