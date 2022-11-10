@@ -8,7 +8,8 @@ const studentSchema = new Schema(
             required: true
         },
         number:{
-            type:Number
+            type:Number,
+            required: true
         },
         image: {
             type: String 
@@ -43,6 +44,12 @@ const studentSchema = new Schema(
             type: Types.ObjectId,
             ref: "Course", 
             default:[]
+        }],
+        startDate:[{
+            type:Date,
+        }],
+        endDate:[{
+            type:Date,
         }],
         freeTrial: {
             type: Boolean,

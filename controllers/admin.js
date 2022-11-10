@@ -5,6 +5,7 @@ const Teacher = require('../models/Teacher')
 const Student = require('../models/Student')
 const ChatUser = require('../models/chatUser')
 const Parent = require('../models/Parent')
+const ActiveStudent =  require('../models/ActiveStudent')
 const generateToken = require('../utils/generateToken')
 const validateAdminInputs = require('../validators/admin')
 const { sendEmailWithNodemailer } = require("../utils/email");
@@ -441,7 +442,6 @@ const teacherLogin = asyncHandler(async (req, res) => {
 })
 
 
-
 const encryprttoken = asyncHandler(async (req, res) => {
     const { id } = req.params
     const foundAdmin = await Student.findOne({
@@ -507,8 +507,6 @@ const studentToggle = asyncHandler(async (req, res) => {
     })
 
 })
-
-
 
 
 // to delete an admin *********************************************************************************
@@ -807,8 +805,6 @@ const resetPassword = (req, res) => {
 };
 
 
-
-
 const forgotPasswordStudent = asyncHandler(async (req, res) => {
     const { email } = req.body;
 
@@ -886,10 +882,6 @@ const resetPasswordStudent = (req, res) => {
 };
 
 
-
-
-
-
 const removeTeacher = (req, res) => {
     const id = req.params.id;
     Teacher.findByIdAndRemove(id).exec((err, data) => {
@@ -914,6 +906,60 @@ const removeStudent = (req, res) => {
     })
 }
 
+const approveStudent = async (req, res)=>{
+    const email = req.body.email;
+    try {
+        console.log(req.body)
+        let user = await ActiveStudent.findOneAndUpdate({user_email: email},{$set:{isActive:true}},{new:true})
+        return res.json({message: "Success"})
+    } catch (error) {
+        console.log(error)
+        return res.json({message:"error in approving user"})
+    }
+}
+
+//create approval req after paying by cash
+const createApproveStudent = async (req, res)=>{
+    const email = req.body.email;
+    try{
+        let user = await ActiveStudent.findOne({user_email: email});
+        if(user){
+            console.log("Already submitetd for approval")
+            return res.status(400).json({message:"approval req already existes"});
+        } else{
+            user = await ActiveStudent.create({user_email: email});
+            return res.status(200).json({message:"Success"})
+        }
+    }catch(err){
+        console.log(err)
+    }
+}
+
+//get the list of student to approve payment
+const getAllApproveStudentList = async (req,res)=>{
+    try{
+        const foundStudents = await ActiveStudent.find({});
+        res.status(200).json(foundStudents)
+    } catch(err){
+        console.log(err);
+        res.status(400).json({message:"Server error"});
+    }
+}
+
+//api will be called from student portal to approve to pay by cash
+const isActive = async (req, res)=>{
+    try{
+        let user = await ActiveStudent.find({user_email: req.body.email});
+        if(user){
+            return res.status(200).json({user});
+        } else{
+            return res.status(400).json({message: "user not found"});
+        }             
+    }catch(err){
+        console.log(err);
+        res.status(400).json({message:"Server error"});
+    }
+}
 
 
 module.exports = {
@@ -947,6 +993,10 @@ module.exports = {
     removeTeacher,
     studentToggle,
     removeStudent,
-    allCoursesAdmin
+    allCoursesAdmin,
+    approveStudent,
+    createApproveStudent,
+    getAllApproveStudentList,
+    isActive
 }
 // allCoursesAdmin is the controller created for Admin Panel

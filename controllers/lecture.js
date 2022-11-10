@@ -34,12 +34,16 @@ const lectureCreate = asyncHandler(async (req, res) => {
 
 // to fetch all lectures available *******************************************************
 const lectureGetAll = asyncHandler(async (req, res) => {
-    const foundLectures = await Lecture.find().populate("standard","_id name").populate("subject","_id name").populate("chapter","_id name").populate("examtype","_id name").sort({ createdAt: -1 })
+    console.log("We are here");
+
+    const foundLectures = await Lecture.find().populate("standard","_id name").populate("subject").populate("chapter","_id name").populate("examtype","_id name").sort({ createdAt: -1 })
     res.status(200).json(foundLectures)
 })
 
 
 const lectureSearch =asyncHandler(async (req, res) => {
+ 
+
         const { search } = req.params;
         console.log("scacas",req.query);    
         await Lecture.find(
@@ -48,7 +52,7 @@ const lectureSearch =asyncHandler(async (req, res) => {
                 { title: { $regex: search, $options: "i" } },
                 
             ],type:"RECORDED"
-            }).populate("standard","_id name").populate("subject","_id name").populate("chapter","_id name").populate("examtype","_id name").sort({
+            }).populate("standard","_id name").populate("subject").populate("chapter","_id name").populate("examtype","_id name").sort({
                 createdAt: -1,
             }).then(( blogs) => {
                 console.log(blogs);
@@ -59,12 +63,13 @@ const lectureSearch =asyncHandler(async (req, res) => {
     })
   
 
-const LivelectureSearch =asyncHandler(async (req, res) => {
+    const LivelectureSearch =asyncHandler(async (req, res) => {
+        console.log("We are here1");
         const { search } = req.params;
         console.log("scacas",req.query);    
         await  Lecture.find({$or: [{ title: { $regex: search, $options: "i" } },],type:"LIVE"})
                     .populate("standard","_id name")
-                    .populate("subject","_id name")
+                    .populate("subject")
                     .populate("chapter","_id name")
                     .populate("examtype","_id name")
                     .sort({createdAt: -1,})
@@ -77,6 +82,8 @@ const LivelectureSearch =asyncHandler(async (req, res) => {
 
 
 const listRelated = (req, res) => {
+    console.log("We are here2");
+
     let limit = req.body.limit ? parseInt(req.body.limit) : 3;
     const { _id, categories } = req.body.blog; 
     Course.find({ _id: { $ne: _id }, categories: { $in: categories } })
@@ -95,13 +102,17 @@ const listRelated = (req, res) => {
   
 
 const lectureLecturesByType = asyncHandler(async (req, res) => {
+    console.log("We are here3");
+
     const type = req.params.type.toUpperCase()
-    const foundLectures = await Lecture.find({ type }).populate("standard","_id name").populate("subject","_id name").populate("chapter","_id name").populate("examtype","_id name").sort({ createdAt: -1 })
+    const foundLectures = await Lecture.find({ type }).populate("standard","_id name").populate("subject").populate("chapter","_id name").populate("examtype","_id name").sort({ createdAt: -1 })
     res.status(200).json(foundLectures)
 })
 
 
 const LiveLecturesFilter = asyncHandler(async (req, res) => {
+    console.log("We are here4");
+
     const {examtype}  = req.params;
     const type ="LIVE"
     console.log(req.params.examtype);
@@ -109,48 +120,54 @@ const LiveLecturesFilter = asyncHandler(async (req, res) => {
     if(req.params.type == 'All'){
         foundComplaints = await Lecture.find().sort({
             createdAt: -1,
-        });                
+        }).populate("subject");                
     }
     else{
-        foundComplaints = await Lecture.find().where({examtype:examtype, type:type}).sort({ createdAt: -1 });
+        foundComplaints = await Lecture.find().where({examtype:examtype, type:type}).sort({ createdAt: -1 }).populate("subject", "_id name");
     }
     res.status(200).json(foundComplaints)
 })
 
 
 const LiveLecturesSubjectFilter = asyncHandler(async (req, res) => {
+    console.log("We are here5");
+
     const {subject}  = req.params;
     const {course}  = req.params;
     const type ="LIVE";
     console.log(req.params.subject);
     let foundComplaints;
     if(req.params.type == 'All'){
-        foundComplaints = await Lecture.find().sort({createdAt: -1});               
+        foundComplaints = await Lecture.find().sort({createdAt: -1}).populate("subject", "_id name")              
     }
     else {
-        foundComplaints = await Lecture.find().where({subject:subject, type:type,course:course}).sort({ createdAt: -1 });
+        foundComplaints = await Lecture.find().where({subject:subject, type:type,course:course}).sort({ createdAt: -1 }).populate("subject", "_id name");
     }
     res.status(200).json(foundComplaints)
 })
 
 
 const RecordedLecturesSubjectFilter = asyncHandler(async (req, res) => {
+    console.log("We are here5");
+
     const {subject}  = req.params;
     const {course}  = req.params;
     const type ="RECORDED";
     console.log(req.params.subject);
     let foundComplaints;
     if(req.params.type == 'All'){
-        foundComplaints = await Lecture.find().sort({createdAt: -1});             
+        foundComplaints = await Lecture.find().sort({createdAt: -1}).populate("subject", "_id name");             
     }
     else {
-        foundComplaints = await Lecture.find().where({subject:subject, type:type,course:course}).sort({ createdAt: -1 });
+        foundComplaints = await Lecture.find().where({subject:subject, type:type,course:course}).sort({ createdAt: -1 }).populate("subject", "_id name");
     }
     res.status(200).json(foundComplaints)
 });
 
 
 const RecordedLecturesFilter = asyncHandler(async (req, res) => {
+    console.log("We are here6");
+
     const {examtype}  = req.params;
     const type ="RECORDED"
     console.log(req.params.examtype);
@@ -159,22 +176,24 @@ const RecordedLecturesFilter = asyncHandler(async (req, res) => {
         foundComplaints = await Lecture.find().sort({createdAt: -1});               
     }
     else {
-        foundComplaints = await Lecture.find().where({examtype:examtype, type:type}).sort({ createdAt: -1 });
+        foundComplaints = await Lecture.find().where({examtype:examtype, type:type}).sort({ createdAt: -1 }).populate("subject", "_id name");
     }
     res.status(200).json(foundComplaints)
 })
 
 
 const lectureLecturesById = asyncHandler(async (req, res) => {
+    console.log("We are here7");
+
     const id = req.params.id.toUpperCase()
-    const foundLectures = await Lecture.findById(id).populate("standard","_id name").populate("subject","_id name").populate("chapter","_id name").populate("examtype","_id name").sort({ createdAt: -1 })
+    const foundLectures = await Lecture.findById(id).populate("standard","_id name").populate("subject", "_id name").populate("chapter","_id name").populate("examtype","_id name").sort({ createdAt: -1 })
     res.status(200).json(foundLectures)
 })
 
 
 // to fetch all active lectures available *******************************************************
 const lectureGetActive = asyncHandler(async (req, res) => {
-    const foundLectures = await Lecture.find({ isActive: true }).populate("standard","_id name").populate("subject","_id name").populate("chapter","_id name").populate("examtype","_id name").sort({createdAt: -1})
+    const foundLectures = await Lecture.find({ isActive: true }).populate("standard","_id name").populate("subject", "_id name").populate("chapter","_id name").populate("examtype","_id name").sort({createdAt: -1})
     res.status(200).json(foundLectures)
 })
 

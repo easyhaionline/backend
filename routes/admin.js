@@ -28,8 +28,11 @@ const {
     removeTeacher,
     studentToggle,
     removeStudent,
-    allCoursesAdmin
- 
+    allCoursesAdmin,
+    approveStudent,
+    createApproveStudent,
+    getAllApproveStudentList,
+    isActive
 } = require('../controllers/admin');
 
 
@@ -46,6 +49,7 @@ if (process.env.NODE_ENV === 'development') {
 // @route: POST /api/admin/teacher
 // @desc: To register a new SUPER admin
 // @access: Private
+
 router.post('/teacher', adminRegisterTeacher);
 
 // @route: POST /api/admin/student
@@ -143,4 +147,9 @@ router.put('/', protectAdmin, adminUpdate);
 // @access: Private
 router.put('/profile-update',  profileUpdate);
 
+//route to approve a student
+router.post('/approve-student', approveStudent)
+router.post('/create-approve-req' , createApproveStudent);
+router.get('/get-approve-students', getAllApproveStudentList);
+router.post('/isactive-student', isActive);
 module.exports = router;

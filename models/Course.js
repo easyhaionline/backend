@@ -34,19 +34,18 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
-    startDate: {
-      type: String,
-    },
     description: {
       type: String,
     },
     mindescription: {
       type: String,
     },
+    startDate: {
+      type: String,
+    },
     endDate: {
       type: String,
     },
-    
     subject: 
       [{
           type: Types.ObjectId,

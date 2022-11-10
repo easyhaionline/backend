@@ -7,7 +7,7 @@ const validateMongoID = require('../validators/subject')
 const courseDetailsAdd = asyncHandler(async (req, res) => {
   const { email, mobile, courseid } = req.body
 
-  const isAlreadyAvail = await CourseDetails.findOne({ email: email });
+  const isAlreadyAvail = await CourseDetails.findOne({ email: email, status:"new" });
 
   const courseDetails = async() => {
     if (isAlreadyAvail == null) {
@@ -15,7 +15,7 @@ const courseDetailsAdd = asyncHandler(async (req, res) => {
         email, mobile, courseid
       })
     } else {
-      return await CourseDetails.findOneAndUpdate({email:email}, 
+      return await CourseDetails.findOneAndUpdate({_id:isAlreadyAvail._id}, 
         { email, mobile, courseid }, {new:true, runValidators:true})
     }
   }
@@ -33,7 +33,7 @@ const courseDetailsAdd = asyncHandler(async (req, res) => {
 
 const getCouseDetailsByEmail = asyncHandler(async (req, res) => {
   const email = req.params.email;
-  await CourseDetails.find({ email, status: "new" }).exec((err, data) => {
+  await CourseDetails.findOne({ email:email, status:"new"}).exec((err, data) => {
     if (err) {
       return res.json({
         error: err,
@@ -45,7 +45,7 @@ const getCouseDetailsByEmail = asyncHandler(async (req, res) => {
 })
 const getCouseDetailsBymobile = asyncHandler(async (req, res) => {
   const mobile = req.params.mobile;
-  await CourseDetails.find({ mobile, status: "new" }).exec((err, data) => {
+  await CourseDetails.findOne({ mobile, status: "new" }).exec((err, data) => {
     if (err) {
       return res.json({
         error: err,
@@ -70,6 +70,11 @@ const courseDetailUpdate = asyncHandler(async (req, res) => {
 
 })
 
+// const deleteCourseDetails = asyncHandler(async(req, res) => {
+//   const courseDetails = await CourseDetails.deleteOne({courseid:req.params.id})
+//   const res.status(200).json(courseDetails)
+// })
+
 
 
 
@@ -77,5 +82,6 @@ module.exports = {
   courseDetailsAdd,
   getCouseDetailsByEmail,
   courseDetailUpdate,
-  getCouseDetailsBymobile
+  getCouseDetailsBymobile,
+  // deleteCourseDetails
 }
