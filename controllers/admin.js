@@ -902,7 +902,6 @@ const approveStudent = async (req, res)=>{
     try {
         console.log(req.body)
         let user = await ActiveStudent.findOneAndUpdate({user_email: email},{$set:{isActive:true}},{new:true})
-        // console.log(user)
         return res.json({message: "Success"})
     } catch (error) {
         console.log(error)
