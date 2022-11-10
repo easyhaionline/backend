@@ -7,7 +7,7 @@ const validateStudentInputs = require('../validators/student')
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
     const { name, username, email, phone, standard, course, freeTrial } = req.body
-
+    let number = phone;
     // validating inputs
     const { isValid, message } = validateStudentInputs(req.body)
     if (!isValid) {
@@ -23,7 +23,7 @@ const studentRegister = asyncHandler(async (req, res) => {
     }
 
     //  checking for the uniqueness of phone number
-    const isUniquePhone = (await Student.countDocuments({ phone })) > 0 ? false : true
+    const isUniquePhone = (await Student.countDocuments({ number: phone })) > 0 ? false : true
     if (!isUniquePhone) {
         res.status(400)
         throw new Error('Phone is already registered! Try Logging in.')
@@ -33,7 +33,7 @@ const studentRegister = asyncHandler(async (req, res) => {
         name,
         username,
         email,
-        phone,
+        number : phone,
         standard,
         course,
         freeTrial,
