@@ -916,6 +916,7 @@ const createApproveStudent = async (req, res)=>{
     try{
         let user = await ActiveStudent.findOne({user_email: email});
         if(user){
+            console.log("Already submitetd for approval")
             return res.status(400).json({message:"approval req already existes"});
         } else{
             user = await ActiveStudent.create({user_email: email});

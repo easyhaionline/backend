@@ -8,7 +8,8 @@ const studentSchema = new Schema(
             required: true
         },
         number:{
-            type:Number
+            type:Number,
+            required: true
         },
         image: {
             type: String 
