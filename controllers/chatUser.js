@@ -26,8 +26,8 @@ const getTeachers = asyncHandler(async (req, res) => {
         }
     }
 
-    console.log(data)
-    res.json(data)
+    // console.log(student.courses)
+    res.json( data )
 })
 
 

@@ -42,7 +42,7 @@ const chapterGetById = asyncHandler(async (req, res) => {
   await Chapter.findById(_id).populate({
     path: 'standard',
     select: 'title',
-}) .populate("topics", "_id name").exec((err,data)=>{
+}) .populate("topics", "_id name").populate("subject").exec((err,data)=>{
     if (err) {
       return res.json({
         error: err,
