@@ -12,7 +12,10 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const _ = require('lodash');
 const request = require('request');
-const axios = require('axios')
+const axios = require('axios');
+const Studentlog = require('../models/StudentLogger');
+const Teacherlog = require('../models/TeacherLogger')
+const StudentAttendancelog = require('../models/StudentAttendance');
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
     const { username, email, image, password } = req.body;
@@ -108,6 +111,8 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
     });
 
     await ChatUser.create({_id:newTeacher._id, username:newTeacher.username})
+    await Teacherlog.create({teacherId:newTeacher._id});
+    await TeacherAttendancelog.create({teacherId:newTeacher._id})
 
     if (newTeacher) {
         // removing password before sending to client
@@ -177,8 +182,12 @@ const studentRegister = asyncHandler(async (req, res) => {
         courses:courseId
     });
 
-    await ChatUser.create({_id:newAdmin._id, username:newAdmin.username})
 
+    await ChatUser.create({_id:newAdmin._id, username:newAdmin.username})
+    await Studentlog.create({Id:newAdmin._id})
+    await StudentAttendancelog.create({studentId:newAdmin._id})
+    
+  
     if (newAdmin) {
         // removing password before sending to client
         newAdmin.password = null
@@ -685,7 +694,7 @@ const Updatingcourse = asyncHandler(async (req, res) => {
 
 const profileUpdate = asyncHandler(async (req, res) => {
     const { username, image, email, number } = req.body
-
+    console.log(image)
     // validating inputs
     const { isValid, message } = validateAdminInputs(req.body, true)
     if (!isValid) {
@@ -705,7 +714,7 @@ const profileUpdate = asyncHandler(async (req, res) => {
 
 
         if (username) foundAdmin.username = username
-        if (image) foundAdmin.image = image
+        if (image) foundAdmin.image = image[1]
         if (number) foundAdmin.number = number
         foundAdmin.save();
         res.status(200).json({

@@ -273,6 +273,11 @@ const lectureUpdate = asyncHandler(async (req, res) => {
     })
 })
 
+const getbyZoomid = asyncHandler(async(req, res) => {
+    const lecture = await Lecture.findOne({zoomid:req.params.id})
+    res.json(lecture);
+})
+
 
 module.exports = {
     lectureCreate,
@@ -290,5 +295,6 @@ module.exports = {
     test,
     lectureSearch,
     LivelectureSearch,
-    listRelated
+    listRelated,
+    getbyZoomid
 }

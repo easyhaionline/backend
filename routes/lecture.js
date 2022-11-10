@@ -12,9 +12,9 @@ const {
   lectureLecturesByType,
   LiveLecturesFilter,
   RecordedLecturesFilter,
-  test,LivelectureSearch
-,
-lectureSearch,
+  test, LivelectureSearch,
+  getbyZoomid,
+  lectureSearch,
   RecordedLecturesSubjectFilter,
   LiveLecturesSubjectFilter,
 } = require("../controllers/lecture");
@@ -56,6 +56,7 @@ router.get("/live-filter/subject/:subject/:course", LiveLecturesSubjectFilter);
 router.get("/recorded-filter/subject/:subject/:course", RecordedLecturesSubjectFilter);
 router.get("/active/:type", lectureGetActive);
 router.put("/", lectureUpdate);
+router.get("/getbyZoomid/:id",getbyZoomid);
 
 // @route: GET /api/lecture/:type
 // @desc: To get all the lectures

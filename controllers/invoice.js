@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler')
-const invoice = require('../models/invoice')
+
 const OrderDetails = require('../models/OrderDetails')
 const Invoice = require('../models/invoice')
 

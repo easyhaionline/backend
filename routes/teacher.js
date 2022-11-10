@@ -1,7 +1,7 @@
 const express = require('express')
 
 const { protectAdmin } = require('../middleware/protect')
-const { teacherLogin, teacherGetAll ,teacherById} = require('../controllers/teacher')
+const { teacherLogin, teacherGetAll ,teacherById, profileUpdate} = require('../controllers/teacher')
 
 const router = express.Router()
 
@@ -16,4 +16,5 @@ router.post('/login', teacherLogin)
 // router.get('/', protectAdmin, teacherGetAll)
 router.get('/', teacherGetAll)
 router.get("/get-by-id/:id",teacherById);
+router.put('/profile-update',  profileUpdate);
 module.exports = router
