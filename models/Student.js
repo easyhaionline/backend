@@ -44,6 +44,12 @@ const studentSchema = new Schema(
             ref: "Course", 
             default:[]
         }],
+        startDate:[{
+            type:Date,
+        }],
+        endDate:[{
+            type:Date,
+        }],
         freeTrial: {
             type: Boolean,
             default: false,

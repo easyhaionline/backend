@@ -1,5 +1,4 @@
 const asyncHandler = require('express-async-handler')
-const ChatUser = require('../models/chatUser')
 const Teacher = require('../models/Teacher')
 const Student = require('../models/Student')
 const Courses = require('../models/Course')
@@ -23,20 +22,19 @@ const getTeachers = asyncHandler(async (req, res) => {
         for (var j = 0; j < subject.teachers.length; j++) {
 
             const teacher = await Teacher.findOne({ _id: subject.teachers[j] })
-
             data.push(teacher)
         }
     }
 
-    // console.log(student.courses)
-    res.json({ data })
+    console.log(data)
+    res.json(data)
 })
 
 
 const getStudents = asyncHandler(async (req, res) => {
 
     var coursesData = []
-    var data = []
+    var studentData = []
     const teacherId = req.params.id
 
     const courses = await Courses.find()
@@ -47,18 +45,18 @@ const getStudents = asyncHandler(async (req, res) => {
         }
     }
 
-
     const students = await Student.find()
     for (var i = 0; i < students.length; i++) {
         for (var k = 0; k < students[i].courses.length; k++) {
             for (var j = 0; j < coursesData.length; j++) {
-                if (students[i].courses[j] == coursesData[k])
-                    data.push(students[i])
+                if (students[i].courses[k] == coursesData[j]) {
+                    studentData.push(students[i])
+                    break
+                }
             }
         }
     }
-
-    res.json(data)
+    res.json(studentData)
 })
 
 module.exports = { getTeachers, getStudents }
