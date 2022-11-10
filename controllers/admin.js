@@ -918,6 +918,7 @@ const createApproveStudent = async (req, res)=>{
             console.log("Already submitetd for approval")
             return res.status(400).json({message:"approval req already existes"});
         } else{
+            console.log("Requested created")
             user = await ActiveStudent.create({user_email: email});
             return res.status(200).json({message:"Success"})
         }
