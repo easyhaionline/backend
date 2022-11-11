@@ -91,7 +91,7 @@ app.use(cors())
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.get('/', (_, res) => res.send('<p>Easyhaionline server is running: 10th Nov</p>'));
+app.get('/', (_, res) => res.send('<p>Easyhaionline server is running: 11th Nov</p>'));
 // Routes
 app.use('/api/admin', adminRoutes)
 app.use('/api/image', imageRoutes)
