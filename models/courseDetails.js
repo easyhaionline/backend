@@ -24,7 +24,7 @@ const courseDetails = new Schema(
             default: true,
         },
         number : {
-            type : Number
+            type : String
         }
     },
     {
