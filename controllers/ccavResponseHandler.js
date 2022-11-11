@@ -9,7 +9,6 @@ const CourseDetails = require('../models/courseDetails');
 const { Updatingcourse } = require('./admin');
 const Student = require("../models/Student");
 const Course = require("../models/Course");
-const Invoice = require("../models/invoice");
 
 const getEndDate = (startDate, duration) => {
 
@@ -79,7 +78,6 @@ exports.postRes = function (request, response) {
 		}
 
 		const orderDetails = await OrderDetails.create(orderData);
-		const invoice = await Invoice.create(orderDetails._id)
 
 		if (orderDetails) {
 			const email = ccavenuedata.billing_email;
