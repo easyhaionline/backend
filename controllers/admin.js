@@ -17,6 +17,7 @@ const axios = require('axios');
 const Studentlog = require('../models/StudentLogger');
 const Teacherlog = require('../models/TeacherLogger')
 const StudentAttendancelog = require('../models/StudentAttendance');
+const TeacherAttendance = require('../models/TeacherAttendance');
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
     const { username, email, image, password } = req.body;
@@ -113,7 +114,7 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
 
     await ChatUser.create({_id:newTeacher._id, username:newTeacher.username})
     await Teacherlog.create({teacherId:newTeacher._id});
-    await TeacherAttendancelog.create({teacherId:newTeacher._id})
+    await TeacherAttendance.create({teacherId:newTeacher._id})
 
     if (newTeacher) {
         // removing password before sending to client
@@ -185,7 +186,7 @@ const studentRegister = asyncHandler(async (req, res) => {
 
 
     await ChatUser.create({_id:newAdmin._id, username:newAdmin.username})
-    await Studentlog.create({Id:newAdmin._id})
+    await Studentlog.create({studentId:newAdmin._id})
     await StudentAttendancelog.create({studentId:newAdmin._id})
     
   

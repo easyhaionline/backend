@@ -21,6 +21,6 @@ const StudentLogSchema = new mongoose.Schema({
             // required: true
         }
     }]
-})
+},{timestamps:true})
 
 module.exports = mongoose.model("Studentlog",StudentLogSchema)

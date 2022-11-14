@@ -14,6 +14,7 @@ const createStudentlog = asyncHandler(async(req, res) => {
 const getStudentlog = asyncHandler(async(req, res) => {
     const studentLog = await Studentlog.findOne({studentId:req.params.id}).populate("studentId", "username email")
     console.log(studentLog)
+    console.log("here is log")
     res.json(studentLog)
 });
 

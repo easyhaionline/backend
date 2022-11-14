@@ -20,6 +20,6 @@ const StudentAttendanceLogSchema = new mongoose.Schema({
             default: false,
         }
     }]
-})
+},{timestamps:true})
 
 module.exports = mongoose.model("StudentAttendancelog",StudentAttendanceLogSchema)

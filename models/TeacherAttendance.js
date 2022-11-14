@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const TeacherAttendanceLogSchema = new mongoose.Schema({
-    TeacherId: {
+    teacherId: {
         type: mongoose.Types.ObjectId,
         ref: 'Teacher',
         required: true
@@ -10,16 +10,15 @@ const TeacherAttendanceLogSchema = new mongoose.Schema({
         lectureId: {
             type: mongoose.Types.ObjectId,
             ref: 'Lecture',
-            required: true
         },
         date: {
             type: String,
         },
-        attendance: {
+        attendance: { 
             type: Boolean,
             default: false,
         }
     }]
-})
+},{timestamps:true})
 
-module.exports = mongoose.model("TeacherAttendancelog",TeacherAttendanceLogSchema)
+module.exports = mongoose.model("TeacherAttendance",TeacherAttendanceLogSchema)
