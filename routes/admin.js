@@ -32,7 +32,12 @@ const {
     approveStudent,
     createApproveStudent,
     getAllApproveStudentList,
-    isActive
+    isActive,
+    createBusinessPartner,
+    createSubBusinessPartner,
+    getBusinessPartner,
+    deleteBusinessPartner,
+    getSubBusinessPartner
 } = require('../controllers/admin');
 
 
@@ -152,4 +157,11 @@ router.post('/approve-student', approveStudent)
 router.post('/create-approve-req' , createApproveStudent);
 router.get('/get-approve-students', getAllApproveStudentList);
 router.post('/isactive-student', isActive);
+
+//business partner api
+router.post('/create-business-parter' , createBusinessPartner);
+router.post('/create-sub-business-partner', createSubBusinessPartner);
+router.get('/get-business-partners', getBusinessPartner);
+router.delete('/deletebusinesspartner/:id', deleteBusinessPartner)
+router.get('/get-subbusiness-partners', getSubBusinessPartner);
 module.exports = router;

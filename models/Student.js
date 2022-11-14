@@ -60,6 +60,9 @@ const studentSchema = new Schema(
         doubtCredits: {
             type:Number,
             default:0
+        },
+        referralCode:{
+            type: String
         }
     },
     {
