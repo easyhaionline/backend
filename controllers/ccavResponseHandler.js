@@ -9,6 +9,8 @@ const CourseDetails = require('../models/courseDetails');
 const { Updatingcourse } = require('./admin');
 const Student = require("../models/Student");
 const Course = require("../models/Course");
+const Invoice = require("../models/Invoice");
+const InvoiceNumber = require('../models/InvoiceNumber');
 
 const getEndDate = (startDate, duration) => {
 
@@ -67,17 +69,35 @@ exports.postRes = function (request, response) {
 
 		let orderData = {
 			order_id: ccavenuedata.order_id,
-			tracking_id: ccavenuedata.tracking_id,
+			tracking_id: ccavenuedata.tracking_id, 
 			bank_ref_no: ccavenuedata.bank_ref_no,
 			order_status: ccavenuedata.order_status,
 			payment_mode: ccavenuedata.payment_mode,
 			amount: ccavenuedata.amount,
 			billing_name: ccavenuedata.billing_name,
+			billing_address: ccavenuedata.billing_address,
+			billing_city: ccavenuedata.billing_city,
+			billing_state: ccavenuedata.billing_state,
+			billing_zip: ccavenuedata.billing_zip,
+			billing_country: ccavenuedata.billing_country,
+			billing_tel: ccavenuedata.billing_tel,
 			courseid: ccavenuedata.merchant_param1,
 			studentid: ccavenuedata.merchant_param2
 		}
 
 		const orderDetails = await OrderDetails.create(orderData);
+		const invNum = await InvoiceNumber.find()
+
+		var invoiceNum = "EHO/"
+        const date = new Date()
+        const finYear = ((date.toLocaleString().slice(8,10)) + "-" +(parseInt(date.toLocaleString().slice(8,10)) + 1))
+        invoiceNum = invoiceNum + finYear + "/"
+
+		const invoice = await Invoice.create()
+
+		await InvoiceNumber.put({_id:invNum._id}, {invoiceNumber:(invNum.invoiceNumber + 1)}, {new:true, runValidators:true})
+
+
 
 		if (orderDetails) {
 			const email = ccavenuedata.billing_email;
@@ -90,18 +110,21 @@ exports.postRes = function (request, response) {
 			)
 
 			const course = await Course.findOne({ _id: orderData.courseid })
+			
+			let startDate
+			let endDate
+			if (!course.startDate || !course.endDate) {
+				startDate = new Date()
+				endDate = getEndDate(sDate, course.time)
+			}
 
-			const sDate = new Date()
-			const eDate = getEndDate(sDate, course.time)
+			foundAdmin.startDate.push(startDate)
+			foundAdmin.endDate.push(endDate)	
 
 			if (foundAdmin) {
 
 				foundAdmin.courses.push(ccavenuedata.merchant_param1);
 
-				if (!(foundAdmin.startDate || foundAdmin.endDate)) {
-					foundAdmin.startDate.push(sDate)
-					foundAdmin.endDate.push(eDate)
-				}
 
 				foundAdmin.doubtCredits += 100
 				foundAdmin.save()

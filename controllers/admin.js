@@ -160,7 +160,7 @@ const adminRegister = asyncHandler(async (req, res) => {
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-    const { username, email, mobile, password, courseId } = req.body;
+    const { username, email, number, password, courseId } = req.body;
     //  checking for the uniqueness of email address
     const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
     if (!isUniqueEmail) {
@@ -174,7 +174,7 @@ const studentRegister = asyncHandler(async (req, res) => {
         username,
         email,
         password,
-        mobile,
+        number,
         courses:courseId
     });
 
