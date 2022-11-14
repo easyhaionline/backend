@@ -12,7 +12,7 @@ const courseDetailsAdd = asyncHandler(async (req, res) => {
   const courseDetails = async() => {
     if (isAlreadyAvail == null) {
       return await CourseDetails.create({
-        email, mobile, courseid
+        email, number:mobile, courseid
       })
     } else {
       return await CourseDetails.findOneAndUpdate({_id:isAlreadyAvail._id}, 
@@ -45,7 +45,7 @@ const getCouseDetailsByEmail = asyncHandler(async (req, res) => {
 })
 const getCouseDetailsBymobile = asyncHandler(async (req, res) => {
   const mobile = req.params.mobile;
-  await CourseDetails.findOne({ mobile, status: "new" }).exec((err, data) => {
+  await CourseDetails.findOne({ number:mobile, status: "new" }).exec((err, data) => {
     if (err) {
       return res.json({
         error: err,
