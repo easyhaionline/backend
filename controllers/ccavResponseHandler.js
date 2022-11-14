@@ -92,8 +92,9 @@ exports.postRes = function (request, response) {
         const date = new Date()
         const finYear = ((date.toLocaleString().slice(8,10)) + "-" +(parseInt(date.toLocaleString().slice(8,10)) + 1))
         invoiceNum = invoiceNum + finYear + "/"
+		invoiceNum = invoiceNum + "0".repeat(5 - invNum.toString().length)
 
-		const invoice = await Invoice.create()
+		const invoice = await Invoice.create({invoice:orderDetails._id, invoiceNo:invoiceNum})
 
 		await InvoiceNumber.put({_id:invNum._id}, {invoiceNumber:(invNum.invoiceNumber + 1)}, {new:true, runValidators:true})
 

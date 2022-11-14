@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler')
+
 // const invoice = require('../models/invoice')
 const OrderDetails = require('../models/OrderDetails')
 const Invoice = require('../models/Invoice')
@@ -12,7 +13,8 @@ const createInvoice = asyncHandler(async (req, res) => {
 })
 
 const getInvoice = asyncHandler(async (req, res) => {
-    const invoice = await Invoice.findOne({invoice:req.params.id}).populate("invoice")
+    console.log(req.params.id)
+    const invoice = await Invoice.findOne({invoice:req.params.id}).populate("invoice").populate("courseid")
     // const invoice = await Invoice.findOne({ _id: req.params.id }).populate("invoice", "_id")
     res.status(200).json(invoice)
 })
