@@ -5,7 +5,9 @@ const Teacher = require('../models/Teacher')
 const Student = require('../models/Student')
 const ChatUser = require('../models/chatUser')
 const Parent = require('../models/Parent')
-const ActiveStudent =  require('../models/ActiveStudent')
+const ActiveStudent =  require('../models/ActiveStudent');
+const BusinessPartner= require('../models/BusinessPartner');
+const SubBusinessPartner = require("../models/SubBusinessPartner");
 const generateToken = require('../utils/generateToken')
 const validateAdminInputs = require('../validators/admin')
 const { sendEmailWithNodemailer } = require("../utils/email");
@@ -13,11 +15,16 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const _ = require('lodash');
 const request = require('request');
+<<<<<<< HEAD
+const axios = require('axios')
+const {v4 : uuidv4} = require('uuid')
+=======
 const axios = require('axios');
 const Studentlog = require('../models/StudentLogger');
 const Teacherlog = require('../models/TeacherLogger')
 const StudentAttendancelog = require('../models/StudentAttendance');
 const TeacherAttendance = require('../models/TeacherAttendance');
+>>>>>>> 05188931c3f8680a868db81e2d52e57fb226a549
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
     const { username, email, image, password } = req.body;
@@ -166,7 +173,7 @@ const adminRegister = asyncHandler(async (req, res) => {
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-    const { username, email, mobile, password, courseId } = req.body;
+    const { username, email, number, password, courseId } = req.body;
     //  checking for the uniqueness of email address
     const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
     if (!isUniqueEmail) {
@@ -180,7 +187,7 @@ const studentRegister = asyncHandler(async (req, res) => {
         username,
         email,
         password,
-        mobile,
+        number,
         courses:courseId
     });
 
@@ -405,7 +412,6 @@ const studentLogin = asyncHandler(async (req, res) => {
     }
 })
 
-
 const teacherLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     // finding the admin
@@ -441,7 +447,6 @@ const teacherLogin = asyncHandler(async (req, res) => {
         )
     }
 })
-
 
 const encryprttoken = asyncHandler(async (req, res) => {
     const { id } = req.params
@@ -606,8 +611,6 @@ const studentsBySearchFilter = asyncHandler(async (req, res) => {
 
     res.status(200).json(foundstudent)
 })
-
-
 
 // to update an admin *******************************************************************************
 const adminUpdate = asyncHandler(async (req, res) => {
@@ -963,6 +966,100 @@ const isActive = async (req, res)=>{
     }
 }
 
+//to create business partner
+const createBusinessPartner = async(req , res)=>{
+    const {name , email, phone, password} = req.body;
+    var  user = await BusinessPartner.findOne({email: email});
+    if(user){
+        return res.status(400).json({message:"User already exists"});
+    }
+
+    var referralCode;
+    var randomBool = true;
+
+    //create a referral code it is unique
+    while(randomBool){
+        referralCode = uuidv4();
+        user = await BusinessPartner.findOne({referralCode: referralCode});
+        if(!user){
+            randomBool = false;
+        }
+    }
+
+    const newUser = await BusinessPartner.create({name, email, password, phone, referralCode});
+    // delete newUser.passoword;
+    console.log(newUser)
+    res.json(newUser)
+}
+
+// to create sub business partner
+const createSubBusinessPartner = async(req , res)=>{
+    try{
+        const {name , email, phone, password, user_id} = req.body;
+        console.log(req.body)
+        var  user = await SubBusinessPartner.findOne({email: email});
+        if(user){
+            return res.status(400).json({message:"User already exists"});
+        }
+
+        var referralCode;
+        var randomBool = true;
+        while(randomBool){
+            referralCode = uuidv4();
+            user = await SubBusinessPartner.findOne({referralCode: referralCode});
+            if(!user){
+                randomBool = false;
+            }
+        }
+
+        const newUser = await SubBusinessPartner.create({name, email, password, phone, businessPartner: user_id, referralCode});
+        delete newUser.password;
+        console.log(newUser);
+        //add sub business partner to the business partner array
+        const businessPartnerObject = await BusinessPartner.updateOne({ referralCode: referralCode }, { $push: { subBusinessPartner: newUser._id }});
+        res.json(newUser);  
+    }catch(err){
+        console.log(err)
+    }
+}
+
+//to get the list of buisness partner
+const getBusinessPartner = async (req, res)=>{
+    const user = await BusinessPartner.find({});
+    res.status(200).json(user);
+}
+
+const deleteBusinessPartner = async (req, res)=>{
+    try{
+       const user = await BusinessPartner.findOneAndDelete({_id: req.params.id}) ;
+       res.status(200).json({message:"Success"});
+    } catch(err){
+        if(err){
+            res.status(400).json({message:"Error occured"});
+        }
+    }
+}
+
+// to get the list of sub buisness partner
+const getSubBusinessPartner = async (req, res)=>{
+    const user = await SubBusinessPartner.find({businessPartner: req.params.id});
+    user.map((elem)=>{
+        delete elem.password;
+    })
+    res.status(200).json(user);
+}
+
+const deleteSubBusinessPartner = async (req, res)=>{
+    try{
+       const user = await SubBusinessPartner.findOneAndDelete({_id: req.params.id}) ;
+       res.status(200).json({message:"Success"});
+    } catch(err){
+        if(err){
+            res.status(400).json({message:"Error occured"});
+        }
+    }
+}
+
 
 module.exports = {
     adminRegisterSuper,
@@ -999,6 +1096,12 @@ module.exports = {
     approveStudent,
     createApproveStudent,
     getAllApproveStudentList,
-    isActive
+    isActive,
+    createBusinessPartner,
+    createSubBusinessPartner,
+    getBusinessPartner,
+    deleteBusinessPartner,
+    getSubBusinessPartner,
+    deleteSubBusinessPartner
 }
 // allCoursesAdmin is the controller created for Admin Panel

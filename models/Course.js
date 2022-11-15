@@ -13,7 +13,7 @@ const courseSchema = new Schema(
     },
     desktopImage: {
       type: String,
-      // required: true,
+      required: true,
     },
     standard:
       [{
