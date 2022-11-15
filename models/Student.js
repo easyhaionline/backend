@@ -64,8 +64,11 @@ const studentSchema = new Schema(
             default: true,
         },
         doubtCredits: {
-            type: Number,
-            default: 0
+            type:Number,
+            default:0
+        },
+        referralCode:{
+            type: String
         }
     },
     {

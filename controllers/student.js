@@ -2,12 +2,15 @@ const asyncHandler = require('express-async-handler')
 
 const Student = require('../models/Student')
 const ChatUser = require('../models/chatUser')
+const BusinessPartner = require('../models/BusinessPartner');
+const SubBusinessPartner = require('../models/SubBusinessPartner');
 const validateStudentInputs = require('../validators/student')
 const Studentlog = require('../models/StudentLogger');
+const StudentAttendancelog = require('../models/StudentAttendance');
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-    const { name, username, email, phone, standard, course, freeTrial } = req.body
+    const { name, username, email, phone, standard, course, freeTrial , referralCode} = req.body
     let number = phone;
     // validating inputs
     const { isValid, message } = validateStudentInputs(req.body)
@@ -38,10 +41,19 @@ const studentRegister = asyncHandler(async (req, res) => {
         standard,
         course,
         freeTrial,
+        referralCode
     })
+
+    console.log(newStudent)
+    var partner = await SubBusinessPartner.findOne({referralCode});
+    if(partner){
+        const partnerObject = await SubBusinessPartner.updateOne({ referralCode: referralCode }, { $push: { students: newStudent._id }});
+    }
 
     await ChatUser.create({_id:newStudent._id, username: newStudent.username})
     await Studentlog.create({studentId:newStudent._id})
+    await StudentAttendancelog.create({studentId:newStudent._id})
+
     if (newStudent) {
         res.status(200).json(newStudent)
     } else {

@@ -97,6 +97,7 @@ app.use(cookieParser());
 app.get('/', (_, res) => res.send('<p>Easyhaionline server is running: 11th Nov</p>'));
 // Routes
 app.use('/api/admin', adminRoutes)
+app.use('/api/businesspartner', businessPartnerRoutes);
 app.use('/api/image', imageRoutes)
 app.use('/api/teacher', teacherRoutes)
 app.use('/api/course', courseRoutes)

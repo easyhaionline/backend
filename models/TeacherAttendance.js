@@ -7,9 +7,11 @@ const TeacherAttendanceLogSchema = new mongoose.Schema({
         required: true
     },
     ispresent:[{
+        _id:false,
         lectureId: {
             type: mongoose.Types.ObjectId,
             ref: 'Lecture',
+            required: true
         },
         date: {
             type: String,
