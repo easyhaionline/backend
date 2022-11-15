@@ -12,9 +12,12 @@ const createstudentattendancelog = asyncHandler(async(req, res) => {
 
 // update student attendancelog
 const updatestudentattendance = asyncHandler(async(req, res) => {
-    const {lectureId ,date, attendance} = req.body
-    console.log(req.body)
-    const studentattendancelog = await StudentAttendancelog.findOneAndUpdate({studentId:req.params.id},{$push:{ispresent:{lectureId, date, attendance}}},{new:true,runValidators:true})
+    // const {lectureId ,date, attendance} = req.body
+    // console.log(lectureId)
+    // console.log(date)
+    // console.log(attendance)
+    const studentattendancelog = await StudentAttendancelog.findOneAndUpdate({studentId:req.params.id},{$push:{ispresent:req.body}})
+    console.log(studentattendancelog)
     res.json(studentattendancelog)
 })
 
@@ -36,7 +39,7 @@ const createteacherattendancelog = asyncHandler(async(req, res) => {
 const updateteacherattendance = asyncHandler(async(req, res) => {
     const {lectureId ,date, attendance} = req.body
     console.log(req.body)
-    const teacherattendancelog = await TeacherAttendance.findOneAndUpdate({teacherId:req.params.id},{$push:{ispresent:{lectureId, date, attendance}}},{new:true,runValidators:true})
+    const teacherattendancelog = await TeacherAttendance.findOneAndUpdate({teacherId:req.params.id},{$push:{ispresent:{lectureId, date, attendance}}})
     res.json(teacherattendancelog)
 });
 
@@ -45,6 +48,7 @@ const getTeacherattendance = asyncHandler(async(req, res) => {
     const teacherAttendancelog = await TeacherAttendance.findOne({teacherId:req.params.id}).populate("teacherId", "username email")
     console.log(teacherAttendancelog)
     res.json(teacherAttendancelog)
+    
 })
 
 
