@@ -116,7 +116,7 @@ exports.postRes = function (request, response) {
 			let endDate
 			if (!course.startDate || !course.endDate) {
 				startDate = new Date()
-				endDate = getEndDate(sDate, course.time)
+				endDate = getEndDate(startDate, course.time)
 			}
 
 			foundAdmin.startDate.push(startDate)
@@ -135,7 +135,7 @@ exports.postRes = function (request, response) {
 			await CourseDetails.updateMany({ mobile: foundAdmin.number, status: "new" }, { status: 'old' });
 
 			// res.status(200).json(orderDetails._id)
-			response.redirect(`https://student.easyhaionline.com/myorders/${orderDetails._id}`);
+			response.redirect(`https://www.student.easyhaionline.com/myorders/${orderDetails._id}`);
 
 		} else {
 			response.status(500)
