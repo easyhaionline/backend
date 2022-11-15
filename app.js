@@ -56,7 +56,8 @@ const socket = require("socket.io");
 const pdfMaker = require('./routes/pdfMaker');
 const doubtExpert = require('./routes/doubtExpert');
 const invoiceRoutes = require('./routes/invoice');
-const chatUser = require('./routes/chatUser')
+const chatUser = require('./routes/chatUser');
+const businessPartnerRoutes = require('./routes/businessPartner')
 
 // connecting to database
 connectDB()
@@ -94,6 +95,7 @@ app.use(cookieParser());
 app.get('/', (_, res) => res.send('<p>Easyhaionline server is running: 4th Oct</p>'));
 // Routes
 app.use('/api/admin', adminRoutes)
+app.use('/api/businesspartner', businessPartnerRoutes);
 app.use('/api/image', imageRoutes)
 app.use('/api/teacher', teacherRoutes)
 app.use('/api/course', courseRoutes)

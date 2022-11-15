@@ -979,28 +979,33 @@ const createBusinessPartner = async(req , res)=>{
 
 // to create sub business partner
 const createSubBusinessPartner = async(req , res)=>{
-    const {name , email, phone, password, user_id} = req.body;
-    var  user = await BusinessPartner.findOne({email: email});
-    if(user){
-        return res.status(400).json({message:"User already exists"});
-    }
-
-    var referralCode;
-    var randomBool = true;
-    while(randomBool){
-        referralCode = uuidv4();
-        user = await SubBusinessPartner.findOne({referralCode: referralCode});
-        if(!user){
-            randomBool = false;
+    try{
+        const {name , email, phone, password, user_id} = req.body;
+        console.log(req.body)
+        var  user = await SubBusinessPartner.findOne({email: email});
+        if(user){
+            return res.status(400).json({message:"User already exists"});
         }
-    }
 
-    const newUser = await SubBusinessPartner.create({name, email, password, phone, businessPartner: user_id, referralCode});
-    delete newUser.password;
-    
-    //add sub business partner to the business partner array
-    const businessPartnerObject = await BusinessPartner.updateOne({ referralCode: referralCode }, { $push: { subBusinessPartner: newUser._id }});
-    res.json(newUser);
+        var referralCode;
+        var randomBool = true;
+        while(randomBool){
+            referralCode = uuidv4();
+            user = await SubBusinessPartner.findOne({referralCode: referralCode});
+            if(!user){
+                randomBool = false;
+            }
+        }
+
+        const newUser = await SubBusinessPartner.create({name, email, password, phone, businessPartner: user_id, referralCode});
+        delete newUser.password;
+        console.log(newUser);
+        //add sub business partner to the business partner array
+        const businessPartnerObject = await BusinessPartner.updateOne({ referralCode: referralCode }, { $push: { subBusinessPartner: newUser._id }});
+        res.json(newUser);  
+    }catch(err){
+        console.log(err)
+    }
 }
 
 //to get the list of buisness partner
@@ -1011,7 +1016,6 @@ const getBusinessPartner = async (req, res)=>{
 
 const deleteBusinessPartner = async (req, res)=>{
     try{
-        console.log(req.params.id)
        const user = await BusinessPartner.findOneAndDelete({_id: req.params.id}) ;
        res.status(200).json({message:"Success"});
     } catch(err){
@@ -1023,14 +1027,23 @@ const deleteBusinessPartner = async (req, res)=>{
 
 // to get the list of sub buisness partner
 const getSubBusinessPartner = async (req, res)=>{
-    const user = await SubBusinessPartner.find({});
+    const user = await SubBusinessPartner.find({businessPartner: req.params.id});
     user.map((elem)=>{
         delete elem.password;
-        console.log(elem.password)
     })
-    res.status(200).json({users: user});
+    res.status(200).json(user);
 }
 
+const deleteSubBusinessPartner = async (req, res)=>{
+    try{
+       const user = await SubBusinessPartner.findOneAndDelete({_id: req.params.id}) ;
+       res.status(200).json({message:"Success"});
+    } catch(err){
+        if(err){
+            res.status(400).json({message:"Error occured"});
+        }
+    }
+}
 
 
 module.exports = {
@@ -1074,5 +1087,6 @@ module.exports = {
     getBusinessPartner,
     deleteBusinessPartner,
     getSubBusinessPartner,
+    deleteSubBusinessPartner
 }
 // allCoursesAdmin is the controller created for Admin Panel

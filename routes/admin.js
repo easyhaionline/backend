@@ -37,7 +37,8 @@ const {
     createSubBusinessPartner,
     getBusinessPartner,
     deleteBusinessPartner,
-    getSubBusinessPartner
+    getSubBusinessPartner,
+    deleteSubBusinessPartner
 } = require('../controllers/admin');
 
 
@@ -163,5 +164,6 @@ router.post('/create-business-parter' , createBusinessPartner);
 router.post('/create-sub-business-partner', createSubBusinessPartner);
 router.get('/get-business-partners', getBusinessPartner);
 router.delete('/deletebusinesspartner/:id', deleteBusinessPartner)
-router.get('/get-subbusiness-partners', getSubBusinessPartner);
+router.get('/get-subbusiness-partners/:id', getSubBusinessPartner);
+router.delete('/deletesubbusinesspartner/:id',deleteSubBusinessPartner)
 module.exports = router;

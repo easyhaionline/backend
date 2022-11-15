@@ -1,5 +1,5 @@
 const {Schema, model, Types} = require("mongoose")
-
+const bcrypt = require("bcryptjs")
 
 const SubBusinessPartnerSchema = new Schema({
     name:{
