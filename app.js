@@ -60,6 +60,7 @@ const chatUser = require('./routes/chatUser')
 const invoiceNumber = require('./routes/invoiceNumber')
 const logRoutes = require('./routes/logger');
 const attendanceLogRoutes = require('./routes/attendancelogger');
+const businessPartnerRoutes = require('./routes/businessPartner')
 
 // connecting to database
 connectDB()

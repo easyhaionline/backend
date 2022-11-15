@@ -15,16 +15,12 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const _ = require('lodash');
 const request = require('request');
-<<<<<<< HEAD
 const axios = require('axios')
 const {v4 : uuidv4} = require('uuid')
-=======
-const axios = require('axios');
 const Studentlog = require('../models/StudentLogger');
 const Teacherlog = require('../models/TeacherLogger')
 const StudentAttendancelog = require('../models/StudentAttendance');
 const TeacherAttendance = require('../models/TeacherAttendance');
->>>>>>> 05188931c3f8680a868db81e2d52e57fb226a549
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
     const { username, email, image, password } = req.body;
