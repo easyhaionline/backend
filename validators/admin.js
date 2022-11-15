@@ -61,7 +61,7 @@ const validateAdminInputs = (inputData, isEdit = false) => {
 
     // validating image
     if (image) {
-        if (typeof image !== 'string') {
+        if (typeof image[1] !== 'string') {
             return {
                 isValid: false,
                 message: 'Image must be a string!',

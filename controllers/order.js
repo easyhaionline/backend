@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler')
 const Order = require('../models/Order')
+const OrderDetails = require('../models/OrderDetails')
 const { errorHandler } = require("../helpers/errorHandler");
 // to create a new order ********************************************************
 const placeOrder = asyncHandler(async (req, res) => {
@@ -24,7 +25,24 @@ const getOrders = asyncHandler(async (req, res) => {
     res.status(200).json(foundOrders)
 })
 
+const getOrderDetails = asyncHandler(async (req, res) => {
+    
+    const studentId = req.params.id
+
+    const orders = await OrderDetails.find({studentid:studentId}).populate("courseid")
+    res.status(200).json(orders)
+})
+
+const getOrderDetailById = asyncHandler(async (req, res) => {
+    
+    const orderId = req.params.id
+    const order = await OrderDetails.findById({_id:orderId}).populate("courseid")
+    res.status(200).json(order)
+})
+
 module.exports = {
     placeOrder,
-    getOrders
+    getOrders,
+    getOrderDetails,
+    getOrderDetailById
 }

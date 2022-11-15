@@ -7,17 +7,17 @@ const studentSchema = new Schema(
             type: String,
             required: true
         },
-        number:{
-            type:Number,
+        number: {
+            type: Number,
             required: true
         },
         image: {
-            type: String 
+            type: String
         },
-        encryption:{
+        encryption: {
             type: String,
-             default: ''
-         },
+            default: ''
+        },
         email: {
             type: String
         },
@@ -40,19 +40,25 @@ const studentSchema = new Schema(
             type: Types.ObjectId,
             ref: 'Standard',
         },
-        courses:[{
+        courses: [{
             type: Types.ObjectId,
-            ref: "Course", 
-            default:[]
+            ref: "Course",
+            default: []
+        }],
+        startDate: [{
+            type: Date,
+        }],
+        endDate: [{
+            type: Date,
         }],
         freeTrial: {
             type: Boolean,
             default: false,
         },
-        role:{
-            type:Number,
-            default:0
-                    },
+        role: {
+            type: Number,
+            default: 0
+        },
         isActive: {
             type: Boolean,
             default: true,

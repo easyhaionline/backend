@@ -15,8 +15,16 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const _ = require('lodash');
 const request = require('request');
+<<<<<<< HEAD
 const axios = require('axios')
 const {v4 : uuidv4} = require('uuid')
+=======
+const axios = require('axios');
+const Studentlog = require('../models/StudentLogger');
+const Teacherlog = require('../models/TeacherLogger')
+const StudentAttendancelog = require('../models/StudentAttendance');
+const TeacherAttendance = require('../models/TeacherAttendance');
+>>>>>>> 05188931c3f8680a868db81e2d52e57fb226a549
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
     const { username, email, image, password } = req.body;
@@ -112,6 +120,8 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
     });
 
     await ChatUser.create({_id:newTeacher._id, username:newTeacher.username})
+    await Teacherlog.create({teacherId:newTeacher._id});
+    await TeacherAttendance.create({teacherId:newTeacher._id})
 
     if (newTeacher) {
         // removing password before sending to client
@@ -163,7 +173,7 @@ const adminRegister = asyncHandler(async (req, res) => {
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-    const { username, email, mobile, password, courseId } = req.body;
+    const { username, email, number, password, courseId } = req.body;
     //  checking for the uniqueness of email address
     const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
     if (!isUniqueEmail) {
@@ -177,12 +187,16 @@ const studentRegister = asyncHandler(async (req, res) => {
         username,
         email,
         password,
-        mobile,
+        number,
         courses:courseId
     });
 
-    await ChatUser.create({_id:newAdmin._id, username:newAdmin.username})
 
+    await ChatUser.create({_id:newAdmin._id, username:newAdmin.username})
+    await Studentlog.create({studentId:newAdmin._id})
+    await StudentAttendancelog.create({studentId:newAdmin._id})
+    
+  
     if (newAdmin) {
         // removing password before sending to client
         newAdmin.password = null
@@ -682,7 +696,7 @@ const Updatingcourse = asyncHandler(async (req, res) => {
 
 const profileUpdate = asyncHandler(async (req, res) => {
     const { username, image, email, number } = req.body
-
+    console.log(image)
     // validating inputs
     const { isValid, message } = validateAdminInputs(req.body, true)
     if (!isValid) {
@@ -702,7 +716,7 @@ const profileUpdate = asyncHandler(async (req, res) => {
 
 
         if (username) foundAdmin.username = username
-        if (image) foundAdmin.image = image
+        if (image) foundAdmin.image = image[1]
         if (number) foundAdmin.number = number
         foundAdmin.save();
         res.status(200).json({
@@ -917,6 +931,7 @@ const createApproveStudent = async (req, res)=>{
             console.log("Already submitetd for approval")
             return res.status(400).json({message:"approval req already existes"});
         } else{
+            console.log("Requested created")
             user = await ActiveStudent.create({user_email: email});
             return res.status(200).json({message:"Success"})
         }

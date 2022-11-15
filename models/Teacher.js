@@ -17,15 +17,15 @@ const teacherSchema = new Schema(
             type: String,
             // required: true,
         },
-        role:{
-            type:Number,
-            default:0
-                    },
-                    isSuper: {
-                        type: Boolean,
-                        required: true,
-                        default: false,
-                    },
+        role: {
+            type: Number,
+            default: 0
+        },
+        isSuper: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
         phone: {
             type: String,
             required: true,
@@ -39,13 +39,13 @@ const teacherSchema = new Schema(
             type: String,
             required: true,
         },
-        
+
         resetPasswordLink: {
             data: String,
             default: ''
         },
-        encryption:{
-           type: String,
+        encryption: {
+            type: String,
             default: ''
         },
         isActive: {
@@ -54,8 +54,8 @@ const teacherSchema = new Schema(
             default: true,
         },
         doubtCredits: {
-            type:Number,
-            default:0
+            type: Number,
+            default: 0
         }
     },
     { timestamps: true }

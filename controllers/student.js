@@ -5,6 +5,7 @@ const ChatUser = require('../models/chatUser')
 const BusinessPartner = require('../models/BusinessPartner');
 const SubBusinessPartner = require('../models/SubBusinessPartner');
 const validateStudentInputs = require('../validators/student')
+const Studentlog = require('../models/StudentLogger');
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
@@ -49,7 +50,7 @@ const studentRegister = asyncHandler(async (req, res) => {
     }
 
     await ChatUser.create({_id:newStudent._id, username: newStudent.username})
-
+    await Studentlog.create({studentId:newStudent._id})
     if (newStudent) {
         res.status(200).json(newStudent)
     } else {

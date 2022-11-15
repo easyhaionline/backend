@@ -24,6 +24,24 @@ const orderDetailschema = new Schema(
         billing_name:{
             type: String,
         },
+        billing_address: {
+            type:String
+        },
+        billing_city:{
+            type:String
+        },
+        billing_state:{
+            type:String
+        },
+        billing_zip:{
+            type:String
+        },
+        billing_country:{
+            type:String
+        },
+        billing_tel:{
+            type:String
+        },
         studentid: {
             type: Types.ObjectId,
             ref: 'Student',
