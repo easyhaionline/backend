@@ -1,3 +1,4 @@
+const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler')
 const Teacher = require('../models/Teacher')
 const Student = require('../models/Student')
@@ -5,8 +6,8 @@ const Courses = require('../models/Course')
 const Subject = require('../models/Subject')
 
 const getTeachers = asyncHandler(async (req, res) => {
-
-    var data = []
+    
+    var teacherId = []
     const studentId = req.params.id
 
     const student = await Student.findOne({ _id: studentId })
@@ -22,14 +23,14 @@ const getTeachers = asyncHandler(async (req, res) => {
         for (var j = 0; j < subject.teachers.length; j++) {
 
             const teacher = await Teacher.findOne({ _id: subject.teachers[j] })
-            data.push(teacher)
+            teacherId.push(teacher)
         }
     }
 
-    // console.log(student.courses)
+    // const teachers = Array.from(new Set(teacherId.map(JSON.stringify)))
+    const data = Array.from(new Set(teacherId.map(JSON.stringify))).map(JSON.parse)
     res.json( data )
 })
-
 
 const getStudents = asyncHandler(async (req, res) => {
 
@@ -56,7 +57,9 @@ const getStudents = asyncHandler(async (req, res) => {
             }
         }
     }
-    res.json(studentData)
+
+    const data = Array.from(new Set(studentData.map(JSON.stringify))).map(JSON.parse)
+    res.json(data)
 })
 
 module.exports = { getTeachers, getStudents }

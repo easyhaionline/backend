@@ -97,7 +97,7 @@ exports.postRes = function (request, response) {
 			const date = new Date()
 			const finYear = ((date.toLocaleString().slice(8, 10)) + "-" + (parseInt(date.toLocaleString().slice(8, 10)) + 1))
 			invoiceNum = invoiceNum + finYear + "/"
-			invoiceNum = invoiceNum + "0".repeat(5 - invNum[0].invoiceNumber.toString().length)
+			invoiceNum = invoiceNum + "0".repeat(5 - invNum[0].invoiceNumber.toString().length) + invNum[0].invoiceNumber.toString()
 
 			const invoice = await Invoice.create({ invoice: orderDetails._id, invoiceNo: invoiceNum })
 
@@ -111,7 +111,10 @@ exports.postRes = function (request, response) {
 
 			const course = await Course.findOne({ _id: orderData.courseid })
 
-			if (!course.startDate || !course.endDate) {
+			if (course.startDate != null && course.endDate != null) {
+				foundAdmin.startDate.push(course.startDate)
+				foundAdmin.endDate.push(course.endDate)
+			} else {
 				let startDate
 				let endDate
 				startDate = new Date().toISOString().slice(0, 10).split('-')
@@ -142,7 +145,7 @@ exports.postRes = function (request, response) {
 				foundAdmin.courses.push(ccavenuedata.merchant_param1);
 
 
-				foundAdmin.doubtCredits += 100
+				foundAdmin.doubtCredits = foundAdmin.doubtCredits + 100
 				foundAdmin.save()
 			}
 
