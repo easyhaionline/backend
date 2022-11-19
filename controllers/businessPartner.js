@@ -21,6 +21,7 @@ const BusinessPartnerLogin = asyncHandler(async (req, res) => {
         }
     } else{
         foundPartner = await SubBusinessPartner.findOne({email})
+        console.log("here", foundPartner)
         if(foundPartner && (await foundPartner.matchPassword(password))){
             return res.send({
                 email: foundPartner.email,

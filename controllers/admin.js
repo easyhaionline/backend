@@ -967,7 +967,12 @@ const createBusinessPartner = async(req , res)=>{
     const {name , email, phone, password} = req.body;
     var  user = await BusinessPartner.findOne({email: email});
     if(user){
-        return res.status(400).json({message:"User already exists"});
+        return res.status(400).json({message:"Business Partner already exists"});
+    }
+
+    user = await SubBusinessPartner.findOne({email: email})
+    if(user){
+        return res.status(400).json({message:"Sub Business Partner exists with this username"});
     }
 
     var referralCode;
@@ -975,7 +980,7 @@ const createBusinessPartner = async(req , res)=>{
 
     //create a referral code it is unique
     while(randomBool){
-        referralCode = uuidv4();
+        referralCode = name.substring(0,4) + Math.floor(Math.random()*9999).toString();
         user = await BusinessPartner.findOne({referralCode: referralCode});
         if(!user){
             randomBool = false;
@@ -994,14 +999,18 @@ const createSubBusinessPartner = async(req , res)=>{
         const {name , email, phone, password, user_id} = req.body;
         var  user = await SubBusinessPartner.findOne({email: email});
         if(user){
-            console.log("User already exists")
-            return res.status(400).json({message:"User already exists"});
+            return res.status(400).json({message:"Sub Business Partner already exists"});
+        }
+
+        user = await BusinessPartner.findOne({email: email});
+        if(user){
+            return res.status(400).json({message:"Business Partner exists with this username"});
         }
 
         var referralCode;
         var randomBool = true;
         while(randomBool){
-            referralCode = uuidv4();
+            referralCode = name.substring(0,4) + Math.floor(Math.random()*9999).toString();
             user = await SubBusinessPartner.findOne({referralCode: referralCode});
             if(!user){
                 randomBool = false;
