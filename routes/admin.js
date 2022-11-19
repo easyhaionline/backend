@@ -38,7 +38,8 @@ const {
     getBusinessPartner,
     deleteBusinessPartner,
     getSubBusinessPartner,
-    deleteSubBusinessPartner
+    deleteSubBusinessPartner,
+    getStudentList
 } = require('../controllers/admin');
 
 
@@ -165,5 +166,8 @@ router.post('/create-sub-business-partner', createSubBusinessPartner);
 router.get('/get-business-partners', getBusinessPartner);
 router.delete('/deletebusinesspartner/:id', deleteBusinessPartner)
 router.get('/get-subbusiness-partners/:id', getSubBusinessPartner);
-router.delete('/deletesubbusinesspartner/:id',deleteSubBusinessPartner)
+router.delete('/deletesubbusinesspartner/:id', deleteSubBusinessPartner);
+router.get('/getstudentlist/:id', getStudentList);
+
 module.exports = router;
+

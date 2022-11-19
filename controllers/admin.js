@@ -15,16 +15,12 @@ const jwt = require('jsonwebtoken');
 const expressJwt = require('express-jwt');
 const _ = require('lodash');
 const request = require('request');
-<<<<<<< HEAD
-const axios = require('axios')
 const {v4 : uuidv4} = require('uuid')
-=======
 const axios = require('axios');
 const Studentlog = require('../models/StudentLogger');
 const Teacherlog = require('../models/TeacherLogger')
 const StudentAttendancelog = require('../models/StudentAttendance');
 const TeacherAttendance = require('../models/TeacherAttendance');
->>>>>>> 05188931c3f8680a868db81e2d52e57fb226a549
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
     const { username, email, image, password } = req.body;
@@ -996,9 +992,9 @@ const createBusinessPartner = async(req , res)=>{
 const createSubBusinessPartner = async(req , res)=>{
     try{
         const {name , email, phone, password, user_id} = req.body;
-        console.log(req.body)
         var  user = await SubBusinessPartner.findOne({email: email});
         if(user){
+            console.log("User already exists")
             return res.status(400).json({message:"User already exists"});
         }
 
@@ -1060,6 +1056,17 @@ const deleteSubBusinessPartner = async (req, res)=>{
     }
 }
 
+const getStudentList = async (req, res)=>{
+    try{
+        const referralUser = await SubBusinessPartner.findOne({_id: req.params.id});
+        const students = await Student.find({referralCode: referralUser.referralCode});
+        console.log(students);
+        res.json(students);
+    }catch(err){
+        console.log(err);
+        res.status(400).json({Message: "Error Occured"});
+    }
+}
 
 module.exports = {
     adminRegisterSuper,
@@ -1102,6 +1109,7 @@ module.exports = {
     getBusinessPartner,
     deleteBusinessPartner,
     getSubBusinessPartner,
-    deleteSubBusinessPartner
+    deleteSubBusinessPartner,
+    getStudentList
 }
 // allCoursesAdmin is the controller created for Admin Panel
