@@ -60,10 +60,11 @@ const studentLogin = asyncHandler(async (req, res) => {
             student: foundAdmin
         })
     } else {
-        res.status(401)
-        throw new Error(
-            'Either your credentials are wrong or your account is deactivated! Try again.'
-        )
+        res.status(200).json({status: false, message: "Your credential are wrong! Try again."})
+        // throw new Error(
+        //     'Either your credentials are wrong or your account is deactivated! Try again.'
+        // )
+        return
     }
 })
 
