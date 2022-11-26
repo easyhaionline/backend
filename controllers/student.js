@@ -146,8 +146,9 @@ const profileUpdate = asyncHandler(async (req, res) => {
             data: { ...foundStudent._doc, password: null },
         })
     } else {
-        res.status(404)
-        throw new Error('No user exists with this email!')
+        res.status(200).json({status: false,message: "No user exist with this email!"})
+        return
+        // throw new Error('No user exists with this email!')
     }
 })
 
