@@ -6,6 +6,7 @@ const BusinessPartner = require('../models/BusinessPartner');
 const SubBusinessPartner = require('../models/SubBusinessPartner');
 const validateStudentInputs = require('../validators/student')
 const Studentlog = require('../models/StudentLogger');
+const StudentAttendancelog = require('../models/StudentAttendance');
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
@@ -51,6 +52,8 @@ const studentRegister = asyncHandler(async (req, res) => {
 
     await ChatUser.create({_id:newStudent._id, username: newStudent.username})
     await Studentlog.create({studentId:newStudent._id})
+    await StudentAttendancelog.create({studentId:newStudent._id})
+
     if (newStudent) {
         res.status(200).json(newStudent)
     } else {
@@ -143,8 +146,9 @@ const profileUpdate = asyncHandler(async (req, res) => {
             data: { ...foundStudent._doc, password: null },
         })
     } else {
-        res.status(404)
-        throw new Error('No user exists with this email!')
+        res.status(200).json({status: false,message: "No user exist with this email!"})
+        return
+        // throw new Error('No user exists with this email!')
     }
 })
 

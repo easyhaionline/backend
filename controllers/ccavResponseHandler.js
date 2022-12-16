@@ -12,26 +12,26 @@ const Course = require("../models/Course");
 const Invoice = require("../models/Invoice");
 const InvoiceNumber = require('../models/InvoiceNumber');
 
-const getEndDate = (startDate, duration) => {
+// const getEndDate = (startDate, duration) => {
 
-	const sDate = startDate.toISOString().slice(0, 10).split('-')
-	const sTime = startDate.toISOString().slice(10, 24)
+// 	const sDate = startDate.toISOString().slice(0, 10).split('-')
+// 	const sTime = startDate.toISOString().slice(10, 24)
 
-	let year = parseInt(sDate[0])
-	let month = parseInt(sDate[1])
-	let date = parseInt(sDate[2])
+// 	let year = parseInt(sDate[0])
+// 	let month = parseInt(sDate[1])
+// 	let date = parseInt(sDate[2])
 
 
-	if ((month + duration) % 12 != 0) {
-		year += parseInt((month + duration) / 12)
-		month = (month + duration) % 12
-	} else {
-		year += parseInt((month + duration) / 12)
-		month = 1
-	}
+// 	if ((month + duration) % 12 != 0) {
+// 		year += parseInt((month + duration) / 12)
+// 		month = (month + duration) % 12
+// 	} else {
+// 		year += parseInt((month + duration) / 12)
+// 		month = 1
+// 	}
 
-	return (date + "-" + month + "-" + year + sTime)
-}
+// 	return (date + "-" + month + "-" + year + sTime)
+// }
 
 exports.postRes = function (request, response) {
 	var ccavEncResponse = '',
@@ -69,7 +69,7 @@ exports.postRes = function (request, response) {
 
 		let orderData = {
 			order_id: ccavenuedata.order_id,
-			tracking_id: ccavenuedata.tracking_id, 
+			tracking_id: ccavenuedata.tracking_id,
 			bank_ref_no: ccavenuedata.bank_ref_no,
 			order_status: ccavenuedata.order_status,
 			payment_mode: ccavenuedata.payment_mode,
@@ -86,24 +86,23 @@ exports.postRes = function (request, response) {
 		}
 
 		const orderDetails = await OrderDetails.create(orderData);
-		const invNum = await InvoiceNumber.find()
-
-		var invoiceNum = "EHO/"
-        const date = new Date()
-        const finYear = ((date.toLocaleString().slice(8,10)) + "-" +(parseInt(date.toLocaleString().slice(8,10)) + 1))
-        invoiceNum = invoiceNum + finYear + "/"
-		invoiceNum = invoiceNum + "0".repeat(5 - invNum.toString().length)
-
-		const invoice = await Invoice.create({invoice:orderDetails._id, invoiceNo:invoiceNum})
-
-		await InvoiceNumber.put({_id:invNum._id}, {invoiceNumber:(invNum.invoiceNumber + 1)}, {new:true, runValidators:true})
-
-
 
 		if (orderDetails) {
 			const email = ccavenuedata.billing_email;
 			const mobile = ccavenuedata.billing_tel;
 
+			const invNum = await InvoiceNumber.find()
+
+			var invoiceNum = "EHO/"
+			const date = new Date()
+			const finYear = ((date.toLocaleString().slice(8, 10)) + "-" + (parseInt(date.toLocaleString().slice(8, 10)) + 1))
+			invoiceNum = invoiceNum + finYear + "/"
+			invoiceNum = invoiceNum + "0".repeat(5 - invNum[0].invoiceNumber.toString().length) + (invNum[0].invoiceNumber + 1).toString()
+
+			const invoice = await Invoice.create({ invoice: orderDetails._id, invoiceNo: invoiceNum })
+
+			invNum[0].invoiceNumber = invNum[0].invoiceNumber + 1
+			await InvoiceNumber.findOneAndUpdate({ _id: invNum[0]._id }, { invoiceNumber: invNum[0].invoiceNumber })
 
 			// finding the admin whose details are need to be updated
 			const foundAdmin = await Student.findById(
@@ -111,23 +110,42 @@ exports.postRes = function (request, response) {
 			)
 
 			const course = await Course.findOne({ _id: orderData.courseid })
-			
-			let startDate
-			let endDate
-			if (!course.startDate || !course.endDate) {
-				startDate = new Date()
-				endDate = getEndDate(sDate, course.time)
+
+			if (course.startDate != null && course.endDate != null) {
+				foundAdmin.startDate.push(course.startDate)
+				foundAdmin.endDate.push(course.endDate)
+			} else {
+				let startDate
+				let endDate
+				startDate = new Date().toISOString().slice(0, 10).split('-')
+				const sTime = startDate.toISOString().slice(10, 24)
+
+				let year = parseInt(startDate[0])
+				let month = parseInt(startDate[1])
+				let date = parseInt(startDate[2])
+
+
+				if ((month + course.time) % 12 != 0) {
+					year += parseInt((month + course.time) / 12)
+					month = (month + course.time) % 12
+				} else {
+					year += parseInt((month + course.time) / 12)
+					month = 1
+				}
+
+				endDate = date + "-" + month + "-" + year + sTime
+				
+				foundAdmin.startDate.push(startDate)
+				foundAdmin.endDate.push(endDate)
 			}
 
-			foundAdmin.startDate.push(startDate)
-			foundAdmin.endDate.push(endDate)	
 
 			if (foundAdmin) {
 
 				foundAdmin.courses.push(ccavenuedata.merchant_param1);
 
 
-				foundAdmin.doubtCredits += 100
+				foundAdmin.doubtCredits = foundAdmin.doubtCredits + 100
 				foundAdmin.save()
 			}
 
@@ -135,7 +153,7 @@ exports.postRes = function (request, response) {
 			await CourseDetails.updateMany({ mobile: foundAdmin.number, status: "new" }, { status: 'old' });
 
 			// res.status(200).json(orderDetails._id)
-			response.redirect(`https://student.easyhaionline.com/myorders/${orderDetails._id}`);
+			response.redirect(`https://www.student.easyhaionline.com/myorders/${orderDetails._id}`);
 
 		} else {
 			response.status(500)

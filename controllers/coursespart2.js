@@ -169,12 +169,12 @@ exports.displaycoursecreate = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
-  console.log("Id", id);
+  // console.log("Id", id);
 
   Course.findById(id).exec(async (err, oldcourse) => {
 
     var secure_url2 = oldcourse.desktopImage;
-    console.log("old Banner url --> ", oldcourse.desktopImage);
+    // console.log("old Banner url --> ", oldcourse.desktopImage);
     try {
       const {
         name,
@@ -196,6 +196,9 @@ exports.update = async (req, res) => {
         time,
         priority,
       } = req.body;
+
+      console.log(standard)
+
       if (!name || !name.length) {
         return res.status(400).json({
           error: "name is required",
@@ -214,17 +217,17 @@ exports.update = async (req, res) => {
         });
       }
 
-      if (!startDate || !startDate.length) {
-        return res.status(400).json({
-          error: "startDate is required",
-        });
-      }
+      // if (!startDate || !startDate.length) {
+      //   return res.status(400).json({
+      //     error: "startDate is required",
+      //   });
+      // }
 
-      if (!endDate || !endDate.length) {
-        return res.status(400).json({
-          error: "endDate is required",
-        });
-      }
+      // if (!endDate || !endDate.length) {
+      //   return res.status(400).json({
+      //     error: "endDate is required",
+      //   });
+      // }
 
       if (!standard || !standard.length) {
         return res.status(400).json({
@@ -243,11 +246,11 @@ exports.update = async (req, res) => {
         });
       }
 
-      if (!time || !time.length) {
-        return res.status(400).json({
-          error: "time is required",
-        });
-      }
+      // if (!time || !time.length) {
+      //   return res.status(400).json({
+      //     error: "time is required",
+      //   });
+      // }
 
       // if (!classes || !classes.length) {
       //   return res.status(400).json({
@@ -305,7 +308,7 @@ exports.update = async (req, res) => {
       oldcourse.endDate = endDate;
       oldcourse.code = code;
 
-      console.log(arrayOfsubjects, oldcourse)
+      // console.log(arrayOfsubjects, oldcourse)
       oldcourse.save((err, result) => {
         if (err) {
           return res.status(400).json({
