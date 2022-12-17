@@ -843,7 +843,9 @@ const forgotPasswordStudent = asyncHandler(async (req, res) => {
 });
 
 const resetPasswordStudent = (req, res) => {
-    const { resetPasswordLink, newPassword } = req.body;
+    const {resetPasswordLink} = req.params;
+    // console.log("reset password link:", resetPasswordLink)
+    // const { newPassword } = req.body;
 
     if (resetPasswordLink) {
         jwt.verify(resetPasswordLink, process.env.JWT_RESET_PASSWORD, function (err, decoded) {
@@ -852,24 +854,24 @@ const resetPasswordStudent = (req, res) => {
                     error: 'Expired link. Try again'
                 });
             }
-            Student.findOne({ resetPasswordLink }, (err, user) => {
+            Student.findOne({resetPasswordLink}, (err, user) => {
                 if (err || !user) {
                     return res.status(401).json({
                         error: 'Something went wrong. Try later'
                     });
                 }
+                // console.log("name:", user.username);
                 const updatedFields = {
-                    password: newPassword,
+                    password: req.body.password,
                     resetPasswordLink: ''
                 };
 
                 user = _.extend(user, updatedFields);
-
+                console.log("Hey User:", user)
                 user.save((err, result) => {
                     if (err) {
                         return res.status(400).json({
                             error: err
-
                         });
                     }
                     res.json({

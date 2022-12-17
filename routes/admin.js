@@ -122,7 +122,7 @@ router.get('/get-student/:course',studentsByCourseFilter);
 router.put('/forgot-password', forgotPasswordValidator, forgotPassword); // this forgot password for teacher
 router.put('/reset-password', resetPasswordValidator,  resetPassword);
 router.put('/student/forgot-password', forgotPasswordValidator, forgotPasswordStudent);
-router.put('/student/reset-password', resetPasswordValidator,  resetPasswordStudent);
+router.put('/student/reset-password/:resetPasswordLink', resetPasswordValidator,  resetPasswordStudent);
 
 // @route: POST /api/admin/login
 // @desc: To login an existing admin
