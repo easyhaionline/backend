@@ -20,7 +20,7 @@ const router = express.Router()
 // @desc: To create a new subject
 // @access: Private
 // router.post('/', protectAdmin, subjectCreate)
-router.post('/',  subjectCreate)
+router.post('/', subjectCreate)
 
 // @route: DELETE /api/subject/:subjectID
 // @desc: To toggle an existing subject
