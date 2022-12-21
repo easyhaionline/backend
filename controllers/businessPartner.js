@@ -8,9 +8,10 @@ const BusinessPartnerLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     // finding the parnter
     let foundPartner = await BusinessPartner.findOne({email})
+    conosle.log("AAA:", foundPartner);
     let subPartner = await subBusinessPartner.findOne({email})
     if(foundPartner){
-        if(await foundPartner.matchPassword(password)){
+        if(foundPartner && (await foundPartner.matchPassword(password))){
             return res.send({
                 email: foundPartner.email,
                 name: foundPartner.name,
