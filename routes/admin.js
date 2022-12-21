@@ -39,7 +39,10 @@ const {
     deleteBusinessPartner,
     getSubBusinessPartner,
     deleteSubBusinessPartner,
-    getStudentList
+    getStudentList,
+    createRetailer,
+    getRetailer,
+    deleteRetailer
 } = require('../controllers/admin');
 
 
@@ -163,10 +166,13 @@ router.post('/isactive-student', isActive);
 //business partner api
 router.post('/create-business-parter' , createBusinessPartner);
 router.post('/create-sub-business-partner', createSubBusinessPartner);
+router.post('/create-retailer', createRetailer);
 router.get('/get-business-partners', getBusinessPartner);
 router.delete('/deletebusinesspartner/:id', deleteBusinessPartner)
 router.get('/get-subbusiness-partners/:id', getSubBusinessPartner);
 router.delete('/deletesubbusinesspartner/:id', deleteSubBusinessPartner);
+router.get('/get-retailers/:id', getRetailer);
+router.delete('/deleteretailer/:id',deleteRetailer);
 router.get('/getstudentlist/:id', getStudentList);
 
 module.exports = router;

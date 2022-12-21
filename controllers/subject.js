@@ -1,227 +1,162 @@
 const asyncHandler = require('express-async-handler')
 
-const Subject = require('../models/Subject')
-const validateMongoID = require('../validators/id')
-const validateSubjectInputs = require('../validators/subject')
-const validateTypeRequire = require('../validators/type-require.js')
+const Student = require('../models/Student')
+const ChatUser = require('../models/chatUser')
+const BusinessPartner = require('../models/BusinessPartner');
+const SubBusinessPartner = require('../models/SubBusinessPartner');
+const validateStudentInputs = require('../validators/student')
+const Studentlog = require('../models/StudentLogger');
+const StudentAttendancelog = require('../models/StudentAttendance');
+const cloudinary = require('cloudinary');
 
-// to create a new Subject ********************************************************
-const subjectCreate = asyncHandler(async (req, res) => {
-    const { name, teachers, standard,chapters,course } = req.body
-
-    const { isValid, message } = validateSubjectInputs(req.body)
+// to register a new student *******************************************************************************
+const studentRegister = asyncHandler(async (req, res) => {
+    const { name, username, email, phone, standard, course, freeTrial, referralCode } = req.body
+    let number = phone;
+    // validating inputs
+    const { isValid, message } = validateStudentInputs(req.body)
     if (!isValid) {
         res.status(400)
         throw new Error(message)
     }
 
-    const newSubject = await Subject.create({
+    //  checking for the uniqueness of email address
+    const isUniqueEmail = (await Student.countDocuments({ email })) > 0 ? false : true
+    if (!isUniqueEmail) {
+        res.status(400)
+        throw new Error('Email is already registered! Try Logging in.')
+    }
+
+    //  checking for the uniqueness of phone number
+    const isUniquePhone = (await Student.countDocuments({ number: phone })) > 0 ? false : true
+    if (!isUniquePhone) {
+        res.status(400)
+        throw new Error('Phone is already registered! Try Logging in.')
+    }
+
+    const newStudent = await Student.create({
         name,
-        teachers,
+        username,
+        email,
+        number: phone,
         standard,
-        chapters,
-        course
+        course,
+        freeTrial,
+        referralCode
     })
 
-    if (newSubject) {
-        res.status(200).json({
-            message: 'Subject created successfully!',
-            data: newSubject,
-        })
+    console.log(newStudent)
+    var partner = await SubBusinessPartner.findOne({ referralCode });
+    if (partner) {
+        const partnerObject = await SubBusinessPartner.updateOne({ referralCode: referralCode }, { $push: { students: newStudent._id } });
+    }
+
+    await ChatUser.create({ _id: newStudent._id, username: newStudent.username })
+    await Studentlog.create({ studentId: newStudent._id })
+    await StudentAttendancelog.create({ studentId: newStudent._id })
+
+    if (newStudent) {
+        res.status(200).json(newStudent)
     } else {
         res.status(500)
-        throw new Error("New Subject can't be created at the moment! Try again later.")
+        throw new Error("New student can't be registered at the moment! Try again later.")
     }
 })
 
-// to fetch all subjects available *******************************************************
-const subjectGetAll = asyncHandler(async (_, res) => {
-    const foundSubjects = await Subject.find().populate("standard","_id name").populate("chapters","_id name").populate("teachers","_id username email").sort({ createdAt: -1 }).populate(
-        "chapters",
-        "_id name"
-    )
+// to login an existing student *************************************************************************
+const studentLogin = asyncHandler(async (req, res) => {
+    const { phone } = req.body
 
-    res.status(200).json(foundSubjects)
-})
+    const foundStudent = await Student.findOne({ phone })
 
-const subjectGetById = asyncHandler(async (req, res) => {
-  const _id = req.params.id;
-  console.log(_id)
-   await Subject.findById(_id).populate("chapters","_id name").exec((err,data)=>{
-    if (err) {
-      return res.json({
-        error: err,
-      });
-    }
-    res.status(200).json(data)
-   })
-
- 
-})
-
-
-
-const Subjectremove =asyncHandler(async  (req, res) => {
-    const _id = req.params.id;
-    console.log(_id);
-   await Subject.findByIdAndDelete(_id).exec((err, data) => {
-      if (err) {
-        return res.json({
-          error: err,
-        });
-      }
-      res.json({ message: "Subject  Deleted Successfully",data:{_id} });
-    });
-  })
-
-
-// to fetch all active subjects on the site *******************************************************
-const subjectGetActive = asyncHandler(async (_, res) => {
-    const foundSubjects = await Subject.find({ isActive: true })
-        .sort({ createdAt: -1 }).populate("chapters","_id name").populate("standard","_id name").populate("teachers","_id username email")
-        .populate({
-            path: 'standard',
-            select: 'name',
-        })
-
-    res.status(200).json(foundSubjects)
-})
-
-// to toggle the state of subject **************************************************************
-const subjectToggle = asyncHandler(async (req, res) => {
-    const { subjectID } = req.params
-
-    const { isValid, message } = validateMongoID(subjectID)
-    if (!isValid) {
-        res.status(400)
-        throw new Error(message)
+    if (!foundStudent) {
+        res.status(401)
+        throw new Error('This phone number is not registered!')
     }
 
-    const foundSubjectToToggle = await Subject.findOne({ _id: subjectID })
+    let otp = phone.substring(4)
 
-    if (foundSubjectToToggle) {
-        foundSubjectToToggle.isActive = foundSubjectToToggle.isActive ? false : true
-        foundSubjectToToggle.save()
+    foundStudent.otp = otp
+    foundStudent.save()
 
+    // send otp
+    res.status(200).json({ message: `Your otp is:${otp}` })
+})
+
+// to verify otp of given student ****************************************************************************
+const studentVerifyOtp = asyncHandler(async (req, res) => {
+    const { phone, otp } = req.body
+    const foundStudent = await Student.findOne({ phone })
+
+    if (!foundStudent) {
+        res.status(401)
+        throw new Error('This phone number is not registered!')
+    }
+
+    // update result as per given end point4
+    result = foundStudent.otp === foundStudent.phone.substring(4) ? true : false
+
+    if (result === false) {
+        res.status(401)
+        throw new Error('Incorrect OTP! Try again.')
+    }
+
+    foundStudent.isPhoneVerified = true
+    foundStudent.save()
+
+    res.status(200).json(foundStudent)
+})
+
+// to get all the Students ****************************************************************************
+const studentGetAll = asyncHandler(async (_, res) => {
+    const foundStudents = await Student.find().sort({ createdAt: -1 })
+
+    res.status(200).json(foundStudents)
+})
+
+// edit profile
+const profileUpdate = asyncHandler(async (req, res) => {
+    const { username, image, email, number } = req.body
+
+    console.log(image)
+
+    // validating inputs
+    // const { isValid, message } = validateStudentInputs(req.body, true)
+    // if (!isValid) {
+    //     res.status(400)
+    //     throw new Error(message)
+    // }
+
+    // finding the admin whose details are need to be updated
+    const foundStudent = await Student.findOne({
+        email,
+    })
+
+
+    if (foundStudent) {
+        // checking if the logged in user is updating his own details or else he is a super admin
+        // (super admin can update any admin's details)
+
+
+        if (username) foundStudent.username = username
+        if (image) foundStudent.image = image[1]
+        if (number) foundStudent.number = number
+        foundStudent.save();
         res.status(200).json({
-            message: foundSubjectToToggle.isActive
-                ? 'Subject Activated!'
-                : 'Subject Deactivated!',data:foundSubjectToToggle
+            message: 'User updated successfully!',
+            data: { ...foundStudent._doc, password: null },
         })
     } else {
-        res.status(404)
-        throw new Error('Subject not found!')
+        res.status(200).json({ status: false, message: "No user exist with this email!" })
+        return
+        // throw new Error('No user exists with this email!')
     }
 })
-
-// to update the subject **************************************************************
-const subjectUpdate = asyncHandler(async (req, res) => {
-    const { name, standard, teachers,chapters,course } = req.body
-    console.log(req.body)
-    const demo = { name, standard, teachers,chapters };
-
-    const _id = req.params.id
-
-    const { isValid: isValidID, message: messageID } = validateMongoID(_id)
-    if (!isValidID) {
-        res.status(400)
-        throw new Error(messageID)
-    }
-
-    const { isValid, message } = validateSubjectInputs(demo);
-    if (!isValid) {
-        res.status(400)
-        throw new Error(message)
-    }
-
-    const foundSubject = await Subject.findOne({ _id })
-    if (!foundSubject) {
-        res.status(404)
-        throw new Error('No such Subject exists!')
-    }
-
-    if (name) foundSubject.name = name
-    if (standard) foundSubject.standard = standard
-    if (teachers) foundSubject.teachers = teachers
-if(chapters) foundSubject.chapters = chapters
-if(course) foundSubject.course = course
-    foundSubject.save()
-
-    res.status(200).json({
-        message: 'Subject updated successfully!',
-        data: foundSubject,
-    })
-})
-
-const statusUpdate = async(req,res)=>{
-    const id = req.params.id;
-    const {status} = req.body;
-    try {
-
-        const resposne = await Subject.findByIdAndUpdate(id, { isActive :status});
-        if (resposne) {
-          res.send(resposne);
-        }
-        
-    } catch (error) {
-        
-    }
-
-}
-
-
-// to update the chapters **************************************************************
-
-const addingChapter = async (req, res) => {
-    const id = req.params.id;
-    const { chapters } = req.body;
-    await Subject.findByIdAndUpdate(
-      {
-        _id: id,
-      },
-      {
-        $push: {
-          chapters: chapters,
-        },
-      }
-    ).then((data, err) => {
-      if (err) {
-        res.json(err);
-      }
-      res.json(data);
-    });
-  };
-  
-  const removingChapter = async (req, res) => {
-    const id = req.params.id;
-    const { chapterid } = req.body;
-    await Subject.findByIdAndUpdate(
-      {
-        _id: id,
-      },
-      {
-        $pull: {
-          chapters: { _id: chapterid }
-        },
-      }
-    ).then((data, err) => {
-      if (err) {
-        res.json(err);
-      }
-      res.json(data);
-    });
-  };
-  
 
 module.exports = {
-  subjectCreate,
-  subjectGetAll,
-  subjectGetActive,
-  subjectToggle,
-  subjectUpdate,
-  Subjectremove,
-  statusUpdate,
-  addingChapter,
-  removingChapter,
-  subjectGetById
-};
+    studentRegister,
+    studentLogin,
+    studentVerifyOtp,
+    studentGetAll,
+    profileUpdate,
+}

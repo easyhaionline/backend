@@ -5,9 +5,10 @@ const Teacher = require('../models/Teacher')
 const Student = require('../models/Student')
 const ChatUser = require('../models/chatUser')
 const Parent = require('../models/Parent')
-const ActiveStudent =  require('../models/ActiveStudent');
-const BusinessPartner= require('../models/BusinessPartner');
+const ActiveStudent = require('../models/ActiveStudent');
+const BusinessPartner = require('../models/BusinessPartner');
 const SubBusinessPartner = require("../models/SubBusinessPartner");
+const Retailer = require("../models/Retailer")
 const generateToken = require('../utils/generateToken')
 const validateAdminInputs = require('../validators/admin')
 const { sendEmailWithNodemailer } = require("../utils/email");
@@ -16,7 +17,7 @@ const expressJwt = require('express-jwt');
 const _ = require('lodash');
 const request = require('request');
 const axios = require('axios')
-const {v4 : uuidv4} = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 const Studentlog = require('../models/StudentLogger');
 const Teacherlog = require('../models/TeacherLogger')
 const StudentAttendancelog = require('../models/StudentAttendance');
@@ -115,9 +116,9 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
         role
     });
 
-    await ChatUser.create({_id:newTeacher._id, username:newTeacher.username})
-    await Teacherlog.create({teacherId:newTeacher._id});
-    await TeacherAttendance.create({teacherId:newTeacher._id})
+    await ChatUser.create({ _id: newTeacher._id, username: newTeacher.username })
+    await Teacherlog.create({ teacherId: newTeacher._id });
+    await TeacherAttendance.create({ teacherId: newTeacher._id })
 
     if (newTeacher) {
         // removing password before sending to client
@@ -184,15 +185,15 @@ const studentRegister = asyncHandler(async (req, res) => {
         email,
         password,
         number,
-        courses:courseId
+        courses: courseId
     });
 
 
-    await ChatUser.create({_id:newAdmin._id, username:newAdmin.username})
-    await Studentlog.create({studentId:newAdmin._id})
-    await StudentAttendancelog.create({studentId:newAdmin._id})
-    
-  
+    await ChatUser.create({ _id: newAdmin._id, username: newAdmin.username })
+    await Studentlog.create({ studentId: newAdmin._id })
+    await StudentAttendancelog.create({ studentId: newAdmin._id })
+
+
     if (newAdmin) {
         // removing password before sending to client
         newAdmin.password = null
@@ -843,7 +844,7 @@ const forgotPasswordStudent = asyncHandler(async (req, res) => {
 });
 
 const resetPasswordStudent = (req, res) => {
-    const {resetPasswordLink} = req.params;
+    const { resetPasswordLink } = req.params;
     // console.log("reset password link:", resetPasswordLink)
     // const { newPassword } = req.body;
 
@@ -854,7 +855,7 @@ const resetPasswordStudent = (req, res) => {
                     error: 'Expired link. Try again'
                 });
             }
-            Student.findOne({resetPasswordLink}, (err, user) => {
+            Student.findOne({ resetPasswordLink }, (err, user) => {
                 if (err || !user) {
                     return res.status(401).json({
                         error: 'Something went wrong. Try later'
@@ -908,165 +909,289 @@ const removeStudent = (req, res) => {
     })
 }
 
-const approveStudent = async (req, res)=>{
+const approveStudent = async (req, res) => {
     const email = req.body.email;
     try {
         console.log(req.body)
-        let user = await ActiveStudent.findOneAndUpdate({user_email: email},{$set:{isActive:true}},{new:true})
-        return res.json({message: "Success"})
+        let user = await ActiveStudent.findOneAndUpdate({ user_email: email }, { $set: { isActive: true } }, { new: true })
+        return res.json({ message: "Success" })
     } catch (error) {
         console.log(error)
-        return res.json({message:"error in approving user"})
+        return res.json({ message: "error in approving user" })
     }
 }
 
 //create approval req after paying by cash
-const createApproveStudent = async (req, res)=>{
+const createApproveStudent = async (req, res) => {
     const email = req.body.email;
-    try{
-        let user = await ActiveStudent.findOne({user_email: email});
-        if(user){
+    try {
+        let user = await ActiveStudent.findOne({ user_email: email });
+        if (user) {
             console.log("Already submitetd for approval")
-            return res.status(400).json({message:"approval req already existes"});
-        } else{
+            return res.status(400).json({ message: "approval req already existes" });
+        } else {
             console.log("Requested created")
-            user = await ActiveStudent.create({user_email: email});
-            return res.status(200).json({message:"Success"})
+            user = await ActiveStudent.create({ user_email: email });
+            return res.status(200).json({ message: "Success" })
         }
-    }catch(err){
+    } catch (err) {
         console.log(err)
     }
 }
 
 //get the list of student to approve payment
-const getAllApproveStudentList = async (req,res)=>{
-    try{
+const getAllApproveStudentList = async (req, res) => {
+    try {
         const foundStudents = await ActiveStudent.find({});
         res.status(200).json(foundStudents)
-    } catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(400).json({message:"Server error"});
+        res.status(400).json({ message: "Server error" });
     }
 }
 
 //api will be called from student portal to approve to pay by cash
-const isActive = async (req, res)=>{
-    try{
-        let user = await ActiveStudent.find({user_email: req.body.email});
-        if(user){
-            return res.status(200).json({user});
-        } else{
-            return res.status(400).json({message: "user not found"});
-        }             
-    }catch(err){
+const isActive = async (req, res) => {
+    try {
+        let user = await ActiveStudent.find({ user_email: req.body.email });
+        if (user) {
+            return res.status(200).json({ user });
+        } else {
+            return res.status(400).json({ message: "user not found" });
+        }
+    } catch (err) {
         console.log(err);
-        res.status(400).json({message:"Server error"});
+        res.status(400).json({ message: "Server error" });
     }
 }
 
 //to create business partner
-const createBusinessPartner = async(req , res)=>{
-    const {name , email, phone, password} = req.body;
-    var  user = await BusinessPartner.findOne({email: email});
-    if(user){
-        return res.status(400).json({message:"User already exists"});
+const createBusinessPartner = async (req, res) => {
+    const { name, email, phone, password, pan, aadhar, panlink, aadharlink } = req.body;
+    var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+    if (user) {
+        return res.status(400).json({ message: "User already exists" });
+    }
+    var user = await SubBusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+    if (user) {
+        return res.status(400).json({ message: "User already exists" });
+    }
+    var user = await Retailer.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+    if (user) {
+        return res.status(400).json({ message: "User already exists" });
     }
 
     var referralCode;
     var randomBool = true;
+    var numbp = 1;
 
     //create a referral code it is unique
-    while(randomBool){
-        referralCode = uuidv4();
-        user = await BusinessPartner.findOne({referralCode: referralCode});
-        if(!user){
+    do {
+        referralCode = 'HEST/BP/' + numbp.toString();
+        user = await BusinessPartner.findOne({ referralCode: referralCode });
+        if (!user) {
             randomBool = false;
         }
-    }
+    } while (randomBool && numbp++)
 
-    const newUser = await BusinessPartner.create({name, email, password, phone, referralCode});
+    const newUser = await BusinessPartner.create({ name, email, password, phone, referralCode, pan, aadhar, panlink, aadharlink });
     // delete newUser.passoword;
     console.log(newUser)
     res.json(newUser)
 }
 
 // to create sub business partner
-const createSubBusinessPartner = async(req , res)=>{
-    try{
-        const {name , email, phone, password, user_id} = req.body;
-        var  user = await SubBusinessPartner.findOne({email: email});
-        if(user){
-            console.log("User already exists")
-            return res.status(400).json({message:"User already exists"});
+const createSubBusinessPartner = async (req, res) => {
+    try {
+        const { name, email, phone, password, user_id, pan, aadhar, panlink, aadharlink } = req.body;
+        var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        var user = await SubBusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        var user = await Retailer.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
         }
 
         var referralCode;
         var randomBool = true;
-        while(randomBool){
-            referralCode = uuidv4();
-            user = await SubBusinessPartner.findOne({referralCode: referralCode});
-            if(!user){
-                randomBool = false;
+        var randomsbp = true;
+        var numbp = 1;
+        var numsbp = 1;
+        var num;
+        while (randomsbp) {
+            var bp = await BusinessPartner.findOne({ "_id": user_id })
+            console.log("AAAA:", bp.referralCode)
+            if (bp.referralCode === 'HEST/BP/' + numbp.toString()) {
+                num = numbp;
+                randomsbp = false;
+            }
+            else {
+                numbp++;
             }
         }
 
-        const newUser = await SubBusinessPartner.create({name, email, password, phone, businessPartner: user_id, referralCode});
+        do {
+            referralCode = 'HEST/SBP/' + num.toString() + '-' + numsbp.toString();
+            user = await SubBusinessPartner.findOne({ referralCode: referralCode });
+            if (!user) {
+                randomBool = false;
+            }
+        } while (randomBool && numsbp++)
+
+        const newUser = await SubBusinessPartner.create({ name, email, password, phone, pan, aadhar, panlink, aadharlink, businessPartner: user_id, referralCode });
         delete newUser.password;
         console.log(newUser);
         //add sub business partner to the business partner array
-        const businessPartnerObject = await BusinessPartner.updateOne({ referralCode: referralCode }, { $push: { subBusinessPartner: newUser._id }});
-        res.json(newUser);  
-    }catch(err){
+        const businessPartnerObject = await BusinessPartner.updateOne({ "_id": user_id }, { $push: { subBusinessPartner: newUser._id } });
+        res.json(newUser);
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+//create retailer
+const createRetailer = async (req, res) => {
+    try {
+        const { name, email, phone, password, user_id, pan, aadhar, panlink, aadharlink } = req.body;
+        var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        var user = await SubBusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        var user = await Retailer.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+
+        var referralCode;
+        var randomBool = true;
+        var randombp = true;
+        var randomsbp = true;
+        var numbp = 1;
+        var numsbp = 1;
+        var numrt = 1;
+        var numone;
+        var numtwo;
+
+        while (randombp) {
+            var sbp = await SubBusinessPartner.findOne({ "_id": user_id });
+            var bp = await BusinessPartner.findOne({ "_id": sbp.businessPartner })
+            // console.log("CCCCCCCC:", bp.referralCode)
+            if (bp.referralCode === 'HEST/BP/' + numbp.toString()) {
+                numone = numbp;
+                randombp = false;
+            }
+            else {
+                numbp++;
+            }
+        }
+        while (randomsbp) {
+            var sbp = await SubBusinessPartner.findOne({ "_id": user_id });
+            // console.log("cccc:", sbp.referralCode)
+            if (sbp.referralCode === 'HEST/SBP/' + numone.toString() + '-' + numsbp.toString()) {
+                numtwo = numsbp;
+                randomsbp = false;
+            }
+            else {
+                numsbp++;
+            }
+        }
+
+        do {
+            referralCode = 'HEST/' + numone.toString() + '-' + numtwo.toString() + '/A' + numrt.toString();
+            user = await Retailer.findOne({ referralCode: referralCode });
+            if (!user) {
+                // console.log("ACBC:", numrt)
+                randomBool = false;
+            }
+        } while (randomBool && numrt++)
+
+        newUser = await Retailer.create({ name, email, password, phone, pan, aadhar, panlink, aadharlink, subBusinessPartner: user_id, referralCode });
+        delete newUser.password;
+        console.log("new retailer:",newUser);
+        const sbpartner = await SubBusinessPartner.updateOne({ "_id": user_id }, { $push: { retailer: newUser._id } });
+        res.json(newUser);
+    } catch (err) {
         console.log(err)
     }
 }
 
 //to get the list of buisness partner
-const getBusinessPartner = async (req, res)=>{
+const getBusinessPartner = async (req, res) => {
     const user = await BusinessPartner.find({});
     res.status(200).json(user);
 }
 
-const deleteBusinessPartner = async (req, res)=>{
-    try{
-       const user = await BusinessPartner.findOneAndDelete({_id: req.params.id}) ;
-       res.status(200).json({message:"Success"});
-    } catch(err){
-        if(err){
-            res.status(400).json({message:"Error occured"});
+const deleteBusinessPartner = async (req, res) => {
+    try {
+        const user = await BusinessPartner.findOneAndDelete({ _id: req.params.id });
+        res.status(200).json({ message: "Success" });
+    } catch (err) {
+        if (err) {
+            res.status(400).json({ message: "Error occured" });
         }
     }
 }
 
 // to get the list of sub buisness partner
-const getSubBusinessPartner = async (req, res)=>{
-    const user = await SubBusinessPartner.find({businessPartner: req.params.id});
-    user.map((elem)=>{
+const getSubBusinessPartner = async (req, res) => {
+    const user = await SubBusinessPartner.find({ businessPartner: req.params.id });
+    user.map((elem) => {
         delete elem.password;
     })
     res.status(200).json(user);
 }
 
-const deleteSubBusinessPartner = async (req, res)=>{
-    try{
-       const user = await SubBusinessPartner.findOneAndDelete({_id: req.params.id}) ;
-       res.status(200).json({message:"Success"});
-    } catch(err){
-        if(err){
-            res.status(400).json({message:"Error occured"});
+const deleteSubBusinessPartner = async (req, res) => {
+    try {
+        const user = await SubBusinessPartner.findOneAndDelete({ _id: req.params.id });
+        const bp = await BusinessPartner.updateOne({ "_id": user.businessPartner }, { $pull: { subBusinessPartner: user._id } })
+        res.status(200).json({ message: "Success" });
+    } catch (err) {
+        if (err) {
+            res.status(400).json({ message: "Error occured" });
         }
     }
 }
 
-const getStudentList = async (req, res)=>{
-    try{
-        const referralUser = await SubBusinessPartner.findOne({_id: req.params.id});
-        const students = await Student.find({referralCode: referralUser.referralCode});
+//Get all retailer
+const getRetailer = async (req, res) => {
+    const user = await Retailer.find({ subBusinessPartner: req.params.id });
+    user.map((elem) => {
+        delete elem.password;
+    })
+    res.status(200).json(user);
+}
+
+const deleteRetailer = async (req, res) => {
+    try {
+        const user = await Retailer.findOneAndDelete({ _id: req.params.id });
+        const sbp = await SubBusinessPartner.updateOne({ "_id": user.subBusinessPartner }, { $pull: { retailer: user._id } })
+        res.status(200).json({ message: "Success" });
+    } catch (err) {
+        if (err) {
+            res.status(400).json({ message: "Error occured" });
+        }
+    }
+}
+
+const getStudentList = async (req, res) => {
+    try {
+        const referralUser = await Retailer.findOne({ _id: req.params.id });
+        const students = await Student.find({ referralCode: referralUser.referralCode });
         console.log(students);
         res.json(students);
-    }catch(err){
+    } catch (err) {
         console.log(err);
-        res.status(400).json({Message: "Error Occured"});
+        res.status(400).json({ Message: "Error Occured" });
     }
 }
 
@@ -1095,8 +1220,8 @@ module.exports = {
     adminGetcourse,
     parentLogin,
     parentRegister,
-    studentsByCourseFilter
-    , studentsBySearchFilter,
+    studentsByCourseFilter,
+    studentsBySearchFilter,
     teacherToggle,
     removeTeacher,
     studentToggle,
@@ -1108,10 +1233,13 @@ module.exports = {
     isActive,
     createBusinessPartner,
     createSubBusinessPartner,
+    createRetailer,
     getBusinessPartner,
     deleteBusinessPartner,
     getSubBusinessPartner,
     deleteSubBusinessPartner,
+    getRetailer,
+    deleteRetailer,
     getStudentList
 }
 // allCoursesAdmin is the controller created for Admin Panel

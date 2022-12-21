@@ -6,7 +6,7 @@ const {
     studentLogin,
     studentVerifyOtp,
     studentGetAll,
-    profileUpdate
+    profileUpdate,
 } = require('../controllers/student')
 
 const router = express.Router()
@@ -32,5 +32,6 @@ router.post('/login/verify-otp', studentVerifyOtp)
 router.get('/', protectAdmin, studentGetAll)
 
 router.put('/profile-update',  profileUpdate);
+
 
 module.exports = router
