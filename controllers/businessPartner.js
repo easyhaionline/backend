@@ -1,17 +1,15 @@
 const asyncHandler = require('express-async-handler')
 const BusinessPartner = require('../models/BusinessPartner');
 const SubBusinessPartner = require('../models/SubBusinessPartner');
-const subBusinessPartner = require('../models/SubBusinessPartner');
 const Retailer = require("../models/Retailer")
 const generateToken = require('../utils/generateToken')
 const BusinessPartnerLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     // finding the parnter
     let foundPartner = await BusinessPartner.findOne({email})
-    conosle.log("AAA:", foundPartner);
-    let subPartner = await subBusinessPartner.findOne({email})
+    let subPartner = await SubBusinessPartner.findOne({email})
     if(foundPartner){
-        if(foundPartner && (await foundPartner.matchPassword(password))){
+        if(await foundPartner.matchPassword(password)){
             return res.send({
                 email: foundPartner.email,
                 name: foundPartner.name,
