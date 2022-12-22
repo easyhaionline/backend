@@ -967,37 +967,41 @@ const isActive = async (req, res) => {
 
 //to create business partner
 const createBusinessPartner = async (req, res) => {
-    const { name, email, phone, password, pan, aadhar, panlink, aadharlink } = req.body;
-    var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
-    if (user) {
-        return res.status(400).json({ message: "User already exists" });
-    }
-    var user = await SubBusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
-    if (user) {
-        return res.status(400).json({ message: "User already exists" });
-    }
-    var user = await Retailer.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
-    if (user) {
-        return res.status(400).json({ message: "User already exists" });
-    }
-
-    var referralCode;
-    var randomBool = true;
-    var numbp = 1;
-
-    //create a referral code it is unique
-    do {
-        referralCode = 'HEST/BP/' + numbp.toString();
-        user = await BusinessPartner.findOne({ referralCode: referralCode });
-        if (!user) {
-            randomBool = false;
+    try {
+        const { name, email, phone, password, pan, aadhar, panlink, aadharlink } = req.body;
+        var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
         }
-    } while (randomBool && numbp++)
+        var user = await SubBusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        var user = await Retailer.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
+        if (user) {
+            return res.status(400).json({ message: "User already exists" });
+        }
 
-    const newUser = await BusinessPartner.create({ name, email, password, phone, referralCode, pan, aadhar, panlink, aadharlink });
-    // delete newUser.passoword;
-    console.log(newUser)
-    res.json(newUser)
+        var referralCode;
+        var randomBool = true;
+        var numbp = 1;
+
+        //create a referral code it is unique
+        do {
+            referralCode = 'HEST/BP/' + numbp.toString();
+            user = await BusinessPartner.findOne({ referralCode: referralCode });
+            if (!user) {
+                randomBool = false;
+            }
+        } while (randomBool && numbp++)
+
+        const newUser = await BusinessPartner.create({ name, email, password, phone, referralCode, pan, aadhar, panlink, aadharlink });
+        // delete newUser.passoword;
+        console.log(newUser)
+        res.json(newUser)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 // to create sub business partner
@@ -1116,7 +1120,7 @@ const createRetailer = async (req, res) => {
 
         newUser = await Retailer.create({ name, email, password, phone, pan, aadhar, panlink, aadharlink, subBusinessPartner: user_id, referralCode });
         delete newUser.password;
-        console.log("new retailer:",newUser);
+        console.log("new retailer:", newUser);
         const sbpartner = await SubBusinessPartner.updateOne({ "_id": user_id }, { $push: { retailer: newUser._id } });
         res.json(newUser);
     } catch (err) {
