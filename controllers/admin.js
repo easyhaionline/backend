@@ -1237,6 +1237,30 @@ const getAllStudentsForSbp = async(req,res)=>{
     }
 }
 
+const studentsByFilter = asyncHandler(async (req, res) => {
+    const { data } = req.body
+
+
+    let foundstudent;
+    {
+        foundstudent = await Student.find().where({ email: data }).sort({ createdAt: -1 });
+        if (foundstudent.length == 0) {
+            foundstudent = await Student.find().where({ username: data }).sort({ createdAt: -1 });
+            if (foundstudent.length == 0) {
+                foundstudent = await Student.find().where({ referralCode: data }).sort({ createdAt: -1 });
+                if (foundstudent.length == 0) {
+                    foundstudent = await Student.find().where({ number: parseInt(data) }).sort({ createdAt: -1 });
+                    if (foundstudent.length == 0) {
+                        foundstudent = await Student.find().where({ _id: data }).sort({ createdAt: -1 });
+                    }
+                }
+            }
+        }
+    }
+
+    res.status(200).json(foundstudent)
+})
+
 module.exports = {
     adminRegisterSuper,
     adminRegisterTeacher,
@@ -1284,6 +1308,7 @@ module.exports = {
     deleteRetailer,
     getStudentList,
     getAllStudentsForBp,
-    getAllStudentsForSbp
+    getAllStudentsForSbp,
+    studentsByFilter
 }
 // allCoursesAdmin is the controller created for Admin Panel
