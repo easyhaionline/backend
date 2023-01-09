@@ -46,7 +46,23 @@ const RetailerSchema = new Schema({
     },
     aadharlink: {
         type: String,
-    }
+    },
+    accountname:{
+        type: String,
+        required: true,
+    },
+    accountnumber:{
+        type: Number,
+        required: true,
+    },
+    typeofaccount:{
+        type: String,
+        required: true,
+    },
+    ifsccode:{
+        type: String,
+        required: true,
+    },
 })
 RetailerSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)

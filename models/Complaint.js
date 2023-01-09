@@ -23,6 +23,18 @@ const complaintSchema = new Schema(
             type: Types.ObjectId,
             ref: 'Teacher',            
         },
+        businesspartner: {
+            type: Types.ObjectId,
+            ref: 'BusinessPartner',            
+        },
+        subbusinesspartner: {
+            type: Types.ObjectId,
+            ref: 'SubBusinessPartner',            
+        },
+        retailer: {
+            type: Types.ObjectId,
+            ref: 'Retailer',            
+        },
         seprater: {
             type: String,
             default:"C"            
