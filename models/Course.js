@@ -64,10 +64,12 @@ const courseSchema = new Schema(
       type:String
     }],
     demoLinks:[{
-      subject:String,
-      urls:[{
-        type:String
-      }]
+      subject:{
+        type:String,
+      },
+      url:{
+        type:String,
+      }
     }],
     time: {
       type: String,

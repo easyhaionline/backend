@@ -31,10 +31,14 @@ exports.displaycoursecreate = async (req, res) => {
       classes,
       courses,
       time,
-      perks
+      perks,
+      demoLinks
       // priority,
     } = req.body;
+
     console.log("request body ", req.body);
+    console.log('demo links: ', JSON.parse(demoLinks))
+
 
     if (!time || !time.length) {
       const start = startDate.split('-')
@@ -132,25 +136,28 @@ exports.displaycoursecreate = async (req, res) => {
 
     let arrayOfsubjects = subject && subject.split(",");
     let arrayOfperks = perks && perks.split(",");
+    // let arrayOfDemoLinks  = demoLinks && demoLinks.split(",");
     let arrayOfstandards = standard && standard.split(",");
     const createdByEmail = req.authAdmin.email;
     let course = new Course();
 
+
     (course.desktopImage = secure_url),
-      (course.mobileImage = secure_url),
-      (course.name = name),
-      (course.description = description),
-      (course.createdBy = createdByEmail),
-      (course.mindescription = smartTrim(description, 200, " ", " ...")),
-      (course.description = description),
-      (course.time = time),
-      (course.classes = classes),
-      (course.courses = courses);
+    (course.mobileImage = secure_url),
+    (course.name = name),
+    (course.description = description),
+    (course.createdBy = createdByEmail),
+    (course.mindescription = smartTrim(description, 200, " ", " ...")),
+    (course.description = description),
+    (course.time = time),
+    (course.classes = classes),
+    (course.courses = courses);
     course.actualPrice = actualPrice;
     course.discountPrice = discountPrice;
     course.standard = arrayOfstandards;
     course.subject = arrayOfsubjects;
     course.perks = arrayOfperks;
+    course.demoLinks = JSON.parse(demoLinks);
     course.startDate = startDate;
     course.endDate = endDate;
     course.code = code;
@@ -311,7 +318,6 @@ exports.update = async (req, res) => {
       oldcourse.endDate = endDate;
       oldcourse.code = code;
 
-      // console.log(arrayOfsubjects, oldcourse)
       oldcourse.save((err, result) => {
         if (err) {
           return res.status(400).json({
