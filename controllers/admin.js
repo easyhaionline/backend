@@ -1323,12 +1323,9 @@ module.exports = {
     getRetailer,
     deleteRetailer,
     getStudentList,
-<<<<<<< HEAD
-    allocateCourse
-=======
+    allocateCourse,
     getAllStudentsForBp,
     getAllStudentsForSbp,
     studentsByFilter
->>>>>>> fa2b54b385e07491762ba056cff58ec8a26125ec
 }
 // allCoursesAdmin is the controller created for Admin Panel
