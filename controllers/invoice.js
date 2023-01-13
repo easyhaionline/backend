@@ -14,7 +14,7 @@ const createInvoice = asyncHandler(async (req, res) => {
 
 const getInvoice = asyncHandler(async (req, res) => {
     console.log(req.params.id)
-    const invoice = await Invoice.findOne({invoice:req.params.id}).populate("invoice").populate("courseid")
+    const invoice = await Invoice.findOne({invoice:req.params.id})
     // const invoice = await Invoice.findOne({ _id: req.params.id }).populate("invoice", "_id")
     res.status(200).json(invoice)
 })

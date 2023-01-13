@@ -1199,6 +1199,22 @@ const getStudentList = async (req, res) => {
     }
 }
 
+const allocateCourse = async (req, res) => {
+
+    console.log("AAAAAAAAAA");
+
+    const student = await Student.findOne({email:req.body.email})
+
+    console.log(student)
+
+    if(student) {
+       student.courses.push(req.body.courseId)
+       student.save()
+    }
+
+    res.status(200).json(student)
+}
+
 module.exports = {
     adminRegisterSuper,
     adminRegisterTeacher,
@@ -1244,6 +1260,7 @@ module.exports = {
     deleteSubBusinessPartner,
     getRetailer,
     deleteRetailer,
-    getStudentList
+    getStudentList,
+    allocateCourse
 }
 // allCoursesAdmin is the controller created for Admin Panel

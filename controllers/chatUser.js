@@ -10,24 +10,17 @@ const getTeachers = asyncHandler(async (req, res) => {
     var teacherId = []
     const studentId = req.params.id
 
-    const student = await Student.findOne({ _id: studentId })
-    // console.log("AAAAAAAAAA", student);
+    const student = await Student.findOne({ _id: studentId }).populate("courses")
 
     for (var i = 0; i < student.courses.length; i++) {
-        const course = await Courses.findOne({ _id: student.courses[i] })
 
-        // console.log(course.subject)
-
-        const subject = await Subject.findOne({ _id: course.subject })
-        // console.log(`TEACHER ${j}: `, subject.teachers)
-        for (var j = 0; j < subject.teachers.length; j++) {
-
-            const teacher = await Teacher.findOne({ _id: subject.teachers[j] })
-            teacherId.push(teacher)
-        }
+      const subject = await Subject.findOne({ _id: student.courses[i].subject }).populate("teachers")
+				for(let j = 0; j < subject.teachers.length; j++) {
+					teacherId.push(subject.teachers[j])
+				}
     }
 
-    // const teachers = Array.from(new Set(teacherId.map(JSON.stringify)))
+		console.log(teacherId)
     const data = Array.from(new Set(teacherId.map(JSON.stringify))).map(JSON.parse)
     res.json( data )
 })

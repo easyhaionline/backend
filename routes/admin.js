@@ -42,7 +42,8 @@ const {
     getStudentList,
     createRetailer,
     getRetailer,
-    deleteRetailer
+    deleteRetailer,
+    allocateCourse
 } = require('../controllers/admin');
 
 
@@ -174,6 +175,7 @@ router.delete('/deletesubbusinesspartner/:id', deleteSubBusinessPartner);
 router.get('/get-retailers/:id', getRetailer);
 router.delete('/deleteretailer/:id',deleteRetailer);
 router.get('/getstudentlist/:id', getStudentList);
+router.route('/allocate-course').put(allocateCourse)
 
 module.exports = router;
 

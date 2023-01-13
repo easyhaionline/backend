@@ -34,7 +34,7 @@ const courseCreate =  (req, res) => {
         time,
         priority,
         examtype,
-        subject
+        subject,
     } = fields
     console.log("I am standards",standard);
     // validating inputs
@@ -67,13 +67,13 @@ const courseCreate =  (req, res) => {
     }
     catch (err) {
         // console.log("Line1", err.message);
-    res.status(400).json({ message: "Server Error:(" })
-}
+        res.status(400).json({ message: "Server Error:(" })
+    }
 
-// console.log(uploadedFile);
-const { secure_url } = uploadedFile;
-const desktopImage=secure_url;
-const mobileImage=secure_url;
+    // console.log(uploadedFile);
+    const { secure_url } = uploadedFile;
+    const desktopImage=secure_url;
+    const mobileImage=secure_url;
 
     // generating a UNIQUE code for the program
     let code = generateCode('COURSE', name)
@@ -168,7 +168,7 @@ const courseGetAll = asyncHandler(async (req, res) => {
 const readCourseByid = asyncHandler(async (req,res) => {
     const {id} =req.params; 
     console.log(id)
-    const foundCourses = await Course.findById(id).sort({ createdAt: -1 }).populate({
+    const foundCourses = await Course.findOne({_id:id}).sort({ createdAt: -1 }).populate({
         path: 'stream program',
         select: 'name code',
     }).populate("standard","_id name").populate("subject","_id name")

@@ -31,7 +31,7 @@ router.delete('/:complaintID', deleteComplaint)
 // @desc: To get all the complaints
 // @access: Private
 router.get('/:type', complaintGetAll)
-router.get('/get/:complaintID', idGet)
+router.get('/get/:id', idGet)
 
 router.put('/:complaintID', updateStatus)
 

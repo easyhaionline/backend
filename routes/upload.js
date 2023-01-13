@@ -9,6 +9,7 @@ const cloudinary = require("../utils/uploads/cloudinary");
 const fs = require("fs");
 
 router.post("/", upload.array("image"), async (req, res) => {
+  console.log("We are here...")
   const uploader = async (path) => await cloudinary.uploads(path, "Images");
 
   const urls = [];

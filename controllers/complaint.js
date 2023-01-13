@@ -66,6 +66,7 @@ const complaintByStudent = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let foundComplaints;
   if (req.params.id == "All") {
+
     console.log(req.params.id, id);
 
     foundComplaints = await Complaint.find() .where({feedback:""}).sort({
@@ -90,6 +91,7 @@ const complaintByStudent = asyncHandler(async (req, res) => {
   }
   res.status(200).json(foundComplaints);
 });
+
 const complaintByAllStudents = asyncHandler(async (req, res) => {
   const { id } = req.params;
   let foundComplaints;
@@ -177,11 +179,10 @@ const feedbacksByStudent = asyncHandler(async (req, res) => {
 
 // to fetch complaints by id *******************************************************
 const idGet = asyncHandler(async (req, res) => {
-    const {complaintID}  = req.params;
+    const {id}  = req.params;
+    console.log(id)
     try {
-      const foundId = await Complaint.findById(
-        complaintID,
-      )
+      const foundId = await Complaint.find({student:id})
       .populate({
         path: 'response',
         select: '_id answer image',

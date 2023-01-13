@@ -31,6 +31,7 @@ exports.displaycoursecreate = async (req, res) => {
       classes,
       courses,
       time,
+      perks
       // priority,
     } = req.body;
     console.log("request body ", req.body);
@@ -130,6 +131,7 @@ exports.displaycoursecreate = async (req, res) => {
     }
 
     let arrayOfsubjects = subject && subject.split(",");
+    let arrayOfperks = perks && perks.split(",");
     let arrayOfstandards = standard && standard.split(",");
     const createdByEmail = req.authAdmin.email;
     let course = new Course();
@@ -148,6 +150,7 @@ exports.displaycoursecreate = async (req, res) => {
     course.discountPrice = discountPrice;
     course.standard = arrayOfstandards;
     course.subject = arrayOfsubjects;
+    course.perks = arrayOfperks;
     course.startDate = startDate;
     course.endDate = endDate;
     course.code = code;
