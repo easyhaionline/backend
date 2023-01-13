@@ -33,14 +33,32 @@ const BusinessPartnerSchema = new Schema({
         unique: true
     },
     panlink:{
-        type: String
+        type: String,
+        required: true,
     },
     aadharlink: {
         type: String,
+        required: true,
     },
     referralCode:{
         type: String,
         required: true
+    },
+    accountname:{
+        type: String,
+        required: true,
+    },
+    accountnumber:{
+        type: Number,
+        required: true,
+    },
+    typeofaccount:{
+        type: String,
+        required: true,
+    },
+    ifsccode:{
+        type: String,
+        required: true,
     },
 })
 // to match the provided password with the password saved in the database

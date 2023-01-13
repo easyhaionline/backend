@@ -43,7 +43,11 @@ const {
     createRetailer,
     getRetailer,
     deleteRetailer,
-    allocateCourse
+    allocateCourse,
+    getAllStudentsForBp,
+    getAllStudentsForSbp,
+    searchStudents,
+    studentsByFilter
 } = require('../controllers/admin');
 
 
@@ -120,6 +124,7 @@ router.post('/student/signup', studentRegister);
 router.post('/withmobile/', adminRegisterbynumber);
 router.get('/gettoken/:id',encryprttoken);
 router.post('/get-students', studentsBySearchFilter);
+router.post('/filter-students', studentsByFilter);
 router.get('/get-course/:id', adminGetcourse);
 router.get('/get-course-admin/:id', allCoursesAdmin); // route for admin all courses access
 router.get('/get-student/:course',studentsByCourseFilter);
@@ -176,6 +181,8 @@ router.get('/get-retailers/:id', getRetailer);
 router.delete('/deleteretailer/:id',deleteRetailer);
 router.get('/getstudentlist/:id', getStudentList);
 router.route('/allocate-course').put(allocateCourse)
+router.get('/get-all-student-bp/:id', getAllStudentsForBp);
+router.get('/get-all-student-sbp/:id', getAllStudentsForSbp);
 
 module.exports = router;
 

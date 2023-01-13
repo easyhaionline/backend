@@ -47,6 +47,22 @@ const SubBusinessPartnerSchema = new Schema({
         type: String,
         required: true
     },
+    accountname:{
+        type: String,
+        required: true,
+    },
+    accountnumber:{
+        type: Number,
+        required: true,
+    },
+    typeofaccount:{
+        type: String,
+        required: true,
+    },
+    ifsccode:{
+        type: String,
+        required: true,
+    },
 })
 SubBusinessPartnerSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)

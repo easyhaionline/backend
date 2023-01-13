@@ -968,7 +968,7 @@ const isActive = async (req, res) => {
 //to create business partner
 const createBusinessPartner = async (req, res) => {
     try {
-        const { name, email, phone, password, pan, aadhar, panlink, aadharlink } = req.body;
+        const { name, email, phone, password, pan, aadhar, panlink, aadharlink, accountname, accountnumber, typeofaccount, ifsccode } = req.body;
         var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
         if (user) {
             return res.status(400).json({ message: "User already exists" });
@@ -995,7 +995,7 @@ const createBusinessPartner = async (req, res) => {
             }
         } while (randomBool && numbp++)
 
-        const newUser = await BusinessPartner.create({ name, email, password, phone, referralCode, pan, aadhar, panlink, aadharlink });
+        const newUser = await BusinessPartner.create({ name, email, password, phone, referralCode, pan, aadhar, panlink, aadharlink, accountname, accountnumber, typeofaccount, ifsccode });
         // delete newUser.passoword;
         console.log(newUser)
         res.json(newUser)
@@ -1007,7 +1007,7 @@ const createBusinessPartner = async (req, res) => {
 // to create sub business partner
 const createSubBusinessPartner = async (req, res) => {
     try {
-        const { name, email, phone, password, user_id, pan, aadhar, panlink, aadharlink } = req.body;
+        const { name, email, phone, password, user_id, pan, aadhar, panlink, aadharlink, accountname, accountnumber, typeofaccount, ifsccode } = req.body;
         var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
         if (user) {
             return res.status(400).json({ message: "User already exists" });
@@ -1047,7 +1047,7 @@ const createSubBusinessPartner = async (req, res) => {
             }
         } while (randomBool && numsbp++)
 
-        const newUser = await SubBusinessPartner.create({ name, email, password, phone, pan, aadhar, panlink, aadharlink, businessPartner: user_id, referralCode });
+        const newUser = await SubBusinessPartner.create({ name, email, password, phone, pan, aadhar, panlink, aadharlink, businessPartner: user_id, referralCode, accountname, accountnumber, typeofaccount, ifsccode });
         delete newUser.password;
         console.log(newUser);
         //add sub business partner to the business partner array
@@ -1061,7 +1061,7 @@ const createSubBusinessPartner = async (req, res) => {
 //create retailer
 const createRetailer = async (req, res) => {
     try {
-        const { name, email, phone, password, user_id, pan, aadhar, panlink, aadharlink } = req.body;
+        const { name, email, phone, password, user_id, pan, aadhar, panlink, aadharlink, accountname, accountnumber, typeofaccount, ifsccode } = req.body;
         var user = await BusinessPartner.findOne({ $or: [{ email: email }, { pan: pan }, { aadhar: aadhar }] });
         if (user) {
             return res.status(400).json({ message: "User already exists" });
@@ -1118,7 +1118,7 @@ const createRetailer = async (req, res) => {
             }
         } while (randomBool && numrt++)
 
-        newUser = await Retailer.create({ name, email, password, phone, pan, aadhar, panlink, aadharlink, subBusinessPartner: user_id, referralCode });
+        newUser = await Retailer.create({ name, email, password, phone, pan, aadhar, panlink, aadharlink, subBusinessPartner: user_id, referralCode, accountname, accountnumber, typeofaccount, ifsccode });
         delete newUser.password;
         console.log("new retailer:", newUser);
         const sbpartner = await SubBusinessPartner.updateOne({ "_id": user_id }, { $push: { retailer: newUser._id } });
@@ -1215,6 +1215,68 @@ const allocateCourse = async (req, res) => {
     res.status(200).json(student)
 }
 
+const getAllStudentsForBp = async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const sub = await SubBusinessPartner.find({businessPartner:id});
+        let arr=[];
+        for(let i = 0 ; i < sub.length; i++){
+            const ret = await Retailer.find({subBusinessPartner: sub[i]._id})
+            for(let j = 0; j < ret.length; j++){
+                const stud = await Student.find({referralCode: ret[j].referralCode})
+                for(let k = 0; k< stud.length; k++){
+                    arr.push(stud[k])
+                }
+                
+            }
+        }
+        res.status(200).json(arr);
+    } catch (error) {
+        res.status(400).json({ Message: "Error Occured" });
+    }
+}
+
+const getAllStudentsForSbp = async(req,res)=>{
+    try {
+        const {id} = req.params;
+        const sub = await Retailer.find({subBusinessPartner:id});
+        let arr=[];
+        for(let i = 0 ; i < sub.length; i++){
+            const ret = await Student.find({referralCode: sub[i].referralCode})
+            for(let j = 0; j < ret.length; j++){
+                arr.push(ret[j])
+            }
+        }
+        res.status(200).json(arr);
+    } catch (error) {
+        res.status(400).json({ Message: "Error Occured" });
+    }
+}
+
+const studentsByFilter = asyncHandler(async (req, res) => {
+    const { data } = req.body
+
+
+    let foundstudent;
+    {
+        foundstudent = await Student.find().where({ email: data }).sort({ createdAt: -1 });
+        if (foundstudent.length == 0) {
+            foundstudent = await Student.find().where({ username: data }).sort({ createdAt: -1 });
+            if (foundstudent.length == 0) {
+                foundstudent = await Student.find().where({ referralCode: data }).sort({ createdAt: -1 });
+                if (foundstudent.length == 0) {
+                    foundstudent = await Student.find().where({ number: parseInt(data) }).sort({ createdAt: -1 });
+                    if (foundstudent.length == 0) {
+                        foundstudent = await Student.find().where({ _id: data }).sort({ createdAt: -1 });
+                    }
+                }
+            }
+        }
+    }
+
+    res.status(200).json(foundstudent)
+})
+
 module.exports = {
     adminRegisterSuper,
     adminRegisterTeacher,
@@ -1261,6 +1323,12 @@ module.exports = {
     getRetailer,
     deleteRetailer,
     getStudentList,
+<<<<<<< HEAD
     allocateCourse
+=======
+    getAllStudentsForBp,
+    getAllStudentsForSbp,
+    studentsByFilter
+>>>>>>> fa2b54b385e07491762ba056cff58ec8a26125ec
 }
 // allCoursesAdmin is the controller created for Admin Panel

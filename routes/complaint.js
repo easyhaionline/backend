@@ -10,7 +10,13 @@ const {
   complaintByStudent,
   feedbacksByStudent,
   complaintByAllTeachers,
-  complaintByAllStudents
+  complaintByAllStudents,
+  complaintByBusinessPartner,
+  complaintBySubBusinessPartner,
+  complaintByRetailer,
+  complaintByAllRetailer,
+  complaintByAllSubBusinessPartner,
+  complaintByAllBusinessPartner
 } = require("../controllers/complaint");
 const { ResponseCreate } = require('../controllers/response');
 
@@ -42,5 +48,12 @@ router.get("/student/:id", complaintByAllStudents
 );
 router.get("/feedbacks/getById/:id", feedbacksByStudent);
 
+router.get("/getbusinesspartnerId/:id", complaintByBusinessPartner);
+router.get("/getsubbusinesspartnerId/:id", complaintBySubBusinessPartner);
+router.get("/getretailerId/:id", complaintByRetailer);
+
+router.get("/businesspartner/:id", complaintByAllBusinessPartner);
+router.get("/subbusinesspartner/:id", complaintByAllSubBusinessPartner);
+router.get("/retailer/:id", complaintByAllRetailer);
 
 module.exports = router
