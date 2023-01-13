@@ -219,11 +219,9 @@ const feedbacksByStudent = asyncHandler(async (req, res) => {
 
 // to fetch complaints by id *******************************************************
 const idGet = asyncHandler(async (req, res) => {
-  const { complaintID } = req.params;
+  const { id } = req.params;
   try {
-    const foundId = await Complaint.findById(
-      complaintID,
-    )
+    const foundId = await Complaint.find({student:id})
       .populate({
         path: 'response',
         select: '_id answer image',
