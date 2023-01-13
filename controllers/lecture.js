@@ -132,17 +132,16 @@ const LiveLecturesFilter = asyncHandler(async (req, res) => {
 const LiveLecturesSubjectFilter = asyncHandler(async (req, res) => {
     console.log("We are here5");
 
-    const {subject}  = req.params;
-    const {course}  = req.params;
-    const type ="LIVE";
-    console.log(req.params.subject);
+    const {subject, course}  = req.params;
+    console.log(req.params.type); 
+
     let foundComplaints;
-    if(req.params.type == 'All'){
-        foundComplaints = await Lecture.find().sort({createdAt: -1}).populate("subject", "_id name")              
-    }
-    else {
-        foundComplaints = await Lecture.find().where({subject:subject, type:type,course:course}).sort({ createdAt: -1 }).populate("subject", "_id name");
-    }
+    // if(req.params.type == 'All'){
+    //     foundComplaints = await Lecture.find().sort({createdAt: -1}).populate("subject", "_id name")              
+    // }
+    // else {
+        foundComplaints = await Lecture.find({type:"LIVE"}).where({course:course, subject:subject}).sort({ createdAt: -1 }).populate("subject", "_id name");
+    // }
     res.status(200).json(foundComplaints)
 })
 

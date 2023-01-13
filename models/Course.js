@@ -60,6 +60,15 @@ const courseSchema = new Schema(
       type: String,
       // required: true,
     },
+    perks: [{
+      type:String
+    }],
+    demoLinks:[{
+      subject:String,
+      urls:[{
+        type:String
+      }]
+    }],
     time: {
       type: String,
       // required: true,

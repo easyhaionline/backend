@@ -43,6 +43,7 @@ const {
     createRetailer,
     getRetailer,
     deleteRetailer,
+    allocateCourse,
     getAllStudentsForBp,
     getAllStudentsForSbp,
     searchStudents,
@@ -179,6 +180,7 @@ router.delete('/deletesubbusinesspartner/:id', deleteSubBusinessPartner);
 router.get('/get-retailers/:id', getRetailer);
 router.delete('/deleteretailer/:id',deleteRetailer);
 router.get('/getstudentlist/:id', getStudentList);
+router.route('/allocate-course').put(allocateCourse)
 router.get('/get-all-student-bp/:id', getAllStudentsForBp);
 router.get('/get-all-student-sbp/:id', getAllStudentsForSbp);
 

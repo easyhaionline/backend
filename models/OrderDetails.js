@@ -4,7 +4,7 @@ const orderDetailschema = new Schema(
     {
         order_id: {
             type: String,
-            required: true,
+            // required: true,
         },
         tracking_id: {
             type: String,
