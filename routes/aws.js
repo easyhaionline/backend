@@ -3,7 +3,8 @@ const fileUpload = require('express-fileupload')
 const uploadCtrl = require('../controllers/uploader.controller')
 
 route.use(fileUpload({
-    limits:{fileSize:6*1024*1024*1024}
+    limits:{fileSize:6*1024*1024*1024},
+    uploadTimeout:990000
     
 }))
 route.post("/aws",uploadCtrl.uploadFileToAws)
