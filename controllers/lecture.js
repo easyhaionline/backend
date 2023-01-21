@@ -64,9 +64,7 @@ const lectureSearch =asyncHandler(async (req, res) => {
   
 
     const LivelectureSearch =asyncHandler(async (req, res) => {
-        console.log("We are here1");
         const { search } = req.params;
-        console.log("scacas",req.query);    
         await  Lecture.find({$or: [{ title: { $regex: search, $options: "i" } },],type:"LIVE"})
                     .populate("standard","_id name")
                     .populate("subject")
@@ -74,7 +72,6 @@ const lectureSearch =asyncHandler(async (req, res) => {
                     .populate("examtype","_id name")
                     .sort({createdAt: -1,})
                     .then(( blogs) => {
-                        console.log(blogs)
                         res.json(blogs);
                     });
     

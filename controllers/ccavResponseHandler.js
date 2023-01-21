@@ -64,9 +64,6 @@ exports.postRes = function (request, response) {
 
 		const ccavenuedata = JSON.parse('{"' + decodeURI(ccavResponse).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
 
-
-		console.log(ccavenuedata);
-
 		let orderData = {
 			order_id: ccavenuedata.order_id,
 			tracking_id: ccavenuedata.tracking_id,

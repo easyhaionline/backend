@@ -58,7 +58,7 @@ const ExamTypeGetActive = asyncHandler(async (_, res) => {
 
 const ExamTypeById= asyncHandler(async (req, res) => {
     const {id } =req.params;
-    const foundExam = await ExamType.findById( id)
+    const foundExam = await ExamType.findById(id)
         .sort({ createdAt: -1 })
         .populate({
             path: 'standard',

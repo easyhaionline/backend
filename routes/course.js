@@ -8,7 +8,8 @@ const {
     courseGetAll,
     courseGetActive,
     courseUpdate,
-    readCourseByid
+    readCourseByid,
+    getCourseByExamType
 } = require('../controllers/course')
 const upload = multer({ storage })
 const {displaycoursecreate} = require('../controllers/coursespart2')
@@ -45,6 +46,8 @@ router.get('/active', courseGetActive)
 // @access: Private
 router.put('/', protectAdmin, courseUpdate)
 // router.put('/',courseUpdate)
+
+router.route('/by-examt-ype').get(getCourseByExamType)
 
 module.exports = router
  

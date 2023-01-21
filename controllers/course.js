@@ -313,11 +313,18 @@ const courseUpdate = asyncHandler(async (req, res) => {
     }
 })
 
+const getCourseByExamType = asyncHandler(async(req, res) => {
+    const courses = await Course.findOne().where({examtype:req.body.examtype})
+    console.log(courses)
+    res.status(200).json(courses)
+})
+
 module.exports = {
     courseCreate,
     courseToggle,
     courseGetAll,
     courseGetActive,
     courseUpdate,
-    readCourseByid
+    readCourseByid,
+    getCourseByExamType
 }
