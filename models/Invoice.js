@@ -8,7 +8,10 @@ const InvoiceSchema = new mongoose.Schema({
     invoiceNo: {
         type: String,
         required:true
-    }
+    },
+    // item:{
+    //     type:String
+    // }
 }, {timestamps:true})
 
 module.exports = mongoose.model('Invoice', InvoiceSchema)

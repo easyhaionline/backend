@@ -47,7 +47,7 @@ router.get('/active', courseGetActive)
 router.put('/', protectAdmin, courseUpdate)
 // router.put('/',courseUpdate)
 
-router.route('/by-examt-ype').get(getCourseByExamType)
+router.route('/by-exam-type').get(getCourseByExamType)
 
 module.exports = router
  

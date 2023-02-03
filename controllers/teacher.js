@@ -106,11 +106,34 @@ const profileUpdate = asyncHandler(async (req, res) => {
     }
 })
 
+const getAllTeachersEmail = asyncHandler(async(req, res) => {
+    const teachers = await Teacher.find()
+
+    let data = []
+    for(let i = 0; i < teachers.length; i++) {
+        data.push(teachers[i].email)
+    }
+
+    res.send(data)
+})
+
+const getAllTeachersMobile = asyncHandler(async(req, res) => {
+    const teachers = await Teacher.find()
+
+    let data = []
+    for(let i = 0; i < teachers.length; i++) {
+        data.push(teachers[i].phone)
+    }
+    res.send(data)
+})
+
 module.exports = {
     teacherLogin,
     teacherById,
     teacherGetAll,
-    profileUpdate
+    profileUpdate,
+    getAllTeachersEmail,
+    getAllTeachersMobile
 }
 
 
