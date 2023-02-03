@@ -31,7 +31,7 @@ router.delete("/:id", courseMaterialRemove);
 // @route: GET /api/subject
 // @desc: To get all the subjects
 // @access: Private
-router.get("/", courseMaterialGetAll);
+router.post("/get-all", courseMaterialGetAll);
 
 // @route: GET /api/subject
 // @desc: To get all the subjects
