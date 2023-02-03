@@ -29,7 +29,7 @@ router.delete("/:id", topicRemove);
 // @route: GET /api/subject
 // @desc: To get all the subjects
 // @access: Private
-router.get("/", topicGetAll);
+router.post("/get-all", topicGetAll);
 
 // @route: GET /api/subject
 // @desc: To get all the subjects
