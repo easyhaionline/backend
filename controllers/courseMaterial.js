@@ -51,17 +51,26 @@ const courseMaterialUpdate = asyncHandler(async (req, res) => {
 });
 
 // to fetch all CourseMaterial available *******************************************************
-const courseMaterialGetAll = asyncHandler(async (_, res) => {
+const courseMaterialGetAll = asyncHandler(async (req, res) => {
   const foundCourseMaterials = await CourseMaterial.find()
+  const {skip,limit} = req.body
+   await CourseMaterial.find()
     .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
     .populate({
       path: "standard",
       select: "title",
     })
     .populate("subtopic","_id name")
-    ;
+    .exec((error, data) => {
+      if (data) {
+        return res.status(200).json({ data: data });
+      } else {
+        return console.log("I am error: ", error);
+      }
+    });
 
-  res.status(200).json(foundCourseMaterials);
 });
 
 const courseMaterialGetById = asyncHandler(async (req, res) => {

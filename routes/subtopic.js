@@ -30,7 +30,7 @@ router.delete("/:id", subtopicRemove);
 // @route: GET /api/subtopic
 // @desc: To get all the subtopic
 // @access: Private
-router.get("/", subtopicGetAll);
+router.post("/get-all", subtopicGetAll);
 
 // @route: GET /api/subtopic
 // @desc: To get all the subtopic

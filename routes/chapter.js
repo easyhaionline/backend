@@ -40,7 +40,7 @@ router.delete("/:id", chapterRemove);
 // @route: GET /api/chapter
 // @desc: To get all the subjects
 // @access: Private
-router.get("/", chapterGetAll);
+router.post("/get-all", chapterGetAll);
 router.get("/by-id/:id", chapterGetById);
 
 // @route: GET /api/subject/active

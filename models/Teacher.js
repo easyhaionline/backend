@@ -56,6 +56,14 @@ const teacherSchema = new Schema(
         doubtCredits: {
             type: Number,
             default: 0
+        },
+        doubtExpertExamType:[{
+            type:String,
+            ref:'ExamType'
+        }], 
+        isDoubtExpert: {
+            type:Boolean,
+            default: true
         }
     },
     { timestamps: true }

@@ -64,6 +64,8 @@ const businessPartnerRoutes = require('./routes/businessPartner');
 const appRoutes = require('./routes/studentApp')
 const imageComplaintsRoutes = require('./routes/imageComplaints')
 const quicknotesRouter = require('./routes/quicknotes')
+const teamRouter = require('./routes/team')
+const notificationRouter = require('./routes/notification')
 
 // connecting to database
 connectDB()
@@ -141,6 +143,8 @@ app.use("/api/attendancelog",attendanceLogRoutes);
 app.use('/api/app' , appRoutes);
 app.use('/api/aws',imageComplaintsRoutes);
 app.use('/api/quicknotes', quicknotesRouter)
+app.use('/api/team', teamRouter)
+app.use('/api/notification', notificationRouter)
 
 app.get('/images/:key', (req, res) => {
   const key = req.params.key

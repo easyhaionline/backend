@@ -4,7 +4,7 @@ const Chapter = require('../models/Chapter')
 const validateChapterInputs = require('../validators/chapter')
 const validateMongoID = require('../validators/subject')
 const validateTypeRequire = require('../validators/type-require.js')
-
+// updated Easyonline
 // to create a new chapter ********************************************************
 const chapterCreate = asyncHandler(async (req, res) => {
     const { name, subject,  chapterNumber ,topics } = req.body;
@@ -27,15 +27,24 @@ const chapterCreate = asyncHandler(async (req, res) => {
 })
 
 // to fetch all chapters available *******************************************************
-const chapterGetAll = asyncHandler(async (_, res) => {
-    const foundChapters = await Chapter.find()
-      .sort({ createdAt: -1 })
-      .populate("topics", "_id name")
-      .populate("subject","_id name")
-    
+const chapterGetAll = asyncHandler(async (req, res) => {
+  const { skip, limit } = req.body;
+  const foundChapters = await Chapter.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .populate("topics", "_id name")
+    .populate("subject", "_id name")
+    .exec((error, data) => {
+      if (data) {
+        return res.status(200).json({ data: data });
+      } else {
+        return console.log("I am error: ", error);
+      }
+    });
 
-    res.status(200).json(foundChapters)
-})
+  
+});
 
 const chapterGetById = asyncHandler(async (req, res) => {
   const _id = req.params.id;

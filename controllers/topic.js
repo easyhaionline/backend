@@ -26,10 +26,24 @@ const topicCreate = asyncHandler(async (req, res) => {
 });
 
 // to fetch all Topics available *******************************************************
-const topicGetAll = asyncHandler(async (_, res) => {
-  const foundTopics = await Topic.find().sort({ createdAt: -1 }).populate("subtopics", "_id name").populate("chapter","_id name")
-  res.status(200).json(foundTopics);
+const topicGetAll = asyncHandler(async (req, res) => {
+  const { skip, limit } = req.body;
+  const foundTopics = await Topic.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .populate("subtopics", "_id name")
+    .populate("chapter", "_id name")
+    .exec((error, data) => {
+      if (data) {
+        return res.status(200).json({ data: data });
+      } else {
+        return console.log("I am error: ", error);
+      }
+    });
+  
 });
+
 
 const topicGetById = asyncHandler(async (req, res) => {
   const _id = req.params.id;

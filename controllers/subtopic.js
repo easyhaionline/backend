@@ -26,14 +26,20 @@ const subtopicCreate = asyncHandler(async (req, res) => {
 });
 
 // to fetch all Subtopics available *******************************************************
-const subtopicGetAll = asyncHandler(async (_, res) => {
-  const foundSubtopics = await Subtopic.find()
-    .sort({ createdAt: -1 })
+const subtopicGetAll = asyncHandler(async (req, res) => {
+  console.log("HERE WE ARE: ")
+  const {limit,skip} = req.body;
+  await Subtopic.find()
+    .sort({ createdAt: -1 }).skip(skip).limit(limit)
     .populate("courseMaterials", "_id name")
-    .populate("topic","_id name");
-    
-
-  res.status(200).json(foundSubtopics);
+    .populate("topic","_id name")
+    .exec((error, data)=>{
+      if(data){
+          return res.status(200).json({data: data})
+      } else{
+          return console.log("I am error: ",error);
+      } 
+  }) 
 });
 
 const subtopicGetById = asyncHandler(async (req, res) => {

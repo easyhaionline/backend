@@ -73,7 +73,7 @@ const createOrderDetails = async (req, res) => {
         
 		var invoiceNum = "EHO/"
 		const date = new Date()
-		const finYear = (parseInt(date.toLocaleString().slice(8, 10)) + "-" + (parseInt(date.toLocaleString().slice(8, 10)) + 1))
+		const finYear = (parseInt(date.getFullYear().toString().slice(2)) + "-" + (parseInt(date.getFullYear().toString().slice(2)) + 1))
 		invoiceNum = invoiceNum + finYear + "/"
 		invoiceNum = invoiceNum + "0".repeat(5 - invNum[0].invoiceNumber.toString().length) + (invNum[0].invoiceNumber + 1).toString()
 		const invoice = await Invoice.create({ invoice: order._id, invoiceNo: invoiceNum })

@@ -174,12 +174,11 @@ const getAllDoubts = asyncHandler(async (req, res) => {
 
 const getSingleDoubt = asyncHandler(async (req, res) => {
     const _id = req.params.id;
-    console.log("I am id", _id);
     
     Doubt.findById({_id})
     .populate({
       path: 'student',
-      select: '_id username image',
+      select: '_id username image email',
     })
     .populate({
         path: 'teacher',
