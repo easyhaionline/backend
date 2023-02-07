@@ -10,6 +10,9 @@ const lectureSchema = new Schema(
             type: String,
             // required: true,
         },
+        image:{
+            type:String
+        },
         standard: {
             type: Types.ObjectId,
             ref: 'Standard',
@@ -51,7 +54,10 @@ const lectureSchema = new Schema(
             enum: ['LIVE', 'RECORDED', 'ZOOM'],
             required: true,
         },
-        date:{
+        startingdate:{
+            type:String
+        },
+        endingdate:{
             type:String
         },
         duration:{

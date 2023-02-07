@@ -416,6 +416,9 @@ const teacherLogin = asyncHandler(async (req, res) => {
         email,
         isActive: true,
     })
+
+    console.log("WEARE HERE: ", foundAdmin)
+
     if (foundAdmin && (await foundAdmin.matchPassword(password)) && foundAdmin.role == 1) {
         const token = generateToken(foundAdmin._id)
         const dbhalf = token.substr(0, 100)
@@ -450,7 +453,6 @@ const encryprttoken = asyncHandler(async (req, res) => {
     const foundAdmin = await Student.findOne({
         _id: id
     })
-    console.log(foundAdmin);
     const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
     const decryptedString = cryptr.decrypt(foundAdmin.encryption);
     res.json({
