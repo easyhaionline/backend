@@ -12,10 +12,8 @@ const subtopicSchema = new Schema(
     },
     courseMaterials: [
       {
-       
           type: Types.ObjectId,
           ref: "CourseMaterial",
-       
       }
     ],
     

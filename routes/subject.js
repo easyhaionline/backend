@@ -11,7 +11,8 @@ const {
   statusUpdate,
   addingChapter,
   removingChapter,
-  subjectGetById
+  subjectGetById,
+  subjectGetByStandard
 } = require("../controllers/subject");
 
 const router = express.Router()
@@ -54,8 +55,12 @@ router.get('/',  subjectGetAll)
 // @route: GET /api/subject
 // @desc: To get all the subjects
 // @access: Private
-// router.get('/', protectAdmin, subjectGetAll)
 router.get('/get-by-id/:id',  subjectGetById)
+
+// @route: GET /api/subject
+// @desc: To get all the subjects
+// @access: Private
+router.get('/get-by-standard/:id', subjectGetByStandard)
 
 
 // @route: GET /api/subject/active

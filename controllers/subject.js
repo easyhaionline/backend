@@ -55,11 +55,21 @@ const subjectGetById = asyncHandler(async (req, res) => {
     }
     res.status(200).json(data)
    })
-
- 
 })
 
-
+const subjectGetByStandard = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  console.log(_id)
+   await Subject.find({standard : _id}).populate('chapters').exec((err,data)=>{
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+    console.log("I am data", data);
+    res.status(200).json(data)
+   })
+})
 
 const Subjectremove =asyncHandler(async  (req, res) => {
     const _id = req.params.id;
@@ -143,10 +153,9 @@ const subjectUpdate = asyncHandler(async (req, res) => {
     if (name) foundSubject.name = name
     if (standard) foundSubject.standard = standard
     if (teachers) foundSubject.teachers = teachers
-if(chapters) foundSubject.chapters = chapters
-if(course) foundSubject.course = course
+    if(chapters) foundSubject.chapters = chapters
+    if(course) foundSubject.course = course
     foundSubject.save()
-
     res.status(200).json({
         message: 'Subject updated successfully!',
         data: foundSubject,
@@ -157,21 +166,17 @@ const statusUpdate = async(req,res)=>{
     const id = req.params.id;
     const {status} = req.body;
     try {
-
         const resposne = await Subject.findByIdAndUpdate(id, { isActive :status});
         if (resposne) {
           res.send(resposne);
         }
-        
-    } catch (error) {
-        
+    } catch (error) {  
     }
 
 }
 
 
 // to update the chapters **************************************************************
-
 const addingChapter = async (req, res) => {
     const id = req.params.id;
     const { chapters } = req.body;
@@ -223,5 +228,6 @@ module.exports = {
   statusUpdate,
   addingChapter,
   removingChapter,
-  subjectGetById
+  subjectGetById,
+  subjectGetByStandard
 };

@@ -1,5 +1,4 @@
 const asyncHandler = require("express-async-handler");
-
 const Subtopic = require("../models/subtopic");
 
 // to create a new Subject ********************************************************
@@ -85,6 +84,19 @@ const subtopicToggle = asyncHandler(async (req, res) => {
   } catch (error) {
     res.status(422).send(error);
   }
+});
+
+const subTopicById = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  await Subtopic.findById(_id).exec((err,data)=>{
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+     console.log(data)
+    res.status(200).json(data)
+   })
 });
 
 // to update the Subtopic **************************************************************
@@ -175,5 +187,6 @@ module.exports = {
   subtopicRemove,
   addingcoursematerial,
   removingcoursematerial,
-  subtopicGetById
+  subtopicGetById,
+  subTopicById
 };

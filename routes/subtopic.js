@@ -10,7 +10,8 @@ const {
   subtopicRemove,
   subtopicGetById,
   addingcoursematerial,
-  removingcoursematerial
+  removingcoursematerial,
+  subTopicById
 
 } = require("../controllers/subtopic");
 
@@ -37,6 +38,8 @@ router.post("/get-all", subtopicGetAll);
 // @access: Private
 router.get("/get-by-id/:id", subtopicGetById);
 
+router.get("/get/:id", subTopicById);
+
 // @route: GET /api/subject/active
 // @desc: To get the ACTIVE subtopic
 // @access: Public
@@ -48,8 +51,6 @@ router.get("/active", subtopicGetActive);
 router.put("/:id", subtopicUpdate);
 
 // router.delete('/remove/:subjectID', chapterRemove)
-
-
 // @route: PUT /api/subtopic
 // @desc: To adding a new courseMaterial
 // @access: Private
@@ -59,11 +60,5 @@ router.put("/adding-new-courseMaterial/:id", addingcoursematerial);
 // @desc: To remove a  courseMaterial
 // @access: Private
 router.delete("/removed-courseMaterial/:id", removingcoursematerial);
-
-
-
-
-
-
 
 module.exports = router;

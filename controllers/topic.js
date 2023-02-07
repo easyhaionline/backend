@@ -59,8 +59,19 @@ const topicGetById = asyncHandler(async (req, res) => {
      console.log(data)
     res.status(200).json(data)
    })
+});
 
-
+const topicById = asyncHandler(async (req, res) => {
+  const _id = req.params.id;
+  await Topic.findById(_id).select('name').select('subtopics').exec((err,data)=>{
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+     console.log(data)
+    res.status(200).json(data)
+   })
 });
 
 // to fetch all active topics on the site *******************************************************
@@ -177,5 +188,6 @@ module.exports = {
   topicRemove,
   addingsubtopics,
   removingsubtopics,
-  topicGetById
+  topicGetById,
+  topicById
 };
