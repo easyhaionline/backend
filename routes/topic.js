@@ -10,7 +10,8 @@ const {
   topicRemove,
   topicGetById,
   addingsubtopics,
-  removingsubtopics
+  removingsubtopics,
+  topicById
 } = require("../controllers/topic");
 
 const router = express.Router();
@@ -35,6 +36,11 @@ router.post("/get-all", topicGetAll);
 // @desc: To get all the subjects
 // @access: Private
 router.get("/get-by-id/:id", topicGetById);
+
+// @route: GET /api/subject
+// @desc: To get all the subjects
+// @access: Private
+router.get("/get/:id", topicById);
 
 // @route: GET /api/subject/active
 // @desc: To get the ACTIVE subjects
