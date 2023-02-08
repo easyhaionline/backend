@@ -12,6 +12,7 @@ const {
   addingChapter,
   removingChapter,
   subjectGetById,
+  getSubjectByStandard,
   subjectGetByStandard
 } = require("../controllers/subject");
 
@@ -76,6 +77,8 @@ router.put('/:id', subjectUpdate)
 
 
 router.put("/updateStatus/:id", statusUpdate);
+
+router.route("/by-standard/:id").get(getSubjectByStandard)
 
 
 module.exports = router
