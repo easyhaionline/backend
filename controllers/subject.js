@@ -211,6 +211,15 @@ const addingChapter = async (req, res) => {
       res.json(data);
     });
   };
+
+  const getSubjectByStandard = async (req, res) => {
+    await Subject.find({standard:req.params.id}).then((data, err) => {
+      if (err) {
+        res.json(err);
+      }
+      res.json(data);
+    });
+  }
   
 
 module.exports = {
@@ -223,5 +232,6 @@ module.exports = {
   statusUpdate,
   addingChapter,
   removingChapter,
-  subjectGetById
+  subjectGetById,
+  getSubjectByStandard
 };

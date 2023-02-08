@@ -62,7 +62,7 @@ const ExamTypeById= asyncHandler(async (req, res) => {
         .sort({ createdAt: -1 })
         .populate({
             path: 'standard',
-            select: 'name',
+            select: '_id name',
         })
 
     res.status(200).json(foundExam)

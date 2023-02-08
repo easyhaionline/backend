@@ -11,7 +11,8 @@ const {
   statusUpdate,
   addingChapter,
   removingChapter,
-  subjectGetById
+  subjectGetById,
+  getSubjectByStandard
 } = require("../controllers/subject");
 
 const router = express.Router()
@@ -71,6 +72,8 @@ router.put('/:id', subjectUpdate)
 
 
 router.put("/updateStatus/:id", statusUpdate);
+
+router.route("/by-standard/:id").get(getSubjectByStandard)
 
 
 module.exports = router
