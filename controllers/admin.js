@@ -1203,8 +1203,6 @@ const getStudentList = async (req, res) => {
 
 const allocateCourse = async (req, res) => {
 
-    console.log("AAAAAAAAAA");
-
     const student = await Student.findOne({email:req.body.email})
 
     console.log(student)

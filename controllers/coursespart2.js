@@ -203,11 +203,12 @@ exports.update = async (req, res) => {
         location,
         classes,
         courses,
+        perks,
         time,
         priority,
       } = req.body;
 
-      console.log(standard)
+      console.log("PERKS", perks)
 
       if (!name || !name.length) {
         return res.status(400).json({
