@@ -6,9 +6,9 @@ const Courses = require('../models/Course')
 const Subject = require('../models/Subject')
 
 const getTeachers = asyncHandler(async (req, res) => {
-    
     var teacherId = []
     const studentId = req.params.id
+    console.log("i am student id", studentId)
 
     const student = await Student.findOne({ _id: studentId }).populate("courses")
 
@@ -18,10 +18,14 @@ const getTeachers = asyncHandler(async (req, res) => {
 				for(let j = 0; j < subject.teachers.length; j++) {
 					teacherId.push(subject.teachers[j])
 				}
+    console.log("I am subject", subject);
+
     }
 
-		console.log(teacherId)
+
+		console.log("I am teacher id",teacherId)
     const data = Array.from(new Set(teacherId.map(JSON.stringify))).map(JSON.parse)
+    console.log("i am data", data)
     res.json( data )
 })
 

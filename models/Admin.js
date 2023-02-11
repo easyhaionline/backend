@@ -11,8 +11,7 @@ const adminSchema = new Schema(
             type: String,
         },
         image: {
-            type: String,
-           
+            type: String,   
         },
         role:{
             type:Number,
