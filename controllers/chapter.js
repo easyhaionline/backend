@@ -29,13 +29,7 @@ const chapterCreate = asyncHandler(async (req, res) => {
 // to fetch all chapters available *******************************************************
 const chapterGetAll = asyncHandler(async (req, res) => {
   const { skip, limit } = req.body;
-  const foundChapters = await Chapter.find({
-    $or:[
-      {
-        name: { $regex: req.params.key, $options: "i" },
-      }
-    ]
-  })
+  const foundChapters = await Chapter.find()
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)

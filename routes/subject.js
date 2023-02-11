@@ -13,7 +13,8 @@ const {
   removingChapter,
   subjectGetById,
   getSubjectByStandard,
-  subjectGetByStandard
+  subjectGetByStandard,
+  searchSubject
 } = require("../controllers/subject");
 
 const router = express.Router()
@@ -79,6 +80,9 @@ router.put('/:id', subjectUpdate)
 router.put("/updateStatus/:id", statusUpdate);
 
 router.route("/by-standard/:id").get(getSubjectByStandard)
+
+router.get("/Searchsubject/:key", searchSubject)
+
 
 
 module.exports = router
