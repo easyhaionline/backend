@@ -175,7 +175,9 @@ const addingtopic = async (req, res) => {
           name: { $regex: req.params.key, $options: "i" },
         }
       ]
-    }).populate("subject", "name");
+    }).populate("topics", "name")
+    .populate("subject", "name")
+    
       try {
         if(chapter){
           return res.status(201).json({chapter})

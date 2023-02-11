@@ -177,6 +177,28 @@ const removingsubtopics = async (req, res) => {
   });
 };
 
+const searchTopic = async (req,res)=>{
+  console.log(req.params.key)
+  const topic= await Topic.find({
+    $or:[
+      {
+        name: { $regex: req.params.key, $options: 'i' }
+      }
+    ]
+  }).populate("chapter", "name")
+  .populate("subtopics", "name")
+  console.log(topic)
+  try{
+    if(topic){
+      return res.status(201).json(topic);
+    }
+  }
+  catch(error){
+    return res.json({error})
+  }
+  console.log(topic)
+}
+
 
 
 module.exports = {
@@ -189,5 +211,6 @@ module.exports = {
   addingsubtopics,
   removingsubtopics,
   topicGetById,
-  topicById
+  topicById,
+  searchTopic
 };

@@ -175,6 +175,25 @@ const removingcoursematerial = async (req, res) => {
   });
 };
 
+const searchSubtopic = async (req,res)=>{
+  const subtopic= await Subtopic.find({
+    $or:[
+      {
+        name: { $regex: req.params.key, $options: 'i' }
+      }
+    ]
+  })
+  .populate("topic","name")
+  try{
+    if(subtopic){
+      return res.status(201).json(subtopic);
+    }
+  }
+  catch(error){
+    return res.json({error})
+  }
+}
+
 
 
 
@@ -188,5 +207,6 @@ module.exports = {
   addingcoursematerial,
   removingcoursematerial,
   subtopicGetById,
-  subTopicById
+  subTopicById,
+  searchSubtopic
 };

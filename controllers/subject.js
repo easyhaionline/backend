@@ -234,8 +234,8 @@ const addingChapter = async (req, res) => {
           name: { $regex: req.params.key, $options: 'i' }
         }
       ]
-    }).populate("Standard", "name")
-    console.log(subject)
+    }).populate("standard", "name")
+    .populate("chapters","name")
     try{
       if(subject){
         return res.status(201).json({subject});
@@ -244,7 +244,6 @@ const addingChapter = async (req, res) => {
     catch(error){
       return res.json({error})
     }
-    console.log(subject)
   }
   
 

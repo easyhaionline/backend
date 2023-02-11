@@ -177,6 +177,25 @@ const courseMaterialRemove = async (req, res) => {
   });
 };
 
+const searchCourseMaterial = async (req,res)=>{
+  console.log(req.params.key)
+  const coursematerial= await CourseMaterial.find({
+    $or:[
+      {
+        name: { $regex: req.params.key, $options: 'i' }
+      }
+    ]
+  })
+  try{
+    if(coursematerial){
+      return res.status(201).json({coursematerial});
+    }
+  }
+  catch(error){
+    return res.json({error})
+  }
+}
+
 module.exports = {
   courseMaterialCreate,
   courseMaterialGetAll,
@@ -187,4 +206,5 @@ module.exports = {
   courseMaterialUpdate,
   addingCourseContent,
   courseMaterialRemove,
+  searchCourseMaterial
 };

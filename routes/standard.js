@@ -8,7 +8,8 @@ const {
     standardToggle,
     StandardById,
     standardUpdate,
-    Standardremove
+    Standardremove,
+    searchStandard
 } = require('../controllers/standard')
 
 const router = express.Router()
@@ -55,5 +56,7 @@ router.get('/by-id/:id', StandardById)
 // router.put('/',  standardUpdate)
 router.put('/', protectAdmin, standardUpdate)
 // router.put('/', standardUpdate)
+
+router.get("/Searchstandard/:key", searchStandard)
 
 module.exports = router

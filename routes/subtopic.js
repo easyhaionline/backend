@@ -11,7 +11,8 @@ const {
   subtopicGetById,
   addingcoursematerial,
   removingcoursematerial,
-  subTopicById
+  subTopicById,
+  searchSubtopic
 
 } = require("../controllers/subtopic");
 
@@ -60,5 +61,7 @@ router.put("/adding-new-courseMaterial/:id", addingcoursematerial);
 // @desc: To remove a  courseMaterial
 // @access: Private
 router.delete("/removed-courseMaterial/:id", removingcoursematerial);
+
+router.get("/Searchsubtopic/:key", searchSubtopic)
 
 module.exports = router;
