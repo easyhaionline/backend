@@ -113,6 +113,17 @@ const studentGetAll = asyncHandler(async (_, res) => {
     res.status(200).json(foundStudents)
 })
 
+// to get single Student ****************************************************************************
+const studentGetById = asyncHandler(async (req, res) => {
+    const foundStudent = await Student.findOne({_id:req.params.id})
+
+    if(!foundStudent) {
+        res.status(404).json({msg:"Student not found"})
+    }
+
+    res.status(200).json(foundStudent)
+})
+
 // edit profile
 const profileUpdate = asyncHandler(async (req, res) => {
     const { username, image, email, number } = req.body
@@ -157,5 +168,6 @@ module.exports = {
     studentLogin,
     studentVerifyOtp,
     studentGetAll,
-    profileUpdate
+    profileUpdate,
+    studentGetById
 }

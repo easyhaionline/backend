@@ -26,7 +26,7 @@ const router = express.Router()
 // @desc: To create a new complaint
 // @access: Private
 router.post('/', complaintCreate)
-router.post('/response',ResponseCreate)
+router.post('/response', ResponseCreate)
 
 // @route: DELETE /api/complaint/:complaintID
 // @desc: To delete an existing complaint
