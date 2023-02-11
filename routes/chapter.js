@@ -10,7 +10,8 @@ const {
   chapterRemove,
   addingtopic,
   removingtopic,
-  chapterGetById
+  chapterGetById,
+  searchChapter
 } = require("../controllers/chapter");
 
 const router = express.Router();
@@ -53,5 +54,6 @@ router.get("/active", chapterGetActive);
 // @access: Private
 router.put("/:id", chapterUpdate);
 
+router.get("/search/:key", searchChapter);
 
 module.exports = router;
