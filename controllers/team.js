@@ -1,43 +1,81 @@
-const { Client } = require("@microsoft/microsoft-graph-client");
-const {
-  TokenCredentialAuthenticationProvider,
-} = require("@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials");
-const { AuthorizationCodeCredential } = require("@azure/identity");
-const axios = require('axios')
-const querystring = require('querystring')
+const axios = require("axios");
+const querystring = require("querystring");
 
-const createMeeting = async (req, res) => {
-  
+const generateToken = async () => {
   const requestBody = querystring.stringify({
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    grant_type: 'client_credentials',
-    scope: 'https://graph.microsoft.com/.default'
+    grant_type: "client_credentials",
+    scope: "https://graph.microsoft.com/.default",
   });
 
-  const response = await axios.post(`https://login.microsoftonline.com/${process.env.TENENT_ID}/oauth2/v2.0/token`, requestBody);
-
-  // console.log(response)
-  
-  
-  const data = await axios.post(
-    'https://graph.microsoft.com/v1.0/me/events',
-    // 'https://graph.microsoft.com/v1.0/users/be850ae4-c08d-4d4b-bafd-c2d512e50b27/events',
-    req.body,
-    {
-      headers: {
-        Authorization: `Bearer ${response.data.access_token}`,
-        'Content-Type': 'application/json'
-      }
-    }
+  const response = await axios.post(
+    `https://login.microsoftonline.com/${process.env.TENENT_ID}/oauth2/v2.0/token`,
+    requestBody
   );
-  
-  
-  console.log(data)
 
-
-  res.status(200).json(data);
-
+  return response.data.access_token;
 };
 
-module.exports = { createMeeting };
+const createMeeting = async (req, res) => {
+  const bearerToken = `Bearer ${await generateToken()}`;
+
+  const payload = {
+    subject: req.body.name,
+    start: {
+      dateTime: "2023-02-12T10:22:25.208Z",
+      timeZone: "UTC",
+    },
+    end: {
+      dateTime: "2023-02-19T10:22:25.208Z",
+      timeZone: "UTC",
+    },
+    isOnlineMeeting: true,
+    onlineMeetingProvider: "teamsForBusiness",
+  };
+
+  const data = await axios.post(
+    `https://graph.microsoft.com/v1.0/users/${process.env.TEAMS_USER_ID}/events`,
+    payload,
+    {
+      headers: {
+        Authorization: bearerToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  res.status(200).json({ url: data.data.onlineMeeting.joinUrl });
+};
+
+const getMeetings = async (req, res) => {
+  const bearerToken = `Bearer ${await generateToken()}`;
+
+  const payload = {
+    subject: req.body.name,
+    start: {
+      dateTime: "2023-02-12T10:22:25.208Z",
+      timeZone: "UTC",
+    },
+    end: {
+      dateTime: "2023-02-19T10:22:25.208Z",
+      timeZone: "UTC",
+    },
+    isOnlineMeeting: true,
+    onlineMeetingProvider: "teamsForBusiness",
+  };
+
+  const data = await axios.get(
+    `https://graph.microsoft.com/v1.0/users/${process.env.TEAMS_USER_ID}/events?$select=subject,body,bodyPreview,organizer,attendees,start,end,location`,
+    {
+      headers: {
+        Authorization: bearerToken,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  res.status(200).json({ data: data.data.value });
+};
+
+module.exports = { createMeeting, getMeetings };
