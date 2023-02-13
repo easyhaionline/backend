@@ -11,6 +11,7 @@ const {
   removingCourseContent,
   courseMaterialGetById,
   courseMaterialRemove,
+  searchCourseMaterial,
 } = require("../controllers/courseMaterial");
 
 const router = express.Router();
@@ -58,5 +59,7 @@ router.get("/active", courseMaterialGetActive);
 // @desc: To update a subject
 // @access: Private
 router.put("/:id", courseMaterialUpdate);
+
+router.get('/searchCoursematerial/:key', searchCourseMaterial)
 
 module.exports = router;

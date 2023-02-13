@@ -139,6 +139,25 @@ const standardUpdate = asyncHandler(async (req, res) => {
     })
 })
 
+const searchStandard = async (req,res)=>{
+    console.log(req.params.key)
+    const standard= await Standard.find({
+      $or:[
+        {
+          name: { $regex: req.params.key, $options: 'i' }
+        }
+      ]
+    }).populate("examtype","name")
+    try{
+      if(standard){
+        return res.status(201).json({standard});
+      }
+    }
+    catch(error){
+      return res.json({error})
+    }
+  }
+
 module.exports = {
     standardCreate,
     standardGetAll,
@@ -146,5 +165,6 @@ module.exports = {
     standardToggle,
     standardUpdate,
     Standardremove,
-    StandardById
+    StandardById,
+    searchStandard
 }

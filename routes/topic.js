@@ -11,7 +11,8 @@ const {
   topicGetById,
   addingsubtopics,
   removingsubtopics,
-  topicById
+  topicById,
+  searchTopic
 } = require("../controllers/topic");
 
 const router = express.Router();
@@ -67,5 +68,7 @@ router.delete("/removed-subtopics/:id", removingsubtopics);
 router.put("/:id", topicUpdate);
 
 // router.delete('/remove/:subjectID', chapterRemove)
+
+router.get("/Searchtopic/:key", searchTopic)
 
 module.exports = router;

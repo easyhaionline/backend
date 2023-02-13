@@ -168,6 +168,25 @@ const addingtopic = async (req, res) => {
     });
   };
 
+  const searchChapter = async (req,res)=>{
+    const chapter= await Chapter.find({
+      $or:[
+        {
+          name: { $regex: req.params.key, $options: "i" },
+        }
+      ]
+    }).populate("topics", "name")
+    .populate("subject", "name")
+    
+      try {
+        if(chapter){
+          return res.status(201).json({chapter})
+        }
+      } catch (error) {
+        return res.send({ sucess:false, error })
+      }
+  }
+
 
 
 module.exports = {
@@ -179,5 +198,6 @@ module.exports = {
     chapterRemove,
     addingtopic,
     removingtopic,
-    chapterGetById
+    chapterGetById,
+    searchChapter
 }

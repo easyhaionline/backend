@@ -225,6 +225,26 @@ const addingChapter = async (req, res) => {
       res.json(data);
     });
   }
+
+  const searchSubject = async (req,res)=>{
+    console.log(req.params.key)
+    const subject= await Subject.find({
+      $or:[
+        {
+          name: { $regex: req.params.key, $options: 'i' }
+        }
+      ]
+    }).populate("standard", "name")
+    .populate("chapters","name")
+    try{
+      if(subject){
+        return res.status(201).json({subject});
+      }
+    }
+    catch(error){
+      return res.json({error})
+    }
+  }
   
 
 module.exports = {
@@ -239,5 +259,6 @@ module.exports = {
   removingChapter,
   subjectGetById,
   getSubjectByStandard,
-  subjectGetByStandard
+  subjectGetByStandard,
+  searchSubject
 };
