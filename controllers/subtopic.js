@@ -184,6 +184,8 @@ const searchSubtopic = async (req,res)=>{
     ]
   })
   .populate("topic","name")
+  .populate("courseMaterials","name")
+
   try{
     if(subtopic){
       return res.status(201).json(subtopic);
