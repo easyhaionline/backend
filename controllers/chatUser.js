@@ -30,10 +30,12 @@ const getTeachers = asyncHandler(async (req, res) => {
   );
 
   for (let i = 0; i < subList.length; i++) {
-	const subject = await Subject.findOne({_id:subList[i]}).populate("teachers")
-	for(let j = 0; j < subject.teachers.length; j++) {
-		teacherList.push(subject.teachers[j])
-	}
+    const subject = await Subject.findOne({ _id: subList[i] }).populate(
+      "teachers"
+    );
+    for (let j = 0; j < subject.teachers.length; j++) {
+      teacherList.push(subject.teachers[j]);
+    }
   }
 
   const data = Array.from(new Set(teacherList.map(JSON.stringify))).map(
@@ -43,27 +45,28 @@ const getTeachers = asyncHandler(async (req, res) => {
 });
 
 //get subjects
-const getSubjects = async (req, res) => {
-  const teacherId = req.params.id;
+const getSubjects = async (teacherId) => {
   const subjects = await Subject.find({
     teachers: {
       $in: [mongoose.Types.ObjectId(teacherId)],
     },
   });
 
-  let subjectsId = [];
+  let subjectsList = [];
 
   subjects.map((item) => {
-    subjectsId.push(item._id);
+    subjectsList.push(item._id);
   });
 
-  res.json(subjectsId);
+  const data = Array.from(new Set(subjectsList.map(JSON.stringify))).map(
+    JSON.parse
+  );
+
+  return data;
 };
 
 // Get all Courses
-const getCourses = async (req, res) => {
-  const { subjects } = req.body;
-
+const getCourses = async (subjects) => {
   let coursesList = [];
   for (let i = 0; i < subjects.length; i++) {
     const courses = await Courses.find({
@@ -81,12 +84,14 @@ const getCourses = async (req, res) => {
     JSON.parse
   );
 
-  res.json({ courses: data });
+  return data;
 };
 
 // Get all Courses
 const getStudents = async (req, res) => {
-  const { courses } = req.body;
+  const subjects = await getSubjects(req.params.id);
+  const courses = await getCourses(subjects);
+
   let studentList = [];
   for (let i = 0; i < courses.length; i++) {
     const students = await Student.find({

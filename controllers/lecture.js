@@ -8,13 +8,18 @@ const validateLectureInputs = require('../validators/lecture')
 // to create a new lecture ********************************************************
 const lectureCreate = asyncHandler(async (req, res) => {
     const { title, link, image, filter, standard, subject,examtype,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type , zoomDetials,description,chapter,course } =req.body;
-    console.log(req.body);
+    
+    console.log("DATA: ", req.body);
+
     let data = {};
     if(filter === "ZOOM"){
         let zoomid = zoomDetials.id;
         let zoomPass = zoomDetials.password;
         data = { title, link, image,  standard,examtype, subject,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type , zoomid, zoomPass,description,chapter,course };
     } 
+    else if(filter === "TEAMS") {
+        data = { title, link, filter, image,  standard,examtype, subject,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type ,description,chapter,course };
+    }
     else {
         data = { title, link, image, standard,examtype, subject,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type ,description,chapter,course }
     }

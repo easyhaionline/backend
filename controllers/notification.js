@@ -1,6 +1,4 @@
 const AWS = require("aws-sdk");
-const axios = require("axios");
-const { VerifiedEmailAddresses } = require("aws-sdk");
 
 const verify = async (req, res) => {
   AWS.config.update({
@@ -61,24 +59,29 @@ const sendEmail = async (req, res) => {
 
   const ses = new AWS.SES();
 
-  const htmlTemplate = `
-  <html>
-    <head>
-      <title>${req.body.title}</title>
-    </head>
-    <body>
-      <p>Dear ${req.body.user},</p>
-      ${req.body.message1}
-      ${req.body.message2}
-      <button style={{background-color:"blue"}} >
-      <a href=${req.body.link}>
-        Join
-      </a>
-    </button>
-    </body>
-  </html>
-`;
+//   const htmlTemplate = `
+//   <html>
+//     <head>
+//       <title>${req.body.title}</title>
+//     </head>
+//     <body>
+//       <p>Dear ${req.body.user},</p>
+//       ${req.body.message1}
+//       ${req.body.message2}
+//       <button style={{background-color:"blue"}} >
+//       <a href=${req.body.link}>
+//         Join
+//       </a>
+//     </button>
+//     </body>
+//   </html>
+// `;
 
+  // const htmlTemplate = notification()
+  const htmlTemplate = req.body.template
+
+
+  
   const fromAddress = "noreply@easyhaionline.com";
 
   req.body.recipientEmail.map((item) => {

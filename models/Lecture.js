@@ -51,7 +51,7 @@ const lectureSchema = new Schema(
         ],
         type: {
             type: String,
-            enum: ['LIVE', 'RECORDED', 'ZOOM'],
+            enum: ['LIVE', 'RECORDED', 'ZOOM', "TEAMS"],
             required: true,
         },
         startingdate:{

@@ -18,17 +18,18 @@ const generateToken = async () => {
 };
 
 const createMeeting = async (req, res) => {
+
   const bearerToken = `Bearer ${await generateToken()}`;
 
   const payload = {
     subject: req.body.name,
     start: {
-      dateTime: "2023-02-12T10:22:25.208Z",
-      timeZone: "UTC",
+      dateTime: req.body.startDateTime,
+      timeZone: "UTC+05:30",
     },
     end: {
-      dateTime: "2023-02-19T10:22:25.208Z",
-      timeZone: "UTC",
+      dateTime: req.body.endDateTime,
+      timeZone: "UTC+05:30",
     },
     isOnlineMeeting: true,
     onlineMeetingProvider: "teamsForBusiness",
