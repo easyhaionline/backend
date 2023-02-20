@@ -64,27 +64,30 @@ exports.postRes = function (request, response) {
 
 		const ccavenuedata = JSON.parse('{"' + decodeURI(ccavResponse).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
 
-		let orderData = {
-			order_id: ccavenuedata.order_id,
-			tracking_id: ccavenuedata.tracking_id,
-			bank_ref_no: ccavenuedata.bank_ref_no,
-			order_status: ccavenuedata.order_status,
-			payment_mode: ccavenuedata.payment_mode,
-			amount: ccavenuedata.amount,
-			billing_name: ccavenuedata.billing_name,
-			billing_address: ccavenuedata.billing_address,
-			billing_city: ccavenuedata.billing_city,
-			billing_state: ccavenuedata.billing_state,
-			billing_zip: ccavenuedata.billing_zip,
-			billing_country: ccavenuedata.billing_country,
-			billing_tel: ccavenuedata.billing_tel,
-			courseid: ccavenuedata.merchant_param1,
-			studentid: ccavenuedata.merchant_param2
-		}
+		
+		
+		if (ccavenuedata.order_status === 'Success') {
 
-		const orderDetails = await OrderDetails.create(orderData);
+			let orderData = {
+				order_id: ccavenuedata.order_id,
+				tracking_id: ccavenuedata.tracking_id,
+				bank_ref_no: ccavenuedata.bank_ref_no,
+				order_status: ccavenuedata.order_status,
+				payment_mode: ccavenuedata.payment_mode,
+				amount: ccavenuedata.amount,
+				billing_name: ccavenuedata.billing_name,
+				billing_address: ccavenuedata.billing_address,
+				billing_city: ccavenuedata.billing_city,
+				billing_state: ccavenuedata.billing_state,
+				billing_zip: ccavenuedata.billing_zip,
+				billing_country: ccavenuedata.billing_country,
+				billing_tel: ccavenuedata.billing_tel,
+				courseid: ccavenuedata.merchant_param1,
+				studentid: ccavenuedata.merchant_param2
+			}
+	
+			const orderDetails = await OrderDetails.create(orderData);
 
-		if (orderDetails) {
 			const email = ccavenuedata.billing_email;
 			const mobile = ccavenuedata.billing_tel;
 
@@ -108,33 +111,33 @@ exports.postRes = function (request, response) {
 
 			const course = await Course.findOne({ _id: orderData.courseid })
 
-			if (course.startDate != null && course.endDate != null) {
-				foundAdmin.startDate.push(course.startDate)
-				foundAdmin.endDate.push(course.endDate)
-			} else {
-				let startDate
-				let endDate
-				startDate = new Date().toISOString().slice(0, 10).split('-')
-				const sTime = startDate.toISOString().slice(10, 24)
+			// if (course.startDate != null && course.endDate != null) {
+			// 	foundAdmin.startDate.push(course.startDate)
+			// 	foundAdmin.endDate.push(course.endDate)
+			// } else {
+			// 	let startDate
+			// 	let endDate
+			// 	startDate = new Date().toISOString().slice(0, 10).split('-')
+			// 	const sTime = startDate.toISOString().slice(10, 24)
 
-				let year = parseInt(startDate[0])
-				let month = parseInt(startDate[1])
-				let date = parseInt(startDate[2])
+			// 	let year = parseInt(startDate[0])
+			// 	let month = parseInt(startDate[1])
+			// 	let date = parseInt(startDate[2])
 
 
-				if ((month + course.time) % 12 != 0) {
-					year += parseInt((month + course.time) / 12)
-					month = (month + course.time) % 12
-				} else {
-					year += parseInt((month + course.time) / 12)
-					month = 1
-				}
+			// 	if ((month + course.time) % 12 != 0) {
+			// 		year += parseInt((month + course.time) / 12)
+			// 		month = (month + course.time) % 12
+			// 	} else {
+			// 		year += parseInt((month + course.time) / 12)
+			// 		month = 1
+			// 	}
 
-				endDate = date + "-" + month + "-" + year + sTime
+			// 	endDate = date + "-" + month + "-" + year + sTime
 				
-				foundAdmin.startDate.push(startDate)
-				foundAdmin.endDate.push(endDate)
-			}
+			// 	foundAdmin.startDate.push(startDate)
+			// 	foundAdmin.endDate.push(endDate)
+			// }
 
 
 			if (foundAdmin) {
@@ -154,7 +157,8 @@ exports.postRes = function (request, response) {
 
 		} else {
 			response.status(500)
-			throw new Error("Order Details can't be created at the moment! Try again later.")
+			// throw new Error("Order Details can't be created at the moment! Try again later.")
+			throw new Error("Payment failed.")
 		}
 	});
 };
