@@ -156,9 +156,10 @@ exports.postRes = function (request, response) {
 			response.redirect(`https://www.student.easyhaionline.com/myorders/${orderDetails._id}`);
 
 		} else {
-			response.status(500)
+			response.redirect(`https://www.student.easyhaionline.com/payment`);
+			// response.status(500)
 			// throw new Error("Order Details can't be created at the moment! Try again later.")
-			throw new Error("Payment failed.")
+			// throw new Error("Payment failed.")
 		}
 	});
 };
