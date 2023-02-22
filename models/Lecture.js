@@ -6,6 +6,10 @@ const lectureSchema = new Schema(
             type: String,
             required: true,
         },
+        createdBy: {
+            type: Types.ObjectId,
+            ref: "Teacher",
+        },
         link: {
             type: String,
             // required: true,
