@@ -2,7 +2,6 @@ const Notice = require("../models/notice");
 
 const createNotes= async(req, res)=>{
     const {title, link}= req.body;
-    
     const newnotice= await Notice.create({ title, link})
     // console.log(newnotice)
     try{
@@ -11,12 +10,11 @@ const createNotes= async(req, res)=>{
         }
     }
     catch(error){
-        return res.json({error})
+        return res.status(500).json({error, message: "Server error"})
     }
 }
 
 const getAllNotes= async(req, res)=>{
-    // const {title} = req.body
     const getnotice= await Notice.find({})
     // console.log(getnotice)
     try{
@@ -24,8 +22,8 @@ const getAllNotes= async(req, res)=>{
             return res.status(201).json({ getnotice, message: "Succesfully getNotice" })
         }
     }
-    catch(err){
-        return res.json({err})
+    catch(error){
+        return res.status(500).json({error, message: "Server error"})
     }
 }
 
@@ -37,8 +35,8 @@ const deleteNotice= async(req, res)=>{
             return res.status(201).json({ deletenotice, message: "Succesfully deleted" })
         }
     }
-    catch(err){
-        return res.json({err})
+    catch(error){
+        return res.status(500).json({error, message: "Server error"})
     }
 }
 
