@@ -8,12 +8,9 @@ const UploadApiResponse = require("cloudinary").v2;
 const _ = require("lodash");
 const smartTrim = require("../utils/smarttrim");
 const { generateCode, regenerateCode } = require("../utils/generateCode");
+
 exports.displaycoursecreate = async (req, res) => {
   try {
-
-
-
-
     var {
       name,
       // stream,
@@ -32,25 +29,26 @@ exports.displaycoursecreate = async (req, res) => {
       courses,
       time,
       perks,
-      demoLinks
+      demoLinks,
       // priority,
     } = req.body;
 
     console.log("request body ", req.body);
-    console.log('demo links: ', JSON.parse(demoLinks))
-
+    console.log("demo links: ", JSON.parse(demoLinks));
 
     if (!time || !time.length) {
-      const start = startDate.split('-')
-      const end = endDate.split('-')
+      const start = startDate.split("-");
+      const end = endDate.split("-");
 
-      var duration = Math.abs(((parseInt(end[0]) - parseInt(start[0])) * 12) - Math.abs(parseInt(end[1]) - parseInt(start[1])))
+      var duration = Math.abs(
+        (parseInt(end[0]) - parseInt(start[0])) * 12 -
+          Math.abs(parseInt(end[1]) - parseInt(start[1]))
+      );
 
       if (Math.abs(parseInt(end[2]) - parseInt(start[2])) >= 25)
         time = duration + 1 + " Months";
-
     } else {
-      time += " Months"
+      time += " Months";
     }
 
     if (!name || !name.length) {
@@ -141,17 +139,16 @@ exports.displaycoursecreate = async (req, res) => {
     const createdByEmail = req.authAdmin.email;
     let course = new Course();
 
-
     (course.desktopImage = secure_url),
-    (course.mobileImage = secure_url),
-    (course.name = name),
-    (course.description = description),
-    (course.createdBy = createdByEmail),
-    (course.mindescription = smartTrim(description, 200, " ", " ...")),
-    (course.description = description),
-    (course.time = time),
-    (course.classes = classes),
-    (course.courses = courses);
+      (course.mobileImage = secure_url),
+      (course.name = name),
+      (course.description = description),
+      (course.createdBy = createdByEmail),
+      (course.mindescription = smartTrim(description, 200, " ", " ...")),
+      (course.description = description),
+      (course.time = time),
+      (course.classes = classes),
+      (course.courses = courses);
     course.actualPrice = actualPrice;
     course.discountPrice = discountPrice;
     course.standard = arrayOfstandards;
@@ -170,7 +167,6 @@ exports.displaycoursecreate = async (req, res) => {
       }
       res.json(result);
     });
-
   } catch (err) {
     console.log(err.message);
     res.status(400).json({ message: "Line 3 Server Error:(" });
@@ -179,10 +175,9 @@ exports.displaycoursecreate = async (req, res) => {
 
 exports.update = async (req, res) => {
   const id = req.params.id;
-  // console.log("Id", id);
+  console.log(req.body);
 
   Course.findById(id).exec(async (err, oldcourse) => {
-
     var secure_url2 = oldcourse.desktopImage;
     // console.log("old Banner url --> ", oldcourse.desktopImage);
     try {
@@ -205,10 +200,9 @@ exports.update = async (req, res) => {
         courses,
         perks,
         time,
+        demoLinks,
         priority,
       } = req.body;
-
-      console.log("PERKS", perks)
 
       if (!name || !name.length) {
         return res.status(400).json({
@@ -257,18 +251,6 @@ exports.update = async (req, res) => {
         });
       }
 
-      // if (!time || !time.length) {
-      //   return res.status(400).json({
-      //     error: "time is required",
-      //   });
-      // }
-
-      // if (!classes || !classes.length) {
-      //   return res.status(400).json({
-      //     error: "classes is required",
-      //   });
-      // }
-
       if (req.file) {
         let uploadedFile = UploadApiResponse;
 
@@ -277,17 +259,12 @@ exports.update = async (req, res) => {
           uploadedFile = await cloudinary.uploader.upload(req.file.path, {
             folder: "image",
             resource_type: "auto",
-
           });
 
-
-          secure_url2 = uploadedFile.url
+          secure_url2 = uploadedFile.url;
         } catch (err) {
-
           res.status(401).json({ err });
         }
-
-
       }
 
       let code = generateCode("COURSE", name);
@@ -301,6 +278,8 @@ exports.update = async (req, res) => {
       }
 
       let arrayOfsubjects = subject && subject.split(",");
+      let arrayOfstandards = standard && standard.split(",");
+      let arrayOfperks = perks && perks.split(",");
 
       (oldcourse.desktopImage = secure_url2),
         (oldcourse.mobileImage = secure_url2),
@@ -313,11 +292,13 @@ exports.update = async (req, res) => {
         (oldcourse.courses = courses);
       oldcourse.actualPrice = actualPrice;
       oldcourse.discountPrice = discountPrice;
-      oldcourse.standard = standard;
+      oldcourse.standard = arrayOfstandards;
       oldcourse.subject = arrayOfsubjects;
       oldcourse.startDate = startDate;
       oldcourse.endDate = endDate;
       oldcourse.code = code;
+      oldcourse.demoLinks = JSON.parse(demoLinks);
+      oldcourse.perks = arrayOfperks
 
       oldcourse.save((err, result) => {
         if (err) {
@@ -328,7 +309,6 @@ exports.update = async (req, res) => {
         res.status(200).json(result);
       });
     } catch (err) {
-
       res.status(401).json({ err });
     }
   });
@@ -352,24 +332,30 @@ exports.list = (req, res) => {
 
 exports.remove = (req, res) => {
   const _id = req.params.id;
-  Course.findByIdAndRemove(_id).populate("standard", "_id name").populate("subject", "_id name").exec((err, data) => {
-    if (err) {
-      return res.json({
-        error: errorHandler(err),
-      });
-    }
-    res.json({ message: "Course Data Deleted Successfully", data: { _id } });
-  });
+  Course.findByIdAndRemove(_id)
+    .populate("standard", "_id name")
+    .populate("subject", "_id name")
+    .exec((err, data) => {
+      if (err) {
+        return res.json({
+          error: errorHandler(err),
+        });
+      }
+      res.json({ message: "Course Data Deleted Successfully", data: { _id } });
+    });
 };
 
 exports.read = (req, res) => {
   const id = req.params.id;
-  Course.findById(id).populate("standard", "_id name").populate("subject", "_id name").exec((err, data) => {
-    if (err) {
-      return res.json({
-        error: errorHandler(err),
-      });
-    }
-    res.json(data);
-  });
+  Course.findById(id)
+    .populate("standard", "_id name")
+    .populate("subject", "_id name")
+    .exec((err, data) => {
+      if (err) {
+        return res.json({
+          error: errorHandler(err),
+        });
+      }
+      res.json(data);
+    });
 };

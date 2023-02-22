@@ -66,8 +66,7 @@ const chapterGetById = asyncHandler(async (req, res) => {
 const chapterGetActive = asyncHandler(async (_, res) => {
     const foundChapters = await Chapter.find({ isActive: true })
       .sort({ createdAt: -1 })
-      .populate("topics", "_id name")
-console.log(foundChapters)
+      .populate("topics", "_id name").populate('subject', '_id name')
     res.status(200).json(foundChapters)
 })
 
