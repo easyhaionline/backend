@@ -128,8 +128,7 @@ const studentGetById = asyncHandler(async (req, res) => {
 const profileUpdate = asyncHandler(async (req, res) => {
     const { username, image, email, number } = req.body
 
-    console.log(image)
-
+    console.log(req.body)
     // validating inputs
     // const { isValid, message } = validateStudentInputs(req.body, true)
     // if (!isValid) {
@@ -143,13 +142,16 @@ const profileUpdate = asyncHandler(async (req, res) => {
     })
 
 
+   
+
+
     if (foundStudent) {
         // checking if the logged in user is updating his own details or else he is a super admin
         // (super admin can update any admin's details)
 
 
         if (username) foundStudent.username = username
-        if (image) foundStudent.image = image[1]
+        if (image) foundStudent.image = image
         if (number) foundStudent.number = number
         foundStudent.save();
         res.status(200).json({

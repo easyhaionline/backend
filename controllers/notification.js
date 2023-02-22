@@ -50,7 +50,7 @@ const checkEmailStatus = (req, res) => {
 };
 
 const sendEmail = async (req, res) => {
- 
+
   AWS.config.update({
     accessKeyId: process.env.Notification_Access_Key_Id,
     secretAccessKey: process.env.Notification_Secret_Access_Key,
@@ -59,6 +59,7 @@ const sendEmail = async (req, res) => {
 
   const ses = new AWS.SES();
 
+<<<<<<< HEAD
 //   const htmlTemplate = `
 //   <html>
 //     <head>
@@ -81,6 +82,9 @@ const sendEmail = async (req, res) => {
   const htmlTemplate = req.body.template
 
 
+=======
+  const htmlTemplate = req.body.template
+>>>>>>> 732fc915a6d9b2a1ea5ec1aa6f8628958ffddd09
   
   const fromAddress = "noreply@easyhaionline.com";
 
@@ -107,6 +111,7 @@ const sendEmail = async (req, res) => {
               },
             },
             Source: fromAddress,
+            
           };
 
           ses.sendEmail(params, (err, data) => {

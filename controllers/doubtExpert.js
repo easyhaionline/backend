@@ -182,7 +182,7 @@ const getSingleDoubt = asyncHandler(async (req, res) => {
     })
     .populate({
         path: 'teacher',
-        select: '_id username image',
+        select: '_id username image email',
       })
     .populate({
         path: 'doubtReply.teacher',
