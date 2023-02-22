@@ -59,32 +59,7 @@ const sendEmail = async (req, res) => {
 
   const ses = new AWS.SES();
 
-<<<<<<< HEAD
-//   const htmlTemplate = `
-//   <html>
-//     <head>
-//       <title>${req.body.title}</title>
-//     </head>
-//     <body>
-//       <p>Dear ${req.body.user},</p>
-//       ${req.body.message1}
-//       ${req.body.message2}
-//       <button style={{background-color:"blue"}} >
-//       <a href=${req.body.link}>
-//         Join
-//       </a>
-//     </button>
-//     </body>
-//   </html>
-// `;
-
-  // const htmlTemplate = notification()
   const htmlTemplate = req.body.template
-
-
-=======
-  const htmlTemplate = req.body.template
->>>>>>> 732fc915a6d9b2a1ea5ec1aa6f8628958ffddd09
   
   const fromAddress = "noreply@easyhaionline.com";
 
