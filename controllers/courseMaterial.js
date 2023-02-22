@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
-
+const mongoose = require('mongoose')
 const CourseMaterial = require("../models/CourseMaterial");
+const Topics = require("../models/topic");
 
 // to create a new CourseMaterial ********************************************************
 const courseMaterialCreate = asyncHandler(async (req, res) => {
@@ -52,9 +53,9 @@ const courseMaterialUpdate = asyncHandler(async (req, res) => {
 
 // to fetch all CourseMaterial available *******************************************************
 const courseMaterialGetAll = asyncHandler(async (req, res) => {
-  const foundCourseMaterials = await CourseMaterial.find()
+  // const foundCourseMaterials = await CourseMaterial.find()
   const {skip,limit} = req.body
-   await CourseMaterial.find()
+  const data = await CourseMaterial.find()
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
@@ -62,15 +63,14 @@ const courseMaterialGetAll = asyncHandler(async (req, res) => {
       path: "standard",
       select: "title",
     })
-    .populate("subtopic","_id name")
-    .exec((error, data) => {
+    .populate("subtopic","_id name topic")
+    .exec((error, data) => { 
       if (data) {
         return res.status(200).json({ data: data });
       } else {
         return console.log("I am error: ", error);
       }
     });
-
 });
 
 const courseMaterialGetById = asyncHandler(async (req, res) => {
@@ -178,7 +178,7 @@ const courseMaterialRemove = async (req, res) => {
 };
 
 const searchCourseMaterial = async (req,res)=>{
-  console.log(req.params.key)
+  // console.log(req.params.key)
   const coursematerial= await CourseMaterial.find({
     $or:[
       {
@@ -196,6 +196,7 @@ const searchCourseMaterial = async (req,res)=>{
   }
 }
 
+
 module.exports = {
   courseMaterialCreate,
   courseMaterialGetAll,
@@ -206,5 +207,5 @@ module.exports = {
   courseMaterialUpdate,
   addingCourseContent,
   courseMaterialRemove,
-  searchCourseMaterial
+  searchCourseMaterial,
 };

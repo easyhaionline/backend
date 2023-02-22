@@ -7,16 +7,15 @@ const validateLectureInputs = require('../validators/lecture')
 
 // to create a new lecture ********************************************************
 const lectureCreate = asyncHandler(async (req, res) => {
-    const { title, link, image, filter, standard, subject,examtype,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type , zoomDetials,description,chapter,course } =req.body;
-    console.log(req.body);
+    const { title,createdBy ,link, image, filter, standard, subject,examtype,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type , zoomDetials,description,chapter,course } =req.body;
     let data = {};
     if(filter === "ZOOM"){
         let zoomid = zoomDetials.id;
         let zoomPass = zoomDetials.password;
-        data = { title, link, image,  standard,examtype, subject,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type , zoomid, zoomPass,description,chapter,course };
+        data = { title,createdBy, link, image, filter, standard,examtype, subject,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type , zoomid, zoomPass,description,chapter,course };
     } 
     else {
-        data = { title, link, image, standard,examtype, subject,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type ,description,chapter,course }
+        data = { title,createdBy, link, image, filter, standard,examtype, subject,startingdate, endingdate,startingtime,endingtime,duration, topic, practiceTests, type ,description,chapter,course }
     }
     const newLecture = await Lecture.create(data)
     if (newLecture) {

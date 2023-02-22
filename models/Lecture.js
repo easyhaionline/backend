@@ -6,6 +6,10 @@ const lectureSchema = new Schema(
             type: String,
             required: true,
         },
+        createdBy: {
+            type: Types.ObjectId,
+            ref: "Teacher",
+        },
         link: {
             type: String,
             // required: true,
@@ -51,7 +55,7 @@ const lectureSchema = new Schema(
         ],
         type: {
             type: String,
-            enum: ['LIVE', 'RECORDED', 'ZOOM'],
+            enum: ['LIVE', 'RECORDED', "TEAMS" ,'ZOOM'],
             required: true,
         },
         startingdate:{
