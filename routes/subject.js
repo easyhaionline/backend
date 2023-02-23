@@ -52,7 +52,7 @@ router.delete("/removed-chapter/:id", removingChapter);
 // @desc: To get all the subjects
 // @access: Private
 // router.get('/', protectAdmin, subjectGetAll)
-router.get('/',  subjectGetAll)
+router.post('/get-all',  subjectGetAll)
 
 // @route: GET /api/subject
 // @desc: To get all the subjects
