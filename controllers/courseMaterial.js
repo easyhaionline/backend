@@ -182,7 +182,7 @@ const searchCourseMaterial = async (req,res)=>{
         name: { $regex: req.params.key, $options: 'i' }
       }
     ]
-  })
+  }).populate('subtopic', '_id name')
   try{
     if(coursematerial){
       return res.status(201).json({coursematerial});
