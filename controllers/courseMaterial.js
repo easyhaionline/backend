@@ -179,7 +179,7 @@ const searchCourseMaterial = async (req,res)=>{
   const coursematerial= await CourseMaterial.find({
     $or:[
       {
-        name: { $regex: req.params.key, $options: 'i' }
+        name: { $regex: new RegExp("^"+req.params.key+".*"), $options: 'i' }
       }
     ]
   }).populate('subtopic', '_id name')
