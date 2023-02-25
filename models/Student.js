@@ -76,7 +76,6 @@ const studentSchema = new Schema(
     }
 )
 
-
 // to match the provided password with the password saved in the database
 studentSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password)
