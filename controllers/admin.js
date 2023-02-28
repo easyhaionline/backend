@@ -22,7 +22,7 @@ const Studentlog = require("../models/StudentLogger");
 const Teacherlog = require("../models/TeacherLogger");
 const StudentAttendancelog = require("../models/StudentAttendance");
 const TeacherAttendance = require("../models/TeacherAttendance");
-const bcrypt = require('bcryptjs')
+const bcrypt = require("bcryptjs");
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
   const { username, email, image, password } = req.body;
@@ -762,28 +762,27 @@ const forgotPassword = asyncHandler(async (req, res) => {
       expiresIn: "10m",
     });
 
-    // email
-    const emailData = {
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: `Password reset link`,
-      html: `
-            <p>Please use the following link to reset your password:</p>
-            <p>${process.env.PRODUCTION_URL}/resetpassword/${token}</p>
-            <hr />
-            <p>This email may contain sensetive information</p>
-            <p>https://easyhaionline.com</p>
-        `,
-    };
+    const template = `
+        <p>Click the link below to reset your password:</p>
+        <p>https://student.easyhaionline.com/reset-password/${token}</p>
+        <hr />
+        <p>If you did not request a password reset you can safely ignore this email.</p>
+        <p>https://teacher.easyhaionline.com</p>
+    `;
+
     // populating the db > user > resetPasswordLink
-    return user.updateOne({ resetPasswordLink: token }, (err, success) => {
+    return user.updateOne({ resetPasswordLink: token }, async(err, success) => {
       if (err) {
         return res.json({ error: err });
       } else {
-        sendEmailWithNodemailer(req, res, emailData);
-        console.log(
-          "sendEmailWithNodemailer function : ",
-          sendEmailWithNodemailer(req, res, emailData)
+        // sendEmailWithNodemailer(req, res, emailData);
+        await axios.post(
+          "https://api.easyhaionline.com/api/notification/send-email",
+          {
+            recipientEmail: [email],
+            template,
+            emailSubject: "Password reset link",
+          }
         );
         return res.json({
           message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.`,
@@ -846,7 +845,7 @@ const forgotPasswordStudent = asyncHandler(async (req, res) => {
     }
 
     const token = jwt.sign({ _id: user._id }, process.env.JWT_RESET_PASSWORD, {
-      expiresIn: "1m",
+      expiresIn: "10m",
     });
 
     const template = `
@@ -879,7 +878,7 @@ const forgotPasswordStudent = asyncHandler(async (req, res) => {
         } else {
           //   sendEmailWithNodemailer(req, res, emailData);
           await axios.post(
-            "http://localhost:8088/api/notification/send-email",
+            "https://api.easyhaionline.com/api/notification/send-email",
             {
               recipientEmail: [email],
               template,
@@ -911,8 +910,8 @@ const resetPasswordStudent = (req, res) => {
           });
         }
 
-        const salt = await bcrypt.genSalt(13)
-       const finalPassword = await bcrypt.hash(req.body.password, salt)
+        const salt = await bcrypt.genSalt(13);
+        const finalPassword = await bcrypt.hash(req.body.password, salt);
         const updatedStudent = await Student.findOneAndUpdate(
           { resetPasswordLink: resetPasswordLink },
           { password: finalPassword, resetPasswordLink: "" }
