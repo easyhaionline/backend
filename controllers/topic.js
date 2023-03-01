@@ -1,15 +1,18 @@
 const asyncHandler = require("express-async-handler");
+const { name } = require("msal/lib-commonjs/packageMetadata");
+const Subtopic = require("../models/subtopic");
+const CourseMatrial = require("../models/CourseMaterial");
 
 const Topic = require("../models/topic");
 
 // to create a new Subject ********************************************************
 const topicCreate = asyncHandler(async (req, res) => {
-  const { name, chapter,subtopics } = req.body;
+  const { name, chapter, subtopics } = req.body;
 
   const newTopic = await Topic.create({
     name,
     chapter,
-    subtopics
+    subtopics,
   });
 
   if (newTopic) {
@@ -41,37 +44,41 @@ const topicGetAll = asyncHandler(async (req, res) => {
         return console.log("I am error: ", error);
       }
     });
-  
 });
-
 
 const topicGetById = asyncHandler(async (req, res) => {
   const _id = req.params.id;
-  await Topic.findById(_id).populate({
-    path: "standard",
-    select: "title",
-  }) .populate("subtopics", "_id name").exec((err,data)=>{
-    if (err) {
-      return res.json({
-        error: err,
-      });
-    }
-     console.log(data)
-    res.status(200).json(data)
-   })
+  await Topic.findById(_id)
+    .populate({
+      path: "standard",
+      select: "title",
+    })
+    .populate("subtopics", "_id name")
+    .exec((err, data) => {
+      if (err) {
+        return res.json({
+          error: err,
+        });
+      }
+      console.log(data);
+      res.status(200).json(data);
+    });
 });
 
 const topicById = asyncHandler(async (req, res) => {
   const _id = req.params.id;
-  await Topic.findById(_id).select('name').select('subtopics').exec((err,data)=>{
-    if (err) {
-      return res.json({
-        error: err,
-      });
-    }
-     console.log(data)
-    res.status(200).json(data)
-   })
+  await Topic.findById(_id)
+    .select("name")
+    .select("subtopics")
+    .exec((err, data) => {
+      if (err) {
+        return res.json({
+          error: err,
+        });
+      }
+      console.log(data);
+      res.status(200).json(data);
+    });
 });
 
 // to fetch all active topics on the site *******************************************************
@@ -103,7 +110,7 @@ const topicToggle = asyncHandler(async (req, res) => {
 
 // to update the Topic **************************************************************
 const topicUpdate = asyncHandler(async (req, res) => {
-  const { name, chapter,subtopics } = req.body;
+  const { name, chapter, subtopics } = req.body;
   const _id = req.params.id;
 
   const foundTopic = await Topic.findOne({ _id });
@@ -166,7 +173,7 @@ const removingsubtopics = async (req, res) => {
     },
     {
       $pull: {
-        subtopics: { _id: subtopicid }
+        subtopics: { _id: subtopicid },
       },
     }
   ).then((data, err) => {
@@ -177,29 +184,59 @@ const removingsubtopics = async (req, res) => {
   });
 };
 
-const searchTopic = async (req,res)=>{
-  console.log(req.params.key)
-  const topic= await Topic.find({
-    $or:[
+const searchTopic = async (req, res) => {
+  console.log(req.params.key);
+  const topic = await Topic.find({
+    $or: [
       {
-        name: { $regex: req.params.key, $options: 'i' }
-      }
-    ]
-  }).populate("chapter", "name")
-  .populate("subtopics", "name")
-  console.log(topic)
-  try{
-    if(topic){
+        name: { $regex: req.params.key, $options: "i" },
+      },
+    ],
+  })
+    .populate("chapter", "name")
+    .populate("subtopics", "name");
+  console.log(topic);
+  try {
+    if (topic) {
       return res.status(201).json(topic);
     }
+  } catch (error) {
+    return res.json({ error });
   }
-  catch(error){
-    return res.json({error})
-  }
-  console.log(topic)
-}
+  console.log(topic);
+};
 
+const showAllpdfvideoani = asyncHandler(async (req, res) => {
+  const foundTopics = await Topic.find()
+    .sort({ createdAt: -1 })
+    .populate("chapter", "_id name")
+    .exec(async(error, data) => {
+      if (data) {
+        let materialType = [];
+        const typeArray = await Promise.all(data.map(async (item) => {
+          if (item.subtopics != null) {
+            const subtopics =  await Subtopic.findOne({_id: item.subtopics[0]});
+            // console.log(subtopics.courseMaterials != null ? "OKK" : "NULL" )
+            if ( subtopics && subtopics.courseMaterials && subtopics.courseMaterials != null) {
+              const courseMatId = subtopics.courseMaterials[0]; 
+              if(courseMatId){
+                const coursematerial = await CourseMatrial.findOne({_id: courseMatId  });
+                // console.log("coursematerial",coursematerial);
+                materialType.push(coursematerial.content[0].type)
+              }
+            }
+            console.log(materialType)
+          }
 
+          return materialType
+        }));
+
+        return res.status(200).json({data:data, type: materialType });
+      } else {
+        return console.log("I am error: ", error);
+      }
+    });
+});
 
 module.exports = {
   topicCreate,
@@ -212,5 +249,6 @@ module.exports = {
   removingsubtopics,
   topicGetById,
   topicById,
-  searchTopic
+  searchTopic,
+  showAllpdfvideoani,
 };

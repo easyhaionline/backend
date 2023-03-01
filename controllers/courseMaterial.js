@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const mongoose = require('mongoose')
 const CourseMaterial = require("../models/CourseMaterial");
 const Topics = require("../models/topic");
+const Subtopic= require("../models/subtopic")
 
 // to create a new CourseMaterial ********************************************************
 const courseMaterialCreate = asyncHandler(async (req, res) => {
@@ -193,6 +194,27 @@ const searchCourseMaterial = async (req,res)=>{
   }
 }
 
+// const GetAllpdfvideoani = asyncHandler(async (req, res) => {
+//   // const foundCourseMaterials = await CourseMaterial.find()
+//   const data = await CourseMaterial.find()
+//     .sort({ createdAt: -1 })
+//     .populate({
+//       path: "standard",
+//       select: "title",
+//     })
+//     .populate("subtopic","_id name topic")
+//     .exec((error, data) => { 
+//       if (data) {
+//         return res.status(200).json({ data: data });
+//       } else {
+//         return console.log("I am error: ", error);
+//       }
+//     });
+
+//     const subtop= await Subtopic.findOne({ _id: data.courseMaterials[0]._id })
+//     .populate("CourseMaterial", "name")
+// });
+
 
 module.exports = {
   courseMaterialCreate,
@@ -205,4 +227,5 @@ module.exports = {
   addingCourseContent,
   courseMaterialRemove,
   searchCourseMaterial,
+  // GetAllpdfvideoani,
 };
