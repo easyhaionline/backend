@@ -144,6 +144,12 @@ exports.postRes = function (request, response) {
 
 				foundAdmin.courses.push(ccavenuedata.merchant_param1);
 
+				const template = `Dear ${foundAdmin.username},
+				Your course- ${course.name} has been successfully purchased. You can now visit it in My Course at https://www.easyhaionline.com/.`
+
+		        const data = await axios.get(
+		          `https://cors.easyhaionline.com/https://api.mylogin.co.in/api/v2/SendSMS?SenderId=EASHAI&Message=${template}&MobileNumbers=91${foundAdmin.number}&ApiKey=Gch7FDjwlYzaAw48CqBFzFVQBgtWqKb3wQNl9%2BPki9I%3D&ClientId=e89365f7-56ef-4c5c-a2f8-a4de4a4d99f9`
+		        );
 
 				foundAdmin.doubtCredits = foundAdmin.doubtCredits + 100
 				foundAdmin.save()

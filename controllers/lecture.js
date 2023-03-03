@@ -1,8 +1,10 @@
 const asyncHandler = require('express-async-handler')
 const Lecture = require('../models/Lecture')
 const Course = require('../models/Course')
+const Student = require('../models/Student')
 const validateMongoID = require('../validators/id')
 const validateLectureInputs = require('../validators/lecture')
+const axios = require('axios')
 
 
 // to create a new lecture ********************************************************

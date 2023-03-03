@@ -21,7 +21,12 @@ const verify = async (req, res) => {
     if (err) {
       console.error(err);
     } else {
-      res.status(200).send(`Verification email sent to ${emailAddress}`);
+      res
+        .status(200)
+        .send({
+          msg: `Verification email sent to ${emailAddress}`,
+          data: data,
+        });
     }
   });
 };
@@ -50,7 +55,6 @@ const checkEmailStatus = (req, res) => {
 };
 
 const sendEmail = async (req, res) => {
-
   AWS.config.update({
     accessKeyId: process.env.Notification_Access_Key_Id,
     secretAccessKey: process.env.Notification_Secret_Access_Key,
@@ -59,8 +63,8 @@ const sendEmail = async (req, res) => {
 
   const ses = new AWS.SES();
 
-  const htmlTemplate = req.body.template
-  
+  const htmlTemplate = req.body.template;
+
   const fromAddress = "noreply@easyhaionline.com";
 
   req.body.recipientEmail.map((item) => {
@@ -70,33 +74,35 @@ const sendEmail = async (req, res) => {
       } else {
         if (data.VerifiedEmailAddresses.includes(item)) {
           const params = {
-            Destination: {
-              ToAddresses: [item],
-            },
-            Message: {
-              Body: {
-                Html: {
-                  Charset: "UTF-8",
-                  Data: htmlTemplate,
-                },
-              },
-              Subject: {
-                Charset: "UTF-8",
-                Data: req.body.emailSubject,
-              },
-            },
-            Source: fromAddress,
-            
+            // Destination: {
+            //   ToAddresses: [item],
+            // },
+            // Message: {
+            //   Body: {
+            //     Html: {
+            //       Charset: "UTF-8",
+            //       Data: htmlTemplate,
+            //     },
+            //   },
+            //   Subject: {
+            //     Charset: "UTF-8",
+            //     Data: req.body.emailSubject,
+            //   },
+            // },
+            EmailAddress: item, // The email address to send the verification email to
+            TemplateName: "VerifyEmail", // The name of your email template
+            // TemplateData: '{ "name":"John Doe" }',
           };
 
-          ses.sendEmail(params, (err, data) => {
+          // ses.sendCustomVerificationEmail
+
+          ses.sendCustomVerificationEmail(params, (err, data) => {
             if (err) {
               console.error(err);
             } else {
               console.log("Email sent to " + item);
             }
           });
-
         } else {
           console.log("not verified");
         }
@@ -104,9 +110,7 @@ const sendEmail = async (req, res) => {
     });
   });
 
-  res.send("Email sent to succesfully");
-
-
+  res.send("Email sent succesfully");
 };
 
 module.exports = { verify, sendEmail, checkEmailStatus };
