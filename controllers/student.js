@@ -165,11 +165,22 @@ const profileUpdate = asyncHandler(async (req, res) => {
     }
 })
 
+const getStudentsNumber = asyncHandler(async (req, res) => {
+    const students = await Student.find({courses:{$in:[req.params.courseId]}})
+
+    if(!students) {
+        res.status(404).json({msg:"Students not found"})
+    }
+
+    res.status(200).json(students)
+})
+
 module.exports = {
     studentRegister,
     studentLogin,
     studentVerifyOtp,
     studentGetAll,
     profileUpdate,
-    studentGetById
+    studentGetById,
+    getStudentsNumber
 }
