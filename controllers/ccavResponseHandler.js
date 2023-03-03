@@ -152,6 +152,20 @@ exports.postRes = function (request, response) {
 		        );
 
 				foundAdmin.doubtCredits = foundAdmin.doubtCredits + 100
+				if(foundAdmin.deviceToken && foundAdmin.deviceToken !== 0){
+					try {
+						const params = {
+						  Protocol: 'application',
+						  TopicArn: course.topicArn,
+						  Endpoint: foundAdmin.endpointArn
+						};
+						const subscribeResult = await SNS.subscribe(params).promise();
+						// console.log(subscribeResult);
+						// foundAdmin.endpointArn = subscribeResult.SubscriptionArn
+					  } catch (err) {
+						console.error(err);
+					}
+				}
 				foundAdmin.save()
 			}
 
@@ -169,3 +183,4 @@ exports.postRes = function (request, response) {
 		}
 	});
 };
+

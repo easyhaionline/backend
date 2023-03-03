@@ -12,7 +12,8 @@ const {
   addingsubtopics,
   removingsubtopics,
   topicById,
-  searchTopic
+  searchTopic,
+  showAllpdfvideoani
 } = require("../controllers/topic");
 
 const router = express.Router();
@@ -32,6 +33,9 @@ router.delete("/:id", topicRemove);
 // @desc: To get all the subjects
 // @access: Private
 router.post("/get-all", topicGetAll);
+
+router.get("/get-all-type", showAllpdfvideoani);
+
 
 // @route: GET /api/subject
 // @desc: To get all the subjects
@@ -70,5 +74,6 @@ router.put("/:id", topicUpdate);
 // router.delete('/remove/:subjectID', chapterRemove)
 
 router.get("/Searchtopic/:key", searchTopic)
+
 
 module.exports = router;

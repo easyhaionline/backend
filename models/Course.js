@@ -15,6 +15,9 @@ const courseSchema = new Schema(
       type: String,
       required: true,
     },
+    topicArn: {
+      type: String,
+    },
     standard:
       [{
         type: Types.ObjectId,
