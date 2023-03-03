@@ -223,15 +223,23 @@ const showAllpdfvideoani = asyncHandler(async (req, res) => {
                 const coursematerial = await CourseMatrial.findOne({_id: courseMatId  });
                 // console.log("coursematerial",coursematerial);
                 materialType.push(coursematerial.content[0].type)
+              } else{
+                materialType.push("")
               }
+
+            } else {
+              materialType.push("")
             }
+           
             console.log(materialType)
+          } else {
+            materialType.push("")
           }
 
           return materialType
         }));
 
-        return res.status(200).json({data:data, type: materialType });
+        return res.status(200).json({data: data, type: materialType });
       } else {
         return console.log("I am error: ", error);
       }

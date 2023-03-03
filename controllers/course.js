@@ -10,11 +10,17 @@ const formidable = require('formidable');
 const cloudinary = require("cloudinary").v2;
 const UploadApiResponse = require("cloudinary").v2;
 const _ = require("lodash")
-
+const AWS = require('aws-sdk');
+AWS.config.update({
+    accessKeyId: process.env.Notification_Access_Key_Id,
+    secretAccessKey: process.env.Notification_Secret_Access_Key,
+    region: "us-east-1",
+  });
 // to create a new course ***********************************************************
 const courseCreate =  (req, res) => {
     let form = new formidable.IncomingForm();
     form.keepExtensions = true;
+    let topicArn;
     form.parse(req, (err, fields, file) => { 
     const {
         name,
@@ -37,6 +43,18 @@ const courseCreate =  (req, res) => {
         subject,
     } = fields
     console.log("I am standards",standard);
+
+    const sns = new AWS.SNS();
+    sns.createTopic({ Name: req.body.name }, (err, data) => {
+        console.log("WE ARE HERE 1");
+        if (err) console.log(err, err.stack);
+        else {
+            topicArn= data.TopicArn
+            console.log("WE ARE HERE 2:");
+            console.log(data);
+        }
+    });
+
     // validating inputs
     const { isValid: isValidCommon, message: messageCommon } = validateCommonInputs(
         fields,
@@ -115,6 +133,7 @@ const courseCreate =  (req, res) => {
         examtype,
         subject,
         createdBy: createdByEmail,
+        topicArn,
     })
 
     if (newCourse) {

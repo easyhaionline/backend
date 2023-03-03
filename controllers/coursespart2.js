@@ -8,9 +8,16 @@ const UploadApiResponse = require("cloudinary").v2;
 const _ = require("lodash");
 const smartTrim = require("../utils/smarttrim");
 const { generateCode, regenerateCode } = require("../utils/generateCode");
+const AWS = require('aws-sdk');
+AWS.config.update({
+    accessKeyId: process.env.Notification_Access_Key_Id,
+    secretAccessKey: process.env.Notification_Secret_Access_Key,
+    region: "us-east-1",
+  });
 
 exports.displaycoursecreate = async (req, res) => {
   try {
+    let topicArn;
     var {
       name,
       // stream,
@@ -33,8 +40,17 @@ exports.displaycoursecreate = async (req, res) => {
       // priority,
     } = req.body;
 
-    console.log("request body ", req.body);
-    console.log("demo links: ", JSON.parse(demoLinks));
+    const topicName = name.replace(" ", "_")
+    const sns = new AWS.SNS();
+    sns.createTopic({ Name: topicName }, (err, data) => {
+        if (err) console.log(err, err.stack);
+        else {
+            topicArn= data.TopicArn
+        }
+    });
+
+    // console.log("request body ", req.body);
+    // console.log("demo links: ", JSON.parse(demoLinks));
 
     if (!time || !time.length) {
       const start = startDate.split("-");
@@ -158,6 +174,7 @@ exports.displaycoursecreate = async (req, res) => {
     course.startDate = startDate;
     course.endDate = endDate;
     course.code = code;
+    course.topicArn = topicArn
     // console.log(course, "end");
     course.save((err, result) => {
       if (err) {
@@ -165,6 +182,7 @@ exports.displaycoursecreate = async (req, res) => {
           error: err,
         });
       }
+      console.log("course", course)
       res.json(result);
     });
   } catch (err) {

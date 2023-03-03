@@ -23,6 +23,12 @@ const Teacherlog = require("../models/TeacherLogger");
 const StudentAttendancelog = require("../models/StudentAttendance");
 const TeacherAttendance = require("../models/TeacherAttendance");
 const bcrypt = require("bcryptjs");
+const AWS = require("aws-sdk");
+AWS.config.update({
+  accessKeyId: process.env.Notification_Access_Key_Id,
+  secretAccessKey: process.env.Notification_Secret_Access_Key,
+  region: "us-east-1",
+});
 // to register a super admin ************************************************************************
 const adminRegisterSuper = asyncHandler(async (req, res) => {
   const { username, email, image, password } = req.body;
@@ -173,7 +179,7 @@ const adminRegister = asyncHandler(async (req, res) => {
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
-  const { username, email, number, password, courseId } = req.body;
+  const { username, email, number, password, courseId, deviceToken } = req.body;
   //  checking for the uniqueness of email address
   const isUniqueEmail =
     (await Student.countDocuments({ email })) > 0 ? false : true;
@@ -182,29 +188,68 @@ const studentRegister = asyncHandler(async (req, res) => {
     throw new Error("Email is already registered! Try Logging in.");
   }
 
-  console.log(req.body);
+  // console.log(req.body);
 
-  const newAdmin = await Student.create({
-    username,
-    email,
-    password,
-    number,
-    courses: courseId,
-  });
-
-  await ChatUser.create({ _id: newAdmin._id, username: newAdmin.username });
-  await Studentlog.create({ studentId: newAdmin._id });
-  await StudentAttendancelog.create({ studentId: newAdmin._id });
-
-  if (newAdmin) {
-    // removing password before sending to client
-    newAdmin.password = null;
-    res.status(200).json(newAdmin);
+  if(deviceToken.length != 0) {
+    const endpointParams = {
+      PlatformApplicationArn: process.env.ANDROID_PUSH_NOTIFICATION,
+      Token: req.body.deviceToken,
+    };
+  
+    const sns = new AWS.SNS();
+    sns.createPlatformEndpoint(endpointParams, async (err, data) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const newAdmin = await Student.create({
+          username,
+          email,
+          password,
+          number,
+          courses: courseId,
+          deviceToken: req.body.deviceToken,
+          endpointArn: data.EndpointArn,
+        });
+  
+        await ChatUser.create({ _id: newAdmin._id, username: newAdmin.username });
+        await Studentlog.create({ studentId: newAdmin._id });
+        await StudentAttendancelog.create({ studentId: newAdmin._id });
+  
+        if (newAdmin) {
+          // removing password before sending to client
+          newAdmin.password = null;
+          res.status(200).json(newAdmin);
+        } else {
+          res.status(500);
+          throw new Error(
+            "New admin can't be registered at the moment! Try again later."
+          );
+        }
+      }
+    });
   } else {
-    res.status(500);
-    throw new Error(
-      "New admin can't be registered at the moment! Try again later."
-    );
+    const newAdmin = await Student.create({
+      username,
+      email,
+      password,
+      number,
+      courses: courseId,
+    });
+
+    await ChatUser.create({ _id: newAdmin._id, username: newAdmin.username });
+    await Studentlog.create({ studentId: newAdmin._id });
+    await StudentAttendancelog.create({ studentId: newAdmin._id });
+
+    if (newAdmin) {
+      // removing password before sending to client
+      newAdmin.password = null;
+      res.status(200).json(newAdmin);
+    } else {
+      res.status(500);
+      throw new Error(
+        "New admin can't be registered at the moment! Try again later."
+      );
+    }
   }
 });
 
@@ -771,24 +816,27 @@ const forgotPassword = asyncHandler(async (req, res) => {
     `;
 
     // populating the db > user > resetPasswordLink
-    return user.updateOne({ resetPasswordLink: token }, async(err, success) => {
-      if (err) {
-        return res.json({ error: err });
-      } else {
-        // sendEmailWithNodemailer(req, res, emailData);
-        await axios.post(
-          "https://api.easyhaionline.com/api/notification/send-email",
-          {
-            recipientEmail: [email],
-            template,
-            emailSubject: "Password reset link",
-          }
-        );
-        return res.json({
-          message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.`,
-        });
+    return user.updateOne(
+      { resetPasswordLink: token },
+      async (err, success) => {
+        if (err) {
+          return res.json({ error: err });
+        } else {
+          // sendEmailWithNodemailer(req, res, emailData);
+          await axios.post(
+            "https://api.easyhaionline.com/api/notification/send-email",
+            {
+              recipientEmail: [email],
+              template,
+              emailSubject: "Password reset link",
+            }
+          );
+          return res.json({
+            message: `Email has been sent to ${email}. Follow the instructions to reset your password. Link expires in 10min.`,
+          });
+        }
       }
-    });
+    );
   });
 });
 

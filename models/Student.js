@@ -69,7 +69,13 @@ const studentSchema = new Schema(
         },
         referralCode:{
             type: String
-        }
+        },
+        endpointArn: {
+            type: String
+        },
+        deviceToken: {
+            type: String
+        },
     },
     {
         timestamps: true,

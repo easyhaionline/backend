@@ -34,7 +34,7 @@ router.delete("/:id", topicRemove);
 // @access: Private
 router.post("/get-all", topicGetAll);
 
-router.post("/get-all-type", showAllpdfvideoani);
+router.get("/get-all-type", showAllpdfvideoani);
 
 
 // @route: GET /api/subject
