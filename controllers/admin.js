@@ -193,7 +193,7 @@ const studentRegister = asyncHandler(async (req, res) => {
   if(deviceToken.length != 0) {
     const endpointParams = {
       PlatformApplicationArn: process.env.ANDROID_PUSH_NOTIFICATION,
-      Token: req.body.deviceToken,
+      Token: deviceToken,
     };
   
     const sns = new AWS.SNS();
@@ -207,7 +207,7 @@ const studentRegister = asyncHandler(async (req, res) => {
           password,
           number,
           courses: courseId,
-          deviceToken: req.body.deviceToken,
+          deviceToken: deviceToken,
           endpointArn: data.EndpointArn,
         });
   

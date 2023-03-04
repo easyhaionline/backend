@@ -66,7 +66,8 @@ const imageComplaintsRoutes = require('./routes/imageComplaints')
 const quicknotesRouter = require('./routes/quicknotes')
 const teamRouter = require('./routes/team')
 const notificationRouter = require('./routes/notification')
-const noticeRoutes= require("./routes/notice")
+const noticeRoutes= require("./routes/notice");
+const pushnotificationRoutes= require("./routes/pushNotification");
 
 // connecting to database
 connectDB()
@@ -147,6 +148,8 @@ app.use('/api/quicknotes', quicknotesRouter)
 app.use('/api/team', teamRouter)
 app.use('/api/notification', notificationRouter)
 app.use('/api/notice', noticeRoutes)
+app.use('/api/pushnotification', pushnotificationRoutes)
+
 
 app.get('/images/:key', (req, res) => {
   const key = req.params.key
