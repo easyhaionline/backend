@@ -190,12 +190,12 @@ const studentRegister = asyncHandler(async (req, res) => {
 
   // console.log(req.body);
 
-  if(deviceToken.length != 0) {
+  if (deviceToken.length != 0) {
     const endpointParams = {
       PlatformApplicationArn: process.env.ANDROID_PUSH_NOTIFICATION,
       Token: deviceToken,
     };
-  
+
     const sns = new AWS.SNS();
     sns.createPlatformEndpoint(endpointParams, async (err, data) => {
       if (err) {
@@ -210,11 +210,14 @@ const studentRegister = asyncHandler(async (req, res) => {
           deviceToken: deviceToken,
           endpointArn: data.EndpointArn,
         });
-  
-        await ChatUser.create({ _id: newAdmin._id, username: newAdmin.username });
+
+        await ChatUser.create({
+          _id: newAdmin._id,
+          username: newAdmin.username,
+        });
         await Studentlog.create({ studentId: newAdmin._id });
         await StudentAttendancelog.create({ studentId: newAdmin._id });
-  
+
         if (newAdmin) {
           // removing password before sending to client
           newAdmin.password = null;
@@ -432,7 +435,7 @@ const adminLogin = asyncHandler(async (req, res) => {
 });
 
 const studentLogin = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, deviceToken } = req.body;
   // finding the admin
   const foundAdmin = await Student.findOne({
     email,
@@ -449,8 +452,26 @@ const studentLogin = asyncHandler(async (req, res) => {
     const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
     const encryptedString = cryptr.encrypt(dbhalf);
     foundAdmin.encryption = encryptedString;
-    foundAdmin.save();
     const decryptedString = cryptr.decrypt(encryptedString);
+
+    if (deviceToken) {
+      const endpointParams = {
+        PlatformApplicationArn: process.env.ANDROID_PUSH_NOTIFICATION,
+        Token: deviceToken,
+      };
+
+      const sns = new AWS.SNS();
+      sns.createPlatformEndpoint(endpointParams, async (err, data) => {
+        if (err) {
+          console.log(err);
+        } else {
+          foundAdmin.deviceToken = deviceToken
+          foundAdmin.endpointArn = data.EndpointArn
+          foundAdmin.save();
+        }
+      });
+    }
+
     res.send({
       fulltoken: token,
       _id: foundAdmin._id,

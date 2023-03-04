@@ -101,7 +101,7 @@ const StandardById= asyncHandler(async (req, res) => {
     const {id } =req.params;
     const foundExam = await Standard.findById( id)
         .sort({ createdAt: -1 })
-        .populate("examtype","name _id").populate("course","name _id")
+        .populate("examtype","name _id").populate("course","name _id topicArn")
 
     res.status(200).json(foundExam)
 })
