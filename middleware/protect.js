@@ -13,10 +13,11 @@ const protectAdmin = asyncHandler(async (req, res, next) => {
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
             req.authAdmin = await Admin.findById(decodedToken._id).select('-password')
 
-            if (!req.authAdmin) {
-                res.status(400)
-                throw new Error('Admin not found!')
-            }
+
+            // if (!req.authAdmin) {
+            //     res.status(400)
+            //     throw new Error('Admin not found!')
+            // }
 
             next()
         } catch (err) {

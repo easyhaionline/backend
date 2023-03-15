@@ -146,36 +146,162 @@ const adminRegisterTeacher = asyncHandler(async (req, res) => {
 
 // to register a new admin *******************************************************************************
 const adminRegister = asyncHandler(async (req, res) => {
-  const { username, email, image, password } = req.body;
+  const { username, email, image, password, number, perks } = req.body;
 
-  //  checking for the uniqueness of email address
-  const isUniqueEmail =
+   const isUniqueEmail =
     (await Admin.countDocuments({ email })) > 0 ? false : true;
+  console.log("isUniqueEmail", isUniqueEmail)
+
   if (!isUniqueEmail) {
     res.status(400);
     throw new Error("Email is already registered! Try Logging in.");
   }
 
-  const role = 1;
-  const newAdmin = await Admin.create({
-    username,
+  let arrayOfperks = perks && perks.split(",");
+  console.log("arrayOfperks", arrayOfperks)
+  let admin = new Admin()
+  const role =1
+  // const newAdmin= await Admin.create({
+    admin.username = username,
+    admin.email = email,
+    admin.password = password,
+    admin.number =number,
+    admin.perks = perks && perks.split(","),
+    admin.role = role
+    // admin.save();
+  // })
+  // console.log("newAdmin", newAdmin)
+  admin.save((err, result) => {
+    if (err) {
+      return res.status(401).json({
+        error: err,
+      });
+    }
+      admin.password = null;
+    console.log("admin", admin)
+    res.json(result);
+  });
+  //  checking for the uniqueness of email address
+  // const isUniqueEmail =
+  //   (await Admin.countDocuments({ email })) > 0 ? false : true;
+  // if (!isUniqueEmail) {
+  //   res.status(400);
+  //   throw new Error("Email is already registered! Try Logging in.");
+  // }
+
+  // // const role = 1;
+  // const newAdmin = await Admin.create({
+  //   username,
+  //   email,
+  //   image,
+  //   number,
+  //   password,
+  //   role,
+  // });
+
+  // if (newAdmin) {
+  //   // removing password before sending to client
+  //   newAdmin.password = null;
+  //   res.status(200).json(newAdmin);
+  // } else {
+  //   res.status(500);
+  //   throw new Error(
+  //     "New admin can't be registered at the moment! Try again later."
+  //   );
+  // }
+});
+
+const getAdmin = async (req, res)=>{
+  const getadmin = await Admin.find({ isSuper : false});
+
+  try {
+    if(getadmin){
+     return res.status(200).json({getadmin, message: "Get all admin"})
+    }
+  } catch (error) {
+    return res.status(500).json({getadmin, message: "Internal server error"})
+  }
+}
+
+const deleteAdmin = async(req, res)=>{
+  const {id} = req.params.id;
+  const removeadmin = await Admin.findByIdAndDelete(req.params.id)
+
+  try {
+    if(removeadmin){
+      return res.status(201).json({ removeadmin, message: "Succesfully deleted" })
+    }
+  } catch (error) {
+    return res.status(500).json({error, message: "Server error"})
+  }
+}
+
+const adminsToggle = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // getting the logged in admin
+
+  // checking if the logged in admin is a SUPER ADMIN (only super admin can toggle admins)
+
+  const foundAdminsToToggle = await Admin.findOne({ _id: id });
+
+  // checking if the admin to delete is NOT a super admin (super admin can't be deleted)
+
+  foundAdminsToToggle.isActive = foundAdminsToToggle.isActive ? false : true;
+  foundAdminsToToggle.save();
+
+  res.status(200).json({
+    message: foundAdminsToToggle.isActive
+      ? "Admin Activated!"
+      : "Admin Deactivated!",
+  });
+});
+
+// to login an existing admin *************************************************************************
+const alladminsLogin = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  // finding the admin
+  const foundAdmin = await Admin.findOne({
     email,
-    image,
-    password,
-    role,
+    // isActive: true,
   });
 
-  if (newAdmin) {
-    // removing password before sending to client
-    newAdmin.password = null;
-    res.status(200).json(newAdmin);
+  if (
+    foundAdmin &&
+    (await foundAdmin.matchPassword(password)) &&
+    foundAdmin.role == 1
+  ) {
+    const token = generateToken(foundAdmin._id);
+    const dbhalf = token.substr(0, 100);
+    const htoken = token.substr(100);
+    const cryptr = new Cryptr(process.env.ENCRYPTION_KEY);
+    const encryptedString = cryptr.encrypt(dbhalf);
+    foundAdmin.encryption = encryptedString;
+    foundAdmin.save();
+    const decryptedString = cryptr.decrypt(encryptedString);
+    res.send({
+      fulltoken: token,
+      _id: foundAdmin._id,
+      email: foundAdmin.email,
+      username: foundAdmin.username,
+      image: foundAdmin.image,
+      isSuper: foundAdmin.isSuper,
+      token: htoken,
+      dbtoken: foundAdmin.encryption,
+      decrypted: decryptedString,
+      foundAdmin: foundAdmin,
+    });
+
   } else {
-    res.status(500);
+    res.status(401);
     throw new Error(
-      "New admin can't be registered at the moment! Try again later."
+      "Either your credentials are wrong or your account is deactivated! Try again."
     );
   }
 });
+
+
+
 
 // to register a new student *******************************************************************************
 const studentRegister = asyncHandler(async (req, res) => {
@@ -1528,8 +1654,12 @@ module.exports = {
   adminRegisterSuper,
   adminRegisterTeacher,
   adminRegister,
+  getAdmin,
+  deleteAdmin,
+  adminsToggle,
   adminLogin,
   adminToggle,
+  alladminsLogin,
   adminGetAll,
   adminUpdate,
   resetPassword,

@@ -1,5 +1,3 @@
-const express = require("express");
-const Course = require("../models/Course");
 const AWS = require("aws-sdk");
 AWS.config.update({
   accessKeyId: process.env.Notification_Access_Key_Id,

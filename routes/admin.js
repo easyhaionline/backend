@@ -47,7 +47,11 @@ const {
     getAllStudentsForBp,
     getAllStudentsForSbp,
     searchStudents,
-    studentsByFilter
+    studentsByFilter,
+    getAdmin,
+    deleteAdmin,
+    adminsToggle,
+    alladminsLogin
 } = require('../controllers/admin');
 
 
@@ -100,13 +104,22 @@ router.post('/teacher/login', teacherLogin);
 // @desc: To register a new admin
 // @access: Private
 // router.post('/', protectAdmin, adminRegister)
-router.post('/', adminRegister);
+router.post('/',  adminRegister);
 
 
 // @route: POST /api/admin
 // @desc: To register a new course
 // @access: Private
 // router.post('/update-course/:id', protectAdmin, Updatingcourse)
+
+router.get('/getallAdmin', getAdmin);
+
+router.delete('/removeAdmin/:id', deleteAdmin);
+
+router.put('/toogleAdmin/:id', adminsToggle);
+
+router.post("/alladminlogin", alladminsLogin)
+
 router.post('/update-course/:id', Updatingcourse);
 
 router.delete('/toggle-teacher/:id',teacherToggle);

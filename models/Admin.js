@@ -17,6 +17,9 @@ const adminSchema = new Schema(
             type:Number,
             default:0
         },
+        perks: [{
+            type:String
+         }],
         number:{
             type:Number,
             unique:true
