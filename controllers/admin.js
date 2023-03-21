@@ -150,7 +150,6 @@ const adminRegister = asyncHandler(async (req, res) => {
 
    const isUniqueEmail =
     (await Admin.countDocuments({ email })) > 0 ? false : true;
-  console.log("isUniqueEmail", isUniqueEmail)
 
   if (!isUniqueEmail) {
     res.status(400);
@@ -173,7 +172,6 @@ const adminRegister = asyncHandler(async (req, res) => {
       });
     }
       admin.password = null;
-    console.log("admin", admin)
     res.json(result);
   });
 });
