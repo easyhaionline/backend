@@ -156,21 +156,16 @@ const adminRegister = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("Email is already registered! Try Logging in.");
   }
-
-  let arrayOfperks = perks && perks.split(",");
-  console.log("arrayOfperks", arrayOfperks)
+  // let arrayOfperks = perks && perks.split(",");
+  // console.log("arrayOfperks", arrayOfperks)
   let admin = new Admin()
   const role =1
-  // const newAdmin= await Admin.create({
     admin.username = username,
     admin.email = email,
     admin.password = password,
     admin.number =number,
-    admin.perks = perks && perks.split(","),
+    admin.perks = perks,
     admin.role = role
-    // admin.save();
-  // })
-  // console.log("newAdmin", newAdmin)
   admin.save((err, result) => {
     if (err) {
       return res.status(401).json({
@@ -181,34 +176,6 @@ const adminRegister = asyncHandler(async (req, res) => {
     console.log("admin", admin)
     res.json(result);
   });
-  //  checking for the uniqueness of email address
-  // const isUniqueEmail =
-  //   (await Admin.countDocuments({ email })) > 0 ? false : true;
-  // if (!isUniqueEmail) {
-  //   res.status(400);
-  //   throw new Error("Email is already registered! Try Logging in.");
-  // }
-
-  // // const role = 1;
-  // const newAdmin = await Admin.create({
-  //   username,
-  //   email,
-  //   image,
-  //   number,
-  //   password,
-  //   role,
-  // });
-
-  // if (newAdmin) {
-  //   // removing password before sending to client
-  //   newAdmin.password = null;
-  //   res.status(200).json(newAdmin);
-  // } else {
-  //   res.status(500);
-  //   throw new Error(
-  //     "New admin can't be registered at the moment! Try again later."
-  //   );
-  // }
 });
 
 const getAdmin = async (req, res)=>{
