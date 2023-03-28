@@ -18,9 +18,7 @@ const generateToken = async () => {
 };
 
 const createMeeting = async (req, res) => {
-
   const bearerToken = `Bearer ${await generateToken()}`;
-
   const payload = {
     subject: req.body.name,
     start: {
@@ -45,7 +43,6 @@ const createMeeting = async (req, res) => {
       },
     }
   );
-
   res.status(200).json({ url: data.data.onlineMeeting.joinUrl });
 };
 
