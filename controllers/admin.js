@@ -281,7 +281,7 @@ const studentRegister = asyncHandler(async (req, res) => {
 
   // console.log(req.body);
 
-  if (deviceToken.length != 0) {
+  if (deviceToken != undefined && deviceToken.length != 0) {
     const endpointParams = {
       PlatformApplicationArn: process.env.ANDROID_PUSH_NOTIFICATION,
       Token: deviceToken,
@@ -327,7 +327,7 @@ const studentRegister = asyncHandler(async (req, res) => {
       email,
       password,
       number,
-      courses: courseId,
+      courses: courseId ? courseId:"-1",
     });
 
     await ChatUser.create({ _id: newAdmin._id, username: newAdmin.username });
